@@ -31,6 +31,6 @@ Author 2019 Angelo Scarnà <angelo.scarna@codelinsoft.it>
 Testing Calogero Scarnà <calogero.scarna@codelinsoft.it>
 
 ------------------------------------------------------------------------
-![ScreenShot](https://github.com/kratos83/Squid-gui/blob/master/squid-gui_main.png)
+![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenter.png)
 
 ------------------------------------------------------------------------
