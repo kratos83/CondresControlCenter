@@ -28,6 +28,7 @@ For installation follow the guide:
 Enjoy the software and its work
 
 Author 2019 Angelo Scarnà <angelo.scarna@codelinsoft.it>
+
 Testing Calogero Scarnà <calogero.scarna@codelinsoft.it>
 
 ------------------------------------------------------------------------
