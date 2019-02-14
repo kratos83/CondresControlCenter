@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/svn_status.png</file>
+        <file>images/application-exit.png</file>
+        <file>images/ark.png</file>
+        <file>images/install.png</file>
+        <file>images/log.png</file>
+        <file>images/trash.png</file>
+        <file>images/log_1.png</file>
+        <file>images/back.png</file>
+        <file>images/face-smile.png</file>
+        <file>images/loading.gif</file>
+        <file>images/condres.png</file>
+        <file>images/remove.png</file>
+        <file>images/package.png</file>
+        <file>images/att.png</file>
+        <file>images/preferences-system.png</file>
+    </qresource>
+</RCC>

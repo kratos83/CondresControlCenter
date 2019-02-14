@@ -1,0 +1,25 @@
+[Desktop Entry]
+Categories=Application;System
+Comment[it_IT]=System management
+Comment=System management
+Comment[en]=System management
+Encoding=UTF-8
+Exec=sh /usr/bin/CondresControlCenterBin
+GenericName[it_IT]=
+GenericName=
+GenericName[en]=System management
+Icon=/usr/share/icons/preferences-system.png
+MimeType=
+Name[it_IT]=CondresControlCenter
+Name=CondresControlCenter
+Name[en]=CondresControlCenter
+Name[en_En]=CondresControlCenter
+Path=/usr/bin
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

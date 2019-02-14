@@ -1,0 +1,10 @@
+#ifndef CONSTANT_H
+#define CONSTANT_H
+
+#define VERSION "0.1"
+#define ALPHA "ALPHA RELEASE"
+#define BETA "BETA RELEASE"
+#define RELEASE_CANDIDATE "RC RELEASE"
+#define STABLE "STABLE RELEASE"
+
+#endif // CONSTANT_H
