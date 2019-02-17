@@ -22,7 +22,7 @@ public:
     explicit InstallPackages(QWidget *parent = nullptr);
     ~InstallPackages();
     void lista();
-
+    void setMenuInstall();
 public slots:
     QString getPeso(QString byteReceived);
     void TableClicked(const QModelIndex &index);
@@ -31,6 +31,10 @@ public slots:
     void removeImpo();
     void searchPackages(QString text);
     void on_pul_list_clicked();
+    void viewGroupsPackages(bool vero);
+    void viewPackagesGroup();
+    void installLocalPackages();
+    void clickListItem(QListWidgetItem *item);
 
 private:
     Ui::InstallPackages *ui;
@@ -38,6 +42,10 @@ private:
     QString m_peso;
     Apply *m_apply;
     QStringList m_string;
+    QMenu *menu, *menuFile, *menuGroup;
+    QAction *install_local_packages, *boxGroup;
+    QProcess *m_process_group,*m_process_list;
+    QTableWidget *widgetLista,*widgetListaGroup;
 };
 
 #endif // INSTALLPACKAGES_H

@@ -27,11 +27,12 @@ public slots:
     void closeDialog();
     void read_packages(int exitCode);
     void ReadyPkg();
+    void localPackages();
 private:
     Ui::Apply *ui;
     QString _arg, m_args, m_install_remove;
     QStringList m_list;
-    QProcess *m_process,*m_process_remove;
+    QProcess *m_process,*m_process_remove,*m_process_local;
 };
 
 #endif // APPLY_H

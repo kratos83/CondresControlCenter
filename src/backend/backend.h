@@ -32,6 +32,7 @@ public:
   static QStringList getUnrequiredList();
   static QStringList getForeignList();
   static QStringList getOutdatedList();
+  static QStringList getGroupList(const char* package);
 };
 
 #endif // ALPMBACKEND_H

@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(ALPHA));
     ui->stackedWidget->setCurrentIndex(0);
     visButtonStatusBar();
-   // setFixedSize(860,600);
 }
 
 QString MainWindow::titolo()
@@ -86,7 +85,9 @@ void MainWindow::on_butt_update_clicked()
     m_upgrade = new Upgrade("",this);
     connect(m_upgrade,&Upgrade::finishUpdate,this,&MainWindow::resButton);
     m_upgrade->upgradeDB();
-    m_upgrade->exec();
+    ui->stackedWidget->insertWidget(1,m_upgrade);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
 }
 
 void MainWindow::resButton(bool vero)
@@ -97,7 +98,9 @@ void MainWindow::resButton(bool vero)
 void MainWindow::on_butt_install_clicked()
 {
     m_packages = new InstallPackages(this);
-    m_packages->exec();
+    ui->stackedWidget->insertWidget(2,m_packages);
+    ui->stackedWidget->setCurrentIndex(2);
+    butt_back->setVisible(true);
 }
 
 void MainWindow::on_butt_log_clicked()

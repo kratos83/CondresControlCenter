@@ -15,6 +15,63 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="cerca_line"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_6">
+     <item row="0" column="3">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="1">
+      <widget class="QToolButton" name="menuGroup">
+       <property name="text">
+        <string>Group</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::MenuButtonPopup</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QToolButton" name="menuFile">
+       <property name="text">
+        <string>File</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::MenuButtonPopup</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
@@ -50,8 +107,8 @@
 }
 
 QTableView::indicator {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
 }
 
 QTableView::indicator:unchecked {
@@ -88,6 +145,16 @@ QTableView::indicator:checked {
              <string>Size</string>
             </property>
            </column>
+           <column>
+            <property name="text">
+             <string/>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Description</string>
+            </property>
+           </column>
           </widget>
          </item>
         </layout>
@@ -98,182 +165,25 @@ QTableView::indicator:checked {
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>180</height>
+          <height>200</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>180</height>
+          <height>200</height>
          </size>
         </property>
         <property name="title">
          <string>Information</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_8">
+        <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Software</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_name">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Version</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_version">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Size</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_size">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_6">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Repository</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_repo">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <widget class="QTextEdit" name="info">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(243, 244, 244);</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -281,19 +191,32 @@ QTableView::indicator:checked {
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="0" column="2" rowspan="3">
+    <widget class="QGroupBox" name="groupBoxPackages">
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>250</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Groups pacckages</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="listWidgetPackages"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="3">
-      <widget class="QPushButton" name="applica">
-       <property name="text">
-        <string>Install</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="remove">
        <property name="text">
@@ -318,14 +241,14 @@ QTableView::indicator:checked {
        </property>
       </spacer>
      </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="chiudi">
+     <item row="0" column="3">
+      <widget class="QPushButton" name="applica">
        <property name="text">
-        <string>Close</string>
+        <string>Install</string>
        </property>
        <property name="icon">
         <iconset resource="../images.qrc">
-         <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
+         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
        </property>
       </widget>
      </item>
@@ -342,28 +265,18 @@ QTableView::indicator:checked {
      </item>
     </layout>
    </item>
-   <item row="0" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Search</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="cerca_line"/>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>menuFile</tabstop>
+  <tabstop>menuGroup</tabstop>
   <tabstop>cerca_line</tabstop>
   <tabstop>tableWidget</tabstop>
+  <tabstop>info</tabstop>
   <tabstop>textEdit</tabstop>
+  <tabstop>pul_list</tabstop>
+  <tabstop>remove</tabstop>
   <tabstop>applica</tabstop>
-  <tabstop>chiudi</tabstop>
  </tabstops>
  <resources>
   <include location="../images.qrc"/>

@@ -9,7 +9,8 @@ Apply::Apply(QStringList listPackages, QString install_remove,
     QDialog (parent),
     ui(new Ui::Apply),
     m_process(new QProcess),
-    m_process_remove(new QProcess)
+    m_process_remove(new QProcess),
+    m_process_local(new QProcess)
 {
     ui->setupUi(this);
     setWindowTitle("Install packages");
@@ -19,12 +20,20 @@ Apply::Apply(QStringList listPackages, QString install_remove,
     connect(ui->cancel,&QPushButton::clicked,this,&Apply::closeDialog);
     if(m_install_remove == "install"){
         ui->remove->setVisible(false);
+        ui->local->setVisible(false);
         connect(ui->apply_install,&QPushButton::clicked,this,&Apply::installPackages);
     }
     else if(m_install_remove == "remove")
     {
         ui->apply_install->setVisible(false);
+        ui->local->setVisible(false);
         connect(ui->remove,&QPushButton::clicked,this,&Apply::removePackages);
+    }
+    else if(m_install_remove == "local")
+    {
+        ui->remove->setVisible(false);
+        ui->apply_install->setVisible(false);
+        connect(ui->local,&QPushButton::clicked,this,&Apply::localPackages);
     }
 }
 
@@ -32,7 +41,8 @@ Apply::Apply(QString args, QString install_remove, QWidget *parent) :
     QDialog (parent),
     ui(new Ui::Apply),
     m_process(new QProcess),
-    m_process_remove(new QProcess)
+    m_process_remove(new QProcess),
+    m_process_local(new QProcess)
 {
     ui->setupUi(this);
     setWindowTitle("Install packages");
@@ -42,12 +52,20 @@ Apply::Apply(QString args, QString install_remove, QWidget *parent) :
     connect(ui->cancel,&QPushButton::clicked,this,&Apply::closeDialog);
     if(m_install_remove == "install"){
         ui->remove->setVisible(false);
+        ui->local->setVisible(false);
         connect(ui->apply_install,&QPushButton::clicked,this,&Apply::installPackages);
     }
     else if(m_install_remove == "remove")
     {
         ui->apply_install->setVisible(false);
+        ui->local->setVisible(false);
         connect(ui->remove,&QPushButton::clicked,this,&Apply::removePackages);
+    }
+    else if(m_install_remove == "local")
+    {
+        ui->remove->setVisible(false);
+        ui->apply_install->setVisible(false);
+        connect(ui->local,&QPushButton::clicked,this,&Apply::localPackages);
     }
 }
 
@@ -83,6 +101,22 @@ void Apply::removePackages()
     m_process_remove->start("/usr/bin/pacman",list1);
 }
 
+void Apply::localPackages()
+{
+    QStringList list,list1;
+    m_process_local->setReadChannel(QProcess::StandardOutput);
+    m_process_local->setProcessChannelMode(QProcess::MergedChannels);
+    connect(m_process_local,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
+    connect(m_process_local,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
+
+    for(int i=0; i< ui->listWidget->count(); i++)
+    {
+        list << ui->listWidget->item(i)->text().split("\n");
+    }
+    list1 << "-U" << "--noconfirm" << list;
+    m_process_local->start("/usr/bin/pacman",list1);
+}
+
 void Apply::read_packages(int exitCode)
 {
     if(exitCode > 1)
@@ -91,7 +125,7 @@ void Apply::read_packages(int exitCode)
       QMessageBox::critical(this,"Control Center", "Error whith the underlying process");
     }
     else if(exitCode == 0){
-        if(m_install_remove == "install")
+        if(m_install_remove == "install" || m_install_remove == "local")
             ui->console->append("<font color=\"white\">Packages installed</font>");
         else if(m_install_remove == "remove")
             ui->console->append("<font color=\"white\">Packages removed</font>");
@@ -107,6 +141,8 @@ void Apply::ReadyPkg()
         results = m_process->readAll();
     else if(m_install_remove == "remove")
         results = m_process_remove->readAll();
+    else if(m_install_remove == "local")
+        results = m_process_local->readAll();
     QStringList resultsVector = results.split(((QRegExp) "\n"));
     for(int i=0; i<resultsVector.size();i++)
     {
@@ -121,7 +157,7 @@ void Apply::ReadyPkg()
 
 void Apply::closeDialog()
 {
-    if(ui->listWidget->count() > 0 || !m_process->waitForFinished() || !m_process_remove->waitForFinished())
+    if(ui->listWidget->count() > 0)
         QMessageBox::warning(this,"Condres OS Control Center","Impossible close window before installation");
     else
         close();
