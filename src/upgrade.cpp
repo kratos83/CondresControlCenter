@@ -21,7 +21,6 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     mov->start();
     connect(ui->applica,&QPushButton::clicked,this,&Upgrade::updatePackages);
     connect(ui->tableWidget,&QTableWidget::itemChanged,this,&Upgrade::itemClicked);
-    connect(ui->ritorna,&QPushButton::clicked,this,&Upgrade::close);
     lista();
 }
 

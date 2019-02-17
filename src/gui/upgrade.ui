@@ -185,45 +185,6 @@ QTableView::indicator:checked {
    </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0" colspan="3">
-      <widget class="QLabel" name="download">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="applica">
-       <property name="text">
-        <string>Apply</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="3">
-      <widget class="QLabel" name="up_progress">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QPushButton" name="ritorna">
-       <property name="text">
-        <string>Close</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -237,6 +198,17 @@ QTableView::indicator:checked {
        </property>
       </spacer>
      </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="applica">
+       <property name="text">
+        <string>Apply</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images.qrc">
+         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="2">
       <widget class="QPushButton" name="dettagli">
        <property name="text">
@@ -245,6 +217,23 @@ QTableView::indicator:checked {
        <property name="icon">
         <iconset resource="../images.qrc">
          <normaloff>:/images/log.png</normaloff>:/images/log.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <widget class="QLabel" name="download">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QLabel" name="up_progress">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -257,7 +246,6 @@ QTableView::indicator:checked {
   <tabstop>applica</tabstop>
   <tabstop>dettagli</tabstop>
   <tabstop>back</tabstop>
-  <tabstop>ritorna</tabstop>
   <tabstop>console</tabstop>
  </tabstops>
  <resources>
