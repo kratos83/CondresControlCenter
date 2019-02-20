@@ -1,4 +1,4 @@
-CondresControlCenter 0.1
+CondresControlCenter 0.1.1
 =========
 
 CondresControlCenter is a beatiful system software management.
@@ -6,6 +6,7 @@ CondresControlCenter is a beatiful system software management.
 Condres Control Center handles install packages, software update, 
 editor repository, cleaner the cache and view log of installation.
 
+CondresControlCenter now support notifier.
 The software required:
 
 Qt5
