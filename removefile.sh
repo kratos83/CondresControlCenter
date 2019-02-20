@@ -1,28 +1,30 @@
 #!/bin/sh
 
-echo "Rimozione file cpp_parameters"
+echo "Remove file cpp_parameters"
 find . -type f -name '*.cpp_parameters' -delete
-echo "Rimozione file cbp"
+echo "Remove file cbp"
 find . -type f -name '*.cbp' -delete
-echo "Rimozione file depends"
+echo "Remove file depends"
 find . -type f -name '*.depends' -delete
-echo "Rimozione file CMakeCache"
+echo "Remove file CMakeCache"
 find . -type f -name 'CMakeCache.txt' -delete
-echo "Rimozione file ui_*"
+echo "Remove file ui_*"
 find . -type f -name 'ui_*' -delete
-echo "Rimozione file Makefile"
+echo "Remove file Makefile"
 find . -type f -name 'Makefile' -delete
-echo "Rimozione file CMakeFiles"
+echo "Remove file CMakeFiles"
 find . -type d -name 'CMakeFiles' -exec rm -rf {} \;
-echo "Rimozione file CPackConfig.cmake"
+echo "Remove file CPackConfig.cmake"
 find . -type f -name 'CPackConfig.cmake' -delete
-echo "Rimozione file CPackSourceConfig.cmake"
+echo "Remove file CPackSourceConfig.cmake"
 find . -type f -name 'CPackSourceConfig.cmake' -delete
-echo "Rimozione file compile_commands.json"
+echo "Remove file compile_commands.json"
 find . -type f -name 'compile_commands.json' -delete
-echo "Rimozione file parameter"
+echo "Remove file parameter"
 find . -type f -name '*.cxx_parameters' -delete
-echo "Rimozione file moc"
+echo "Remove file moc"
 find . -type f -name 'moc_*.cpp' -delete
-echo "Rimozione file install_cmake"
+echo "Remove file install_cmake"
 find . -type f -name 'cmake_install.cmake' -delete
+echo "Remove file install_manifest"
+find . -type f -name 'install_manifest.txt' -delete
