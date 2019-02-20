@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include <QtCore>
 #include <QLoggingCategory>
+#include <QSystemTrayIcon>
 
 //Classi da istanziare
 #include "cachecleaner/cachecleaner.h"
@@ -29,11 +30,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    void initAction();
+    void trayIcon();
 public slots:
     QString titolo();
     QString getPacCache();
-private slots:
+    void messageClicked(QSystemTrayIcon::ActivationReason reason);
     void visButtonStatusBar();
     void on_butt_repo_clicked();
     void ritorna_indietro();
@@ -57,6 +59,12 @@ private:
     About *m_about;
     Apply *m_apply;
     InstallPackages *m_packages;
+    QAction * m_install, m_update, m_info;
+    QSystemTrayIcon *m_trayIcon;
+    QMenu *trayMenu;
+
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

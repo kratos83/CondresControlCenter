@@ -15,5 +15,8 @@
         <file>images/package.png</file>
         <file>images/att.png</file>
         <file>images/preferences-system.png</file>
+        <file>images/minimize.png</file>
+        <file>images/db_green.png</file>
+        <file>images/db_red.png</file>
     </qresource>
 </RCC>

@@ -1,0 +1,11 @@
+if [ "$XDG_CURRENT_DESKTOP" = "KDE" ];then
+    kdesu --noignorebutton -c "/usr/bin/CondresControlCenter -u"
+elif [ "$XDG_CURRENT_DESKTOP" = "GNOME" ];then
+    gksu --description "Condres OS Control Center" "/usr/bin/CondresControlCenter -u"
+elif [ "$XDG_CURRENT_DESKTOP" = "XFCE" ];then
+    gksu --description "Condres OS Control Center" "/usr/bin/CondresControlCenter -u"
+elif [ "$XDG_CURRENT_DESKTOP" = "X-Cinnamon" ];then
+    gksu --description "Condres OS Control Center" "/usr/bin/CondresControlCenter -u"
+elif [ "$XDG_CURRENT_DESKTOP" = "MATE" ];then
+    gksu --description "Condres OS Control Center" "/usr/bin/CondresControlCenter -u"
+fi

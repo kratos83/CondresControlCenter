@@ -15,6 +15,40 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(ALPHA));
     ui->stackedWidget->setCurrentIndex(0);
     visButtonStatusBar();
+    initAction();
+    trayIcon();
+}
+
+void MainWindow::initAction()
+{
+    m_install = new QAction(QIcon(":/images/install.png"),"Install packages",this);
+    connect(m_install,&QAction::triggered,this,&MainWindow::on_butt_install_clicked);
+}
+
+void MainWindow::trayIcon()
+{
+    trayMenu = new QMenu(this);
+    trayMenu->addAction(m_install);
+    
+    QIcon icon;
+    icon.addPixmap(QPixmap(QString::fromUtf8(":/images/preferences-system.png")), QIcon::Normal, QIcon::Off);
+
+    m_trayIcon = new QSystemTrayIcon(icon,this);
+    m_trayIcon->setContextMenu(trayMenu);
+    m_trayIcon->show();
+    
+    connect(m_trayIcon, &QSystemTrayIcon::activated,this,&MainWindow::messageClicked);
+}
+
+void MainWindow::messageClicked(QSystemTrayIcon::ActivationReason reason){
+
+    switch(reason){
+    case QSystemTrayIcon::DoubleClick:
+        showNormal();
+        break;
+    default:
+        ;
+    }
 }
 
 QString MainWindow::titolo()
@@ -82,6 +116,7 @@ void MainWindow::ritorna_indietro()
 
 void MainWindow::on_butt_update_clicked()
 {
+    showMaximized();
     m_upgrade = new Upgrade("",this);
     connect(m_upgrade,&Upgrade::finishUpdate,this,&MainWindow::resButton);
     m_upgrade->upgradeDB();
@@ -97,6 +132,7 @@ void MainWindow::resButton(bool vero)
 
 void MainWindow::on_butt_install_clicked()
 {
+    showMaximized();
     m_packages = new InstallPackages(this);
     ui->stackedWidget->insertWidget(2,m_packages);
     ui->stackedWidget->setCurrentIndex(2);
@@ -106,19 +142,17 @@ void MainWindow::on_butt_install_clicked()
 void MainWindow::on_butt_log_clicked()
 {
     m_log = new LogFile("/var/log/pacman.log",this);
-    ui->stackedWidget->insertWidget(2,m_log);
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->insertWidget(3,m_log);
+    ui->stackedWidget->setCurrentIndex(3);
     butt_back->setVisible(true);
 }
 
 void MainWindow::on_butt_clean_clicked()
 {
-    qCDebug(ControlCenterMain) << getPacCache();
-
     if(!getPacCache().isEmpty()){
         m_cache = new CacheCleaner(this);
-        ui->stackedWidget->insertWidget(2,m_cache);
-        ui->stackedWidget->setCurrentIndex(2);
+        ui->stackedWidget->insertWidget(4,m_cache);
+        ui->stackedWidget->setCurrentIndex(4);
         butt_back->setVisible(true);
     }
     else{
@@ -143,4 +177,9 @@ void MainWindow::on_actionUpdate_database_triggered()
 {
     m_upgrade = new Upgrade("update",this);
     m_upgrade->upgradeDB();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event){
+    event->ignore();
+    hide();
 }

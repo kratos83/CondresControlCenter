@@ -6,7 +6,8 @@ using namespace std;
 TableWidgetHeader::TableWidgetHeader(Qt::Orientation orientation, QWidget *parent) :
     QHeaderView(orientation,parent),
     vero(false)
-{}
+{
+}
 
 void TableWidgetHeader::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
 {

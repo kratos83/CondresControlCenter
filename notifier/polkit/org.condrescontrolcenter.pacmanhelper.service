@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.condrescontrolcenter.pacmanhelper
+Exec=/usr/lib/condrescontrolcenter/pacmanhelper
+User=root

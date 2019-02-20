@@ -34,7 +34,7 @@ void Upgrade::lista()
     ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->setColumnHidden(5,true);
     ui->tableWidget->setColumnWidth(0,30);
-    ui->tableWidget->setColumnWidth(1,150);
+    ui->tableWidget->setColumnWidth(1,250);
     ui->tableWidget->setColumnWidth(2,150);
     ui->tableWidget->setColumnWidth(3,150);
     ui->tableWidget->setColumnWidth(4,150);

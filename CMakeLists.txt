@@ -34,7 +34,7 @@ LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
 set(QT5 TRUE)
 
 message(STATUS "Checking for Qt5...")
-find_package(Qt5 REQUIRED Widgets Gui Core Network)
+find_package(Qt5 REQUIRED Widgets Gui Core Network DBus)
 
 message(STATUS "Checking for GLIB...")
 find_package(Glib REQUIRED)
@@ -73,6 +73,7 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCONDRESCONTROLCENTER_DEBUG
 
 # make sub-directories
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(notifier)
 
 #
 # add distclean-target
@@ -101,3 +102,7 @@ MESSAGE(
 "running cmake again!\n"
 "-----------------------------------------------------------------\n"
 "\n\n")
+
+add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
+)

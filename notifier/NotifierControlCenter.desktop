@@ -1,0 +1,21 @@
+[Desktop Entry]
+Categories=GNOME;GTK;System;
+Comment[it_IT]=
+Comment=
+Exec=/usr/bin/NotifierControlCenter
+GenericName[it_IT]=
+GenericName=
+Icon=/usr/share/icons/db_green.png
+MimeType=
+Name[it_IT]=CondresControlCenter Notifier
+Name=CondresControlCenter Notifier
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+X-LXQt-Need-Tray=true
