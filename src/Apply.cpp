@@ -82,7 +82,7 @@ void Apply::installPackages()
         list << ui->listWidget->item(i)->text().split("\n");
     }
     list1 << "-S" << "--noconfirm" << list;
-    m_process->start("gksu /usr/bin/pacman",list1);
+    m_process->start("/usr/bin/pacman",list1);
 }
 
 void Apply::removePackages()
@@ -98,7 +98,7 @@ void Apply::removePackages()
         list << ui->listWidget->item(i)->text().split("\n");
     }
     list1 << "-R" << "--noconfirm" << list;
-    m_process_remove->start("gksu /usr/bin/pacman",list1);
+    m_process_remove->start("/usr/bin/pacman",list1);
 }
 
 void Apply::localPackages()
@@ -114,7 +114,7 @@ void Apply::localPackages()
         list << ui->listWidget->item(i)->text().split("\n");
     }
     list1 << "-U" << "--noconfirm" << list;
-    m_process_local->start("gksu /usr/bin/pacman",list1);
+    m_process_local->start("/usr/bin/pacman",list1);
 }
 
 void Apply::read_packages(int exitCode)
