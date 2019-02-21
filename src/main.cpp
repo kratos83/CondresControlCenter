@@ -41,13 +41,13 @@ static bool parseArguments(const QStringList &argomento)
         }
         else if(a_arg == "-h" || a_arg == "--help")
         {
-            qCDebug(CondresControlCenterMain) << QObject::tr("USAGE:\t ") << QObject::tr("DISPLAYS\n")
-                     << QObject::tr("-i or --install \t") << QObject::tr("Install packages\n")
-                     << QObject::tr("-u or --update \t\t") << QObject::tr("Update packages:\n")
-                     << QObject::tr("VIEW THE INSTALLED SOFTWARE VERSION:\n\n")
-                     << QObject::tr("-v or --version \t") << QObject::tr("Software version\n\n\n")
-                     << QObject::tr("VIEW THE INFORMATION OF THE PROGRAM:\n\n")
-                     << QObject::tr("-h or --help \t\t") << QObject::tr("Software information.");
+            qCDebug(CondresControlCenterMain) << QObject::tr("USAGE:    ") << QObject::tr("DISPLAYS");
+            qCDebug(CondresControlCenterMain) << QObject::tr("-i or --install   ") << QObject::tr("Install packages");
+            qCDebug(CondresControlCenterMain) << QObject::tr("-u or --update    ") << QObject::tr("Update packages:");
+            qCDebug(CondresControlCenterMain) << QObject::tr("VIEW THE INSTALLED SOFTWARE VERSION:");
+            qCDebug(CondresControlCenterMain) << QObject::tr("-v or --version   ") << QObject::tr("Software version");
+            qCDebug(CondresControlCenterMain) << QObject::tr("VIEW THE INFORMATION OF THE PROGRAM:");
+            qCDebug(CondresControlCenterMain) << QObject::tr("-h or --help  ") << QObject::tr("Software information.");
             return false;
         }
         else{

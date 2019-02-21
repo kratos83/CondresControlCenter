@@ -40,10 +40,10 @@ static bool parseArguments(const QStringList &argomento)
         }
         else if(a_arg == "-h" || a_arg == "--help")
         {
-            qCDebug(NotifierControlCenterMain) << QObject::tr("USAGE:\t ") << QObject::tr("DISPLAYS\n")
-                     << QObject::tr("-u or --update \t\t") << QObject::tr("Update packages:\n")
-                     << QObject::tr("VIEW THE INFORMATION OF THE PROGRAM:\n\n")
-                     << QObject::tr("-h or --help \t\t") << QObject::tr("Software information.");
+            qCDebug(NotifierControlCenterMain) << QObject::tr("USAGE:   ") << QObject::tr("DISPLAYS");
+            qCDebug(NotifierControlCenterMain) << QObject::tr("-u or --update       ") << QObject::tr("Update packages:");
+            qCDebug(NotifierControlCenterMain) << QObject::tr("VIEW THE INFORMATION OF THE PROGRAM:");
+            qCDebug(NotifierControlCenterMain) << QObject::tr("-h or --help     ") << QObject::tr("Software information.");
             return false;
         }
         else{
