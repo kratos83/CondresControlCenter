@@ -177,6 +177,8 @@ void Apply::closeDialog()
                 break;
         }
     }
+    else
+        close();
 }
 
 Apply::~Apply()
