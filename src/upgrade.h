@@ -40,7 +40,6 @@ public slots:
     void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
     void showProgressInqDebug();
 
-
 private slots:
     void on_dettagli_clicked();
     void on_back_clicked();

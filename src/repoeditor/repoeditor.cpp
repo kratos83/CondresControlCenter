@@ -157,7 +157,6 @@ void RepoEditor::apply()
                                   tr( "Success" ),
                                   tr( "Repositories configuration successfully saved." ),
                                   QMessageBox::Ok );
-        qApp->quit();
     } else {
         QMessageBox::critical( this,
                                tr( "Error" ),

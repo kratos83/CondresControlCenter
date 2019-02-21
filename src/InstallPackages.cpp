@@ -112,11 +112,6 @@ void InstallPackages::clickListItem(QListWidgetItem* item)
                 QTableWidgetItem *repo = new QTableWidgetItem(QString(list.at(1)));
                 QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(list.at(5)));
                 QTableWidgetItem *pesoCount = new QTableWidgetItem(list.at(5));
-                name->setFlags(Qt::ItemIsSelectable);
-                versione->setFlags(Qt::ItemIsSelectable);
-                repo->setFlags(Qt::ItemIsSelectable);
-                Peso->setFlags(Qt::ItemIsSelectable);
-                pesoCount->setFlags(Qt::ItemIsSelectable);
                 int row = ui->tableWidget->rowCount();
                 ui->tableWidget->insertRow(row);
                 ui->tableWidget->setItem(row,0,item);
@@ -140,6 +135,7 @@ void InstallPackages::lista()
     m_table = new TableWidgetHeader(Qt::Horizontal);
     m_table->setSectionsClickable(true);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setColumnHidden(5,true);
     ui->tableWidget->setColumnWidth(0,30);
     ui->tableWidget->setColumnWidth(1,400);
@@ -164,11 +160,6 @@ void InstallPackages::lista()
         QTableWidgetItem *repo = new QTableWidgetItem(QString(list.at(1)));
         QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(list.at(5)));
         QTableWidgetItem *pesoCount = new QTableWidgetItem(list.at(5));
-        name->setFlags(Qt::ItemIsSelectable);
-        versione->setFlags(Qt::ItemIsSelectable);
-        repo->setFlags(Qt::ItemIsSelectable);
-        Peso->setFlags(Qt::ItemIsSelectable);
-        pesoCount->setFlags(Qt::ItemIsSelectable);
         int row = ui->tableWidget->rowCount();
         ui->tableWidget->insertRow(row);
         ui->tableWidget->setItem(row,0,item);
@@ -234,10 +225,24 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
         QStringList m_list;
         QModelIndex m_index;
         m_index = ui->tableWidget->model()->index(item->row(),0,QModelIndex());
+        QString name = ui->tableWidget->model()->index(item->row(),1,QModelIndex()).data(Qt::DisplayRole).toString();
         if(m_index.data(Qt::CheckStateRole) == Qt::Checked)
-          ui->textEdit->append(ui->tableWidget->model()->index(item->row(),1,QModelIndex()).data(Qt::DisplayRole).toString());
-        else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked)
-            ui->textEdit->append(ui->tableWidget->model()->index(item->row(),1,QModelIndex()).data(Qt::DisplayRole).toString());
+        {
+            if(ui->textEdit->toPlainText().length() == 0)
+                ui->textEdit->append(name);
+            else if(ui->textEdit->toPlainText() == name){
+                ui->textEdit->clear();
+                ui->textEdit->append(name);
+            }
+        }
+        else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked){
+            if(ui->textEdit->toPlainText().length() == 0)
+                ui->textEdit->append(name);
+            else if(ui->textEdit->toPlainText() == name){
+                ui->textEdit->clear();
+                ui->textEdit->append(name);
+            }
+        }
     }
 }
 

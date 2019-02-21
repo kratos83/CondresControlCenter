@@ -181,5 +181,4 @@ void MainWindow::on_actionUpdate_database_triggered()
 
 void MainWindow::closeEvent(QCloseEvent *event){
     event->ignore();
-    hide();
 }

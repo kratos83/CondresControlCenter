@@ -22,13 +22,60 @@
 #include <QtGui>
 #include <QDebug>
 
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(NotifierControlCenterMain)
+Q_LOGGING_CATEGORY(NotifierControlCenterMain, "ControlCenter")
+
+//Command
+static bool parseArguments(const QStringList &argomento)
+{
+    QStringListIterator arg_cmd(argomento);
+    arg_cmd.next();
+    while(arg_cmd.hasNext())
+    {
+        const QString &a_arg = arg_cmd.next().toLower();
+        if(a_arg == "-u" || a_arg == "--update"){
+            return true;
+        }
+        else if(a_arg == "-h" || a_arg == "--help")
+        {
+            qCDebug(NotifierControlCenterMain) << QObject::tr("USAGE:\t ") << QObject::tr("DISPLAYS\n")
+                     << QObject::tr("-u or --update \t\t") << QObject::tr("Update packages:\n")
+                     << QObject::tr("VIEW THE INFORMATION OF THE PROGRAM:\n\n")
+                     << QObject::tr("-h or --help \t\t") << QObject::tr("Software information.");
+            return false;
+        }
+        else{
+            qCDebug(NotifierControlCenterMain) << QObject::tr("Command not found: ") << a_arg;
+            return false;
+        }
+    }
+    return true;
+}
+
 int main(int argc, char *argv[])
 {  
 
-  QApplication a(argc, argv);
+    QApplication a(argc, argv);
   
-  NotifierCondres m_not;
-  m_not.hide();
+    if(!parseArguments(a.arguments()))
+    {
+        return -1;
+    }
 
-  return a.exec();
+    const QString arg1 = argv[1];
+
+    const QString arg3 = argv[3];
+  
+    NotifierCondres m_not;
+    if((arg1.toLower() == "-u" || arg1.toLower() == "--update"))
+    {
+        m_not.syncDatabases();
+        m_not.hide();
+    }
+    else
+        m_not.hide();
+
+    return a.exec();
 }

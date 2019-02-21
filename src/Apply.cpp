@@ -157,10 +157,26 @@ void Apply::ReadyPkg()
 
 void Apply::closeDialog()
 {
-    if(ui->listWidget->count() > 0)
-        QMessageBox::warning(this,"Condres OS Control Center","Impossible close window before installation");
-    else
-        close();
+    if(ui->listWidget->count() > 0){
+        QMessageBox *box= new QMessageBox(this);
+        box->setWindowTitle("Condres OS Control Center");
+        box->setText("Condres OS Control Center");
+        box->setInformativeText("Impossible close window before installation. You want to really close?");
+        box->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        box->setDefaultButton(QMessageBox::Ok);
+        box->setIcon(QMessageBox::Information);
+        int ret = box->exec();
+        switch(ret){
+            case QMessageBox::Ok:
+                //Open backup
+                box->close();
+                close();
+                break;
+            case QMessageBox::Cancel:
+                box->close();
+                break;
+        }
+    }
 }
 
 Apply::~Apply()

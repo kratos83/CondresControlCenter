@@ -102,23 +102,7 @@
          <item row="0" column="0">
           <widget class="QTableWidget" name="tableWidget">
            <property name="styleSheet">
-            <string notr="true">QTableView {
-    color: black;
-}
-
-QTableView::indicator {
-    width: 24px;
-    height: 24px;
-}
-
-QTableView::indicator:unchecked {
-    image: url(:/images/package.png);
-}
-
-QTableView::indicator:checked {
-    image: url(:/images/install.png);
-}
-</string>
+            <string notr="true"/>
            </property>
            <column>
             <property name="text">

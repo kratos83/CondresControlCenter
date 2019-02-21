@@ -31,6 +31,7 @@ void Upgrade::lista()
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget->setHorizontalHeader(m_table);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->setColumnHidden(5,true);
     ui->tableWidget->setColumnWidth(0,30);
@@ -259,6 +260,7 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         ui->up_progress->setText("<font color=\"white\">Update complete</font>");
         lista();
         getListUpdate();
+        QProcess::startDetached("/usr/bin/NotifierControlCenter -u");
     }
 
 }

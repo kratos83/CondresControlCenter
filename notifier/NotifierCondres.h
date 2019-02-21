@@ -23,12 +23,14 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QFileSystemWatcher>
-
+#include <QLoggingCategory>
 #include "CchClient.h"
 #include "../src/about.h"
 
 //Database pacman
 const QString DATABASE = "/var/lib/pacman";
+
+Q_DECLARE_LOGGING_CATEGORY(CondresNotifier)
 
 class NotifierCondres : public QMainWindow
 {
@@ -38,21 +40,26 @@ public:
     NotifierCondres(QWidget *parent=nullptr);
     virtual ~NotifierCondres();
     
-private slots:
+public slots:
     void createAction();
     void createTrayIcon();
     void updateIcon();
     void viewInfo();
     void viewUpdate();
     void viewInstallPackages();
+    void syncDatabases();
+    void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
+    void showProgressInDebug();
     
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_Menu;
     QFileSystemWatcher *m_pacmanDatabase;
-    QAction *m_info, *m_upgrade, *m_install, *m_close;
+    QAction *m_info, *m_upgrade, *m_install, *m_close, *m_sync;
     CchClient *m_client;
     About *m_about;
+    int m_numberPackages;
+    QProcess *processUpdate;
 };
 
 #endif // NOTIFIERCONDRES_H
