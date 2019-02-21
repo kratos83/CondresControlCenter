@@ -30,6 +30,7 @@ set(CondresControlCenter_moc_hdrs
 	repoeditor/repoentry.h
 	about.h
 	constant.h
+	esci.h
 	InstallPackages.h
 	logfile.h
 	mainwindow.h
@@ -46,6 +47,7 @@ set(CondresControlCenter_uis
 	cachecleaner/ui/cachecleaner.ui
 	gui/about.ui
 	gui/Apply.ui
+	gui/esci.ui
 	gui/InstallPackages.ui
 	gui/logfile.ui
 	gui/mainwindow.ui
@@ -69,6 +71,7 @@ set(CondresControlCenter_srcs
 	repoeditor/repoentry.cpp
 	about.cpp
 	Apply.cpp
+	esci.cpp
 	InstallPackages.cpp
 	logfile.cpp
 	main.cpp

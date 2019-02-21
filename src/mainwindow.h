@@ -16,6 +16,7 @@
 #include "about.h"
 #include "Apply.h"
 #include "InstallPackages.h"
+#include "esci.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterMain)
 
@@ -62,6 +63,7 @@ private:
     QAction * m_install, m_update, m_info;
     QSystemTrayIcon *m_trayIcon;
     QMenu *trayMenu;
+    esci *m_esci;
 
 protected:
     void closeEvent(QCloseEvent *event);

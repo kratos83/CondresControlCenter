@@ -181,4 +181,6 @@ void MainWindow::on_actionUpdate_database_triggered()
 
 void MainWindow::closeEvent(QCloseEvent *event){
     event->ignore();
+    m_esci = new esci(this);
+    m_esci->exec();
 }
