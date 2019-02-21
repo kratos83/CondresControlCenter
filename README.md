@@ -14,6 +14,7 @@ Qt5
 libalpm
 libalpm_octopi_utils
 glib2
+gksu
 
 For installation follow the guide:
 
