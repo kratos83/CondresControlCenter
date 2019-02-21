@@ -260,7 +260,7 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         ui->up_progress->setText("<font color=\"white\">Update complete</font>");
         lista();
         getListUpdate();
-        QProcess::startDetached("/usr/bin/NotifierControlCenter -u");
+        QProcess::start("/usr/bin/NotifierControlCenter -u");
     }
 
 }
