@@ -1,4 +1,4 @@
-CondresControlCenter 0.1.2
+CondresControlCenter 0.1.3
 =========
 
 CondresControlCenter is a beatiful system software management.
