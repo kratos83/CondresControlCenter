@@ -1,5 +1,6 @@
 /*
 * This file is part of Octopi, an open-source GUI for pacman.
+* Copyright (C) 2019 Angelo Scarnà
 * Copyright (C) 2013 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
@@ -33,6 +34,7 @@ public:
   static QStringList getForeignList();
   static QStringList getOutdatedList();
   static QStringList getGroupList(const char* package);
+  static QStringList getRepoList(const char* package);
 };
 
 #endif // ALPMBACKEND_H

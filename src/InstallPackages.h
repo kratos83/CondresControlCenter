@@ -32,9 +32,12 @@ public slots:
     void searchPackages(QString text);
     void on_pul_list_clicked();
     void viewGroupsPackages(bool vero);
+    void viewGroupsRepo(bool vero);
     void viewPackagesGroup();
+    void viewRepo();
     void installLocalPackages();
     void clickListItem(QListWidgetItem *item);
+    void clickListRepo(QListWidgetItem *item);
 
 private:
     Ui::InstallPackages *ui;
@@ -43,7 +46,7 @@ private:
     Apply *m_apply;
     QStringList m_string;
     QMenu *menu, *menuFile, *menuGroup;
-    QAction *install_local_packages, *boxGroup;
+    QAction *install_local_packages, *boxGroup, *m_repo;
     QProcess *m_process_group,*m_process_list;
     QTableWidget *widgetLista,*widgetListaGroup;
     QTableWidgetItem *name,*m_item, *versione,*repo, *Peso, *pesoCount, *desc;

@@ -21,6 +21,7 @@ InstallPackages::InstallPackages(QWidget *parent) :
     lista();
     setMenuInstall();
     viewPackagesGroup();
+    viewRepo();
 }
 
 void InstallPackages::setMenuInstall()
@@ -33,14 +34,19 @@ void InstallPackages::setMenuInstall()
     ui->menuFile->setMenu(menuFile);
     menuGroup = new QMenu(this);
     menuGroup->addSeparator();
-    boxGroup = new QAction(QIcon(":/images/packages.png"),"View groups packages",this);
+    boxGroup = new QAction(QIcon(":/images/packages.png"),"View group packages",this);
     boxGroup->setCheckable(true);
     viewGroupsPackages(false);
+    m_repo = new QAction(QIcon(":/images/ark.png"),"View repository");
+    m_repo->setCheckable(true);
+    viewGroupsRepo(false);
     menuGroup->addAction(boxGroup);
+    menuGroup->addAction(m_repo);
     ui->menuGroup->setMenu(menuGroup);
     
     connect(install_local_packages,&QAction::triggered,this,&InstallPackages::installLocalPackages);
     connect(boxGroup,&QAction::triggered,this,&InstallPackages::viewGroupsPackages);
+    connect(m_repo,&QAction::triggered,this,&InstallPackages::viewGroupsRepo);
 }
 
 void InstallPackages::installLocalPackages()
@@ -59,10 +65,87 @@ void InstallPackages::installLocalPackages()
 void InstallPackages::viewGroupsPackages(bool vero)
 {
     ui->groupBoxPackages->setVisible(vero);
+    ui->groupBoxRepo->setVisible(false);
+    if(boxGroup->isChecked())
+        m_repo->setChecked(false);
+}
+
+void InstallPackages::viewGroupsRepo(bool vero)
+{
+    ui->groupBoxRepo->setVisible(vero);
+    ui->groupBoxPackages->setVisible(false);
+    if(m_repo->isChecked())
+        boxGroup->setChecked(false);
+}
+
+void InstallPackages::viewRepo()
+{
+    viewGroupsPackages(false);
+    QStringList m_list = Backend::getPackageList();
+    QStringList repository;
+    foreach(QString txt, m_list){
+        QStringList list = txt.split(" ");
+        repository << "All list" <<list.at(1);
+        repository.removeDuplicates();
+        repository.sort();
+    }
+    ui->listWidgetRepo->addItems(repository);
+    connect(ui->listWidgetRepo,&QListWidget::itemClicked,this,&InstallPackages::clickListRepo);
+}
+
+void InstallPackages::clickListRepo(QListWidgetItem* item)
+{
+    ui->tableWidget->setRowCount(0);
+    for ( int i = 0; i < ui->tableWidget->rowCount(); i++ )
+    {
+        ui->tableWidget->removeRow(i);
+    }
+    
+    if(item->text() != "")
+    {
+        if(item->text() == "All list")
+            lista();
+        else{
+            QStringList m_listGroup = Backend::getRepoList(item->text().toStdString().c_str());
+            foreach(QString m_text, m_listGroup)
+            {
+                QStringList list = m_text.split(" ");
+                m_item = new QTableWidgetItem(" ");
+                if(list.at(0) == "i"){
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setCheckState(Qt::Checked);
+                }
+                else if(list.at(0) == "n"){
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setCheckState(Qt::Unchecked);
+                }
+                name = new QTableWidgetItem(QString(list.at(2)));
+                versione = new QTableWidgetItem(QString(list.at(3)));
+                repo = new QTableWidgetItem(QString(list.at(1)));
+                Peso = new QTableWidgetItem(getPeso(list.at(5)));
+                pesoCount = new QTableWidgetItem(list.at(5));
+                int row = ui->tableWidget->rowCount();
+                ui->tableWidget->insertRow(row);
+                ui->tableWidget->setItem(row,0,m_item);
+                ui->tableWidget->setItem(row,1,name);
+                ui->tableWidget->setItem(row,2,versione);
+                ui->tableWidget->setItem(row,3,repo);
+                ui->tableWidget->setItem(row,4,Peso);
+                ui->tableWidget->setItem(row,5,pesoCount);
+                QStringList m_desc = m_text.split("\t");
+                desc = new QTableWidgetItem(QString(m_desc.at(1)));
+                desc->setFlags(Qt::ItemIsSelectable);
+                ui->tableWidget->setItem(row,6,desc);
+                ui->tableWidget->setColumnHidden(6,true);
+            }
+        }
+    }
 }
 
 void InstallPackages::viewPackagesGroup()
 {
+    viewGroupsRepo(false);
+    ui->listWidgetPackages->clear();
     m_process_group->setReadChannel(QProcess::StandardOutput);
     m_process_group->start("pacman -Sg");
     if (m_process_group->waitForStarted(3000))
