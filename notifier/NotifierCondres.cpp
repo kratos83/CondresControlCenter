@@ -97,8 +97,10 @@ void NotifierCondres::pacmanUpdateTimer()
         //From now on, we verify if it's time to check for updates every 5 minutes
         m_timer->setInterval(60000 * 5);
     }
-    if(m_manager->generalValue("Date/hour").toTime().hour() < QTime::currentTime().hour())
+    if(m_manager->generalValue("Date/hour").toTime().hour() < QTime::currentTime().hour()){
+        m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
         syncDatabases();
+    }
     
     m_timer->stop();
     m_timer->start();
