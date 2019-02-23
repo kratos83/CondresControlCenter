@@ -99,6 +99,9 @@ void NotifierCondres::pacmanUpdateTimer()
     }
     if(m_manager->generalValue("Date/hour").toTime().hour() < QTime::currentTime().hour())
         syncDatabases();
+    
+    m_timer->stop();
+    m_timer->start();
 }
 
 void NotifierCondres::updateIcon()
