@@ -26,6 +26,7 @@ set(NotifierControlCenter_moc_hdrs
 	CchHelper.h
 	NotifierCondres.h
 	../src/about.h
+	../src/settingsmanager.h
 )
 
 qt5_wrap_cpp(NotifierControlCenter_mocs ${NotifierControlCenter_moc_hdrs})
@@ -43,6 +44,7 @@ set(NotifierControlCenter_srcs
 	main.cpp
 	NotifierCondres.cpp
 	../src/about.cpp
+	../src/settingsmanager.cpp
 )
 
 qt5_add_resources(RESOURCE_FILES ../src/images.qrc) 

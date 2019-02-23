@@ -46,6 +46,7 @@ private:
     QAction *install_local_packages, *boxGroup;
     QProcess *m_process_group,*m_process_list;
     QTableWidget *widgetLista,*widgetListaGroup;
+    QTableWidgetItem *name,*m_item, *versione,*repo, *Peso, *pesoCount, *desc;
 };
 
 #endif // INSTALLPACKAGES_H

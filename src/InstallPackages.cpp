@@ -98,30 +98,30 @@ void InstallPackages::clickListItem(QListWidgetItem* item)
             foreach(QString m_text, m_listGroup)
             {
                 QStringList list = m_text.split(" ");
-                QTableWidgetItem *item = new QTableWidgetItem(" ");
+                m_item = new QTableWidgetItem(" ");
                 if(list.at(0) == "i"){
-                    item->data(Qt::CheckStateRole);
-                    item->setCheckState(Qt::Checked);
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setCheckState(Qt::Checked);
                 }
                 else if(list.at(0) == "n"){
-                    item->data(Qt::CheckStateRole);
-                    item->setCheckState(Qt::Unchecked);
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setCheckState(Qt::Unchecked);
                 }
-                QTableWidgetItem *name = new QTableWidgetItem(QString(list.at(2)));
-                QTableWidgetItem *versione = new QTableWidgetItem(QString(list.at(3)));
-                QTableWidgetItem *repo = new QTableWidgetItem(QString(list.at(1)));
-                QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(list.at(5)));
-                QTableWidgetItem *pesoCount = new QTableWidgetItem(list.at(5));
+                name = new QTableWidgetItem(QString(list.at(2)));
+                versione = new QTableWidgetItem(QString(list.at(3)));
+                repo = new QTableWidgetItem(QString(list.at(1)));
+                Peso = new QTableWidgetItem(getPeso(list.at(5)));
+                pesoCount = new QTableWidgetItem(list.at(5));
                 int row = ui->tableWidget->rowCount();
                 ui->tableWidget->insertRow(row);
-                ui->tableWidget->setItem(row,0,item);
+                ui->tableWidget->setItem(row,0,m_item);
                 ui->tableWidget->setItem(row,1,name);
                 ui->tableWidget->setItem(row,2,versione);
                 ui->tableWidget->setItem(row,3,repo);
                 ui->tableWidget->setItem(row,4,Peso);
                 ui->tableWidget->setItem(row,5,pesoCount);
                 QStringList m_desc = m_text.split("\t");
-                QTableWidgetItem *desc = new QTableWidgetItem(QString(m_desc.at(1)));
+                desc = new QTableWidgetItem(QString(m_desc.at(1)));
                 desc->setFlags(Qt::ItemIsSelectable);
                 ui->tableWidget->setItem(row,6,desc);
                 ui->tableWidget->setColumnHidden(6,true);
@@ -146,30 +146,30 @@ void InstallPackages::lista()
     QStringList m_list = Backend::getPackageList();
     foreach(QString txt, m_list){
         QStringList list = txt.split(" ");
-        QTableWidgetItem *item = new QTableWidgetItem(" ");
+        m_item = new QTableWidgetItem(" ");
         if(list.at(0) == "i"){
-            item->data(Qt::CheckStateRole);
-            item->setCheckState(Qt::Checked);
+            m_item->data(Qt::CheckStateRole);
+            m_item->setCheckState(Qt::Checked);
         }
         else if(list.at(0) == "n"){
-            item->data(Qt::CheckStateRole);
-            item->setCheckState(Qt::Unchecked);
+            m_item->data(Qt::CheckStateRole);
+            m_item->setCheckState(Qt::Unchecked);
         }
-        QTableWidgetItem *name = new QTableWidgetItem(QString(list.at(2)));
-        QTableWidgetItem *versione = new QTableWidgetItem(QString(list.at(3)));
-        QTableWidgetItem *repo = new QTableWidgetItem(QString(list.at(1)));
-        QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(list.at(5)));
-        QTableWidgetItem *pesoCount = new QTableWidgetItem(list.at(5));
+        name = new QTableWidgetItem(QString(list.at(2)));
+        versione = new QTableWidgetItem(QString(list.at(3)));
+        repo = new QTableWidgetItem(QString(list.at(1)));
+        Peso = new QTableWidgetItem(getPeso(list.at(5)));
+        pesoCount = new QTableWidgetItem(list.at(5));
         int row = ui->tableWidget->rowCount();
         ui->tableWidget->insertRow(row);
-        ui->tableWidget->setItem(row,0,item);
+        ui->tableWidget->setItem(row,0,m_item);
         ui->tableWidget->setItem(row,1,name);
         ui->tableWidget->setItem(row,2,versione);
         ui->tableWidget->setItem(row,3,repo);
         ui->tableWidget->setItem(row,4,Peso);
         ui->tableWidget->setItem(row,5,pesoCount);
         QStringList m_desc = txt.split("\t");
-        QTableWidgetItem *desc = new QTableWidgetItem(QString(m_desc.at(1)));
+        desc = new QTableWidgetItem(QString(m_desc.at(1)));
         desc->setFlags(Qt::ItemIsSelectable);
         ui->tableWidget->setItem(row,6,desc);
         ui->tableWidget->setColumnHidden(6,true);
@@ -228,38 +228,38 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
         QString name = ui->tableWidget->model()->index(item->row(),1,QModelIndex()).data(Qt::DisplayRole).toString();
         if(m_index.data(Qt::CheckStateRole) == Qt::Checked)
         {
-            if(ui->textEdit->toPlainText().length() == 0)
+                ui->textEditRemove->clear();
                 ui->textEdit->append(name);
-            else if(ui->textEdit->toPlainText() == name){
-                ui->textEdit->clear();
-                ui->textEdit->append(name);
-            }
         }
         else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked){
-            if(ui->textEdit->toPlainText().length() == 0)
-                ui->textEdit->append(name);
-            else if(ui->textEdit->toPlainText() == name){
                 ui->textEdit->clear();
-                ui->textEdit->append(name);
-            }
+                ui->textEditRemove->append(name);
         }
     }
 }
 
 void InstallPackages::ApplyImpo()
 {
-    QStringList list;
-    list << ui->textEdit->toPlainText();
-    m_apply = new Apply(list,"install",this);
-    m_apply->exec();
+    if(ui->textEdit->toPlainText().length() == 0)
+        QMessageBox::warning(this,"CondresControlCenter","No packages install selected");
+    else{
+        QStringList list;
+        list << ui->textEdit->toPlainText();
+        m_apply = new Apply(list,"install",this);
+        m_apply->exec();
+    }
 }
 
 void InstallPackages::removeImpo()
 {
-    QStringList list;
-    list << ui->textEdit->toPlainText();
-    m_apply = new Apply(list,"remove",this);
-    m_apply->exec();
+    if(ui->textEditRemove->toPlainText().length() == 0)
+        QMessageBox::warning(this,"CondresControlCenter","No packages remove selected");
+    else{
+        QStringList list;
+        list << ui->textEditRemove->toPlainText();
+        m_apply = new Apply(list,"remove",this);
+        m_apply->exec();
+    }
 }
 
 QString InstallPackages::getPeso(QString byteReceived)
@@ -292,4 +292,5 @@ InstallPackages::~InstallPackages()
 void InstallPackages::on_pul_list_clicked()
 {
     ui->textEdit->clear();
+    ui->textEditRemove->clear();
 }

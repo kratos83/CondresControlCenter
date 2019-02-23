@@ -24,7 +24,8 @@ Q_LOGGING_CATEGORY(CondresNotifier, "ControlCenter")
 NotifierCondres::NotifierCondres(QWidget *parent) : 
     QMainWindow(parent),
     m_numberPackages(0),
-    processUpdate(new QProcess)
+    processUpdate(new QProcess),
+    m_manager(new SettingsManager)
 {
   m_pacmanDatabase =
             new QFileSystemWatcher(QStringList() << DATABASE, this);
@@ -77,8 +78,27 @@ void NotifierCondres::createTrayIcon()
     m_client = new CchClient("org.condrescontrolcenter.pacmanhelper","/",QDBusConnection::systemBus(), 0);
     connect(m_client,&CchClient::syncdbcompleted,this,&NotifierCondres::syncDatabases);
     
-    QTimer time;
+    m_timer = new QTimer();
+    m_timer->setInterval(1000);
+    m_timer->start();
+    
+    //Settings manager data 
+    m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
+    connect(m_timer,&QTimer::timeout,this,&NotifierCondres::pacmanUpdateTimer);
     m_trayIcon->show();
+}
+
+void NotifierCondres::pacmanUpdateTimer()
+{
+    static bool firstTimePacman = true;
+    if(firstTimePacman)
+    {
+        updateIcon();
+        //From now on, we verify if it's time to check for updates every 5 minutes
+        m_timer->setInterval(60000 * 5);
+    }
+    if(m_manager->generalValue("Date/hour").toTime().hour() < QTime::currentTime().hour())
+        syncDatabases();
 }
 
 void NotifierCondres::updateIcon()

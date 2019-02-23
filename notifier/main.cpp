@@ -74,8 +74,9 @@ int main(int argc, char *argv[])
         m_not.syncDatabases();
         m_not.hide();
     }
-    else
+    else{
         m_not.hide();
+    }
 
     return a.exec();
 }

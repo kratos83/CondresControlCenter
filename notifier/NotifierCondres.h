@@ -26,6 +26,7 @@
 #include <QLoggingCategory>
 #include "CchClient.h"
 #include "../src/about.h"
+#include "../src/settingsmanager.h"
 
 //Database pacman
 const QString DATABASE = "/var/lib/pacman";
@@ -50,6 +51,7 @@ public slots:
     void syncDatabases();
     void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
     void showProgressInDebug();
+    void pacmanUpdateTimer();
     
 private:
     QSystemTrayIcon *m_trayIcon;
@@ -60,6 +62,8 @@ private:
     About *m_about;
     int m_numberPackages;
     QProcess *processUpdate;
+    QTimer *m_timer;
+    SettingsManager *m_manager;
 };
 
 #endif // NOTIFIERCONDRES_H

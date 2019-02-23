@@ -255,7 +255,6 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         ui->console->append(processUpgrade->errorString());
     }
     else if(exitCode == 0){
-        emit finishUpdate(true);
         ui->console->append("<font color=\"white\">Update complete</font>");
         ui->up_progress->setText("<font color=\"white\">Update complete</font>");
         lista();
@@ -263,6 +262,7 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         QProcess proc;
         proc.startDetached("/usr/bin/NotifierControlCenter -u");
         proc.close();
+        emit finishUpdate(true);
     }
 
 }

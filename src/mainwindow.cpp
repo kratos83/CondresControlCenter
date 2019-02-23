@@ -93,7 +93,12 @@ void MainWindow::on_butt_update_clicked()
 
 void MainWindow::resButton(bool vero)
 {
-    butt_back->setVisible(vero);
+    if(vero)
+    {
+        QProcess proc;
+        proc.startDetached("/usr/bin/NotifierControlCenter -u");
+        proc.close();
+    }
 }
 
 void MainWindow::on_butt_install_clicked()

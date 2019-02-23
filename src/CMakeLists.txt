@@ -34,6 +34,7 @@ set(CondresControlCenter_moc_hdrs
 	InstallPackages.h
 	logfile.h
 	mainwindow.h
+	settingsmanager.h
 	tab_style.h
 	tablewidgetheader.h
 	upgrade.h
@@ -76,6 +77,7 @@ set(CondresControlCenter_srcs
 	logfile.cpp
 	main.cpp
 	mainwindow.cpp
+	settingsmanager.cpp
 	tab_style.cpp
 	tablewidgetheader.cpp
 	upgrade.cpp
