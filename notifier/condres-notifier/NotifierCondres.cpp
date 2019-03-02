@@ -24,7 +24,6 @@ Q_LOGGING_CATEGORY(CondresNotifier, "ControlCenter")
 NotifierCondres::NotifierCondres(QWidget *parent) : 
     QMainWindow(parent),
     m_numberPackages(0),
-    processUpdate(new QProcess),
     m_manager(new SettingsManager)
 {
   m_pacmanDatabase =
@@ -130,7 +129,7 @@ void NotifierCondres::pacmanReadFile()
     {
         updateIcon();
 
-        m_readFile->setInterval(60000);
+        m_readFile->setInterval(20000);
     }
     if(m_manager->generalValue("Update/upgrade").toString() == "update" ||
        m_manager->generalValue("Update/upgrade").toString() == "complete")
@@ -163,14 +162,12 @@ void NotifierCondres::viewUpdate()
 void NotifierCondres::syncDatabases()
 {
     m_numberPackages = 0;
-    QProcess proc;
-    proc.startDetached("gksu \"/usr/bin/pacman -Sy\"");
+    processUpdate = new QProcess(this);
     processUpdate->setReadChannel(QProcess::StandardOutput);
     processUpdate->setProcessChannelMode(QProcess::MergedChannels);
     connect(processUpdate,&QProcess::readyReadStandardOutput,this,&NotifierCondres::showProgressInDebug);
     connect(processUpdate,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&NotifierCondres::updatePackagesProcess);
     processUpdate->start("pacman -Sup --print-format \"%n\"");
-    proc.close();
 }
 
 void NotifierCondres::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
@@ -190,7 +187,7 @@ void NotifierCondres::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
 
 void NotifierCondres::showProgressInDebug()
 {
-    QString m_list = processUpdate->readAll();
+    QString m_list = processUpdate->readAllStandardOutput();
     QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
 
     //process package list

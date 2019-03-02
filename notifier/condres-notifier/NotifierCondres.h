@@ -24,9 +24,9 @@
 #include <QSystemTrayIcon>
 #include <QFileSystemWatcher>
 #include <QLoggingCategory>
-#include "CchClient.h"
-#include "../src/about.h"
-#include "../src/settingsmanager.h"
+#include "../pacmanhelper/CchClient.h"
+#include "../../src/about.h"
+#include "../../src/settingsmanager.h"
 
 //Database pacman
 const QString DATABASE = "/var/lib/pacman";

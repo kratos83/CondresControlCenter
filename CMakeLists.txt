@@ -73,7 +73,8 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCONDRESCONTROLCENTER_DEBUG
 
 # make sub-directories
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(notifier)
+ADD_SUBDIRECTORY(notifier/pacmanhelper)
+ADD_SUBDIRECTORY(notifier/condres-notifier)
 
 #
 # add distclean-target

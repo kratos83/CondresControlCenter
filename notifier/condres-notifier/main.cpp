@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
   
-    SettingsManager *manager = new SettingsManager;
     if(!parseArguments(a.arguments()))
     {
         return -1;
