@@ -52,6 +52,7 @@ public slots:
     void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
     void showProgressInDebug();
     void pacmanUpdateTimer();
+    void pacmanReadFile();
     
 private:
     QSystemTrayIcon *m_trayIcon;
@@ -62,7 +63,7 @@ private:
     About *m_about;
     int m_numberPackages;
     QProcess *processUpdate;
-    QTimer *m_timer;
+    QTimer *m_timer, *m_readFile;
     SettingsManager *m_manager;
 };
 

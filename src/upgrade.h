@@ -7,6 +7,7 @@
 #include <QtNetwork>
 #include "tablewidgetheader.h"
 #include <QLoggingCategory>
+#include "settingsmanager.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterUpgrade)
 
@@ -51,6 +52,7 @@ private:
     bool m_updateDB;
     QString m_peso, m_database;
     TableWidgetHeader *m_table;
+    SettingsManager *manager;
 signals:
     void finishUpdate(bool);
 };

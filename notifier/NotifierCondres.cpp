@@ -82,9 +82,13 @@ void NotifierCondres::createTrayIcon()
     m_timer->setInterval(1000);
     m_timer->start();
     
+    m_readFile = new QTimer();
+    m_readFile->setInterval(1000);
+    m_readFile->start();
     //Settings manager data 
     m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
     connect(m_timer,&QTimer::timeout,this,&NotifierCondres::pacmanUpdateTimer);
+    connect(m_readFile,&QTimer::timeout,this,&NotifierCondres::pacmanReadFile);
     m_trayIcon->show();
 }
 
@@ -109,14 +113,31 @@ void NotifierCondres::pacmanUpdateTimer()
 void NotifierCondres::updateIcon()
 {
     qCDebug(CondresNotifier) << m_numberPackages;
-    if(m_numberPackages > 0){
+    if(m_numberPackages > 0 && m_manager->generalValue("Update/upgrade").toString() == "update"){
         m_trayIcon->setIcon(QIcon(":/images/db_red.png"));
         m_trayIcon->setToolTip("Are avaible "+QString::number(m_numberPackages)+" updates...");
     }
-    else if(m_numberPackages == 0){
+    else if(m_numberPackages == 0 && m_manager->generalValue("Update/upgrade").toString() == "complete"){
         m_trayIcon->setIcon(QIcon(":/images/db_green.png"));
         m_trayIcon->setToolTip("System update complete.");
     }
+}
+
+void NotifierCondres::pacmanReadFile()
+{
+    static bool firstTimePacman = true;
+    if(firstTimePacman)
+    {
+        updateIcon();
+
+        m_readFile->setInterval(60000);
+    }
+    if(m_manager->generalValue("Update/upgrade").toString() == "update" ||
+       m_manager->generalValue("Update/upgrade").toString() == "complete")
+        syncDatabases();
+    
+    m_readFile->stop();
+    m_readFile->start();
 }
 
 void NotifierCondres::viewInfo()
@@ -159,6 +180,10 @@ void NotifierCondres::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         qCDebug(CondresNotifier) << processUpdate->errorString();
     }
     else if(exitCode == 0){
+        if(m_numberPackages == 0)
+            m_manager->setGeneralValue("Update/upgrade","complete");
+        else
+            m_manager->setGeneralValue("Update/upgrade","update");
         processUpdate->close();
     }
 }

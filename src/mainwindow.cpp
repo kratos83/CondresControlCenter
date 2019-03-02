@@ -6,7 +6,8 @@ Q_LOGGING_CATEGORY(ControlCenterMain,"ControlCenter")
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    manager(new SettingsManager)
 {
     ui->setupUi(this);
     butt_back = new QPushButton(QIcon(":/images/back.png"),tr("Back"),this);
@@ -95,9 +96,7 @@ void MainWindow::resButton(bool vero)
 {
     if(vero)
     {
-        QProcess proc;
-        proc.startDetached("/usr/bin/NotifierControlCenter -u");
-        proc.close();
+        manager->setGeneralValue("Update/Upgrade","complete");
     }
 }
 

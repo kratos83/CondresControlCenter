@@ -17,6 +17,7 @@
 #include "Apply.h"
 #include "InstallPackages.h"
 #include "esci.h"
+#include "settingsmanager.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterMain)
 
@@ -58,6 +59,7 @@ private:
     Apply *m_apply;
     InstallPackages *m_packages;
     esci *m_esci;
+    SettingsManager *manager;
 
 protected:
     void closeEvent(QCloseEvent *event);

@@ -11,7 +11,8 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     processUpgrade(new QProcess),
     remove_db(new QProcess),
     m_updateDB(false),
-    m_database(database)
+    m_database(database),
+    manager(new SettingsManager)
 {
     ui->setupUi(this);
     setWindowTitle("Update system");
@@ -129,6 +130,7 @@ void Upgrade::getListUpdate()
         ui->up_progress->setText("Update view list");
         if(processUpdate.waitForReadyRead(-1))
         {
+            manager->setGeneralValue("Update/upgrade","update");
             ui->stackedWidget->setCurrentIndex(1);
             ui->download->setVisible(true);
             ui->up_progress->setVisible(true);
@@ -172,7 +174,6 @@ void Upgrade::getListUpdate()
                 }
                 ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
                 ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-                //ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
                 ui->download->clear();
                 ui->download->setText("<center><font size=\"4\"><b>Total size download: "+getPeso(QString::number(peso))+"</b></font></center>");
             }
@@ -180,6 +181,7 @@ void Upgrade::getListUpdate()
                 ui->stackedWidget->setCurrentIndex(3);
                 ui->applica->setVisible(false);
                 ui->dettagli->setVisible(false);
+                manager->setGeneralValue("Update/upgrade","complete");
                 emit finishUpdate(true);
             }
         }
@@ -259,9 +261,6 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
         ui->up_progress->setText("<font color=\"white\">Update complete</font>");
         lista();
         getListUpdate();
-        QProcess proc;
-        proc.startDetached("/usr/bin/NotifierControlCenter -u");
-        proc.close();
         emit finishUpdate(true);
     }
 

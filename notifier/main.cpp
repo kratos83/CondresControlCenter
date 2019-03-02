@@ -21,8 +21,10 @@
 #include <QApplication>
 #include <QtGui>
 #include <QDebug>
-
+#include <QProcess>
 #include <QLoggingCategory>
+
+#include "../src/settingsmanager.h"
 
 Q_DECLARE_LOGGING_CATEGORY(NotifierControlCenterMain)
 Q_LOGGING_CATEGORY(NotifierControlCenterMain, "ControlCenter")
@@ -59,6 +61,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
   
+    SettingsManager *manager = new SettingsManager;
     if(!parseArguments(a.arguments()))
     {
         return -1;
