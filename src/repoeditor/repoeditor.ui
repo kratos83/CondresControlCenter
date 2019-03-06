@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>400</height>
+    <height>410</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Repository Editor - Octopi</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/resources/images/binary.png</normaloff>:/resources/images/binary.png</iconset>
   </property>
   <property name="modal">
@@ -76,8 +76,7 @@
           </property>
           <property name="icon">
            <iconset theme="edit-rename">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -91,8 +90,7 @@
           </property>
           <property name="icon">
            <iconset theme="list-add">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -106,8 +104,7 @@
           </property>
           <property name="icon">
            <iconset theme="list-remove">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -134,8 +131,7 @@
           </property>
           <property name="icon">
            <iconset theme="go-up">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -149,8 +145,7 @@
           </property>
           <property name="icon">
            <iconset theme="go-down">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -197,8 +192,7 @@
           </property>
           <property name="icon">
            <iconset theme="document-open">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -224,7 +218,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Discard|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>

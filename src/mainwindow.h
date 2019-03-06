@@ -18,6 +18,8 @@
 #include "InstallPackages.h"
 #include "esci.h"
 #include "settingsmanager.h"
+#include "keyboard/KeyboardPage.h"
+#include "mhwd/MhwdPage.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterMain)
 
@@ -46,7 +48,8 @@ public slots:
     void on_actionExit_triggered();
     void on_actionInformation_triggered();
     void on_actionUpdate_database_triggered();
-
+    void openKeyboard();
+    void openHardware();
 private:
     Ui::MainWindow *ui;
     QProcess *process, *process_locate_paccache;
@@ -60,6 +63,8 @@ private:
     InstallPackages *m_packages;
     esci *m_esci;
     SettingsManager *manager;
+    KeyboardPage *page;
+    MhwdPage *m_pageHardware;
 
 protected:
     void closeEvent(QCloseEvent *event);

@@ -56,7 +56,6 @@ public slots:
     void updateMovers( const QItemSelection &, const QItemSelection & );
 
     void apply();
-    void discard();
 
     void removeEntry();
     void addEntry();

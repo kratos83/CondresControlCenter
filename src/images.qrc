@@ -18,5 +18,8 @@
         <file>images/minimize.png</file>
         <file>images/db_green.png</file>
         <file>images/db_red.png</file>
+        <file>images/laptop.png</file>
+        <file>images/keyboard.png</file>
+        <file>images/document-save.png</file>
     </qresource>
 </RCC>

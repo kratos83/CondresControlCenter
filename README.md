@@ -1,10 +1,11 @@
-CondresControlCenter 0.1.3
+CondresControlCenter 0.2.0 BETA 1
 =========
 
 CondresControlCenter is a beatiful system software management.
 
 Condres Control Center handles install packages, software update, 
-editor repository, cleaner the cache and view log of installation.
+editor repository, cleaner the cache,view log of installation,
+keyboard configuration and hardware configuration.
 
 CondresControlCenter now support notifier.
 
@@ -14,7 +15,8 @@ Qt5
 libalpm
 libalpm_octopi_utils
 glib2
-gksu
+hd
+kf5 component CoreAddons Auth ConfigWidgets ItemModels Notifications KCMUtils
 
 For installation follow the guide:
 
@@ -38,3 +40,6 @@ Testing Calogero Scarnà <calogero.scarna@codelinsoft.it>
 ![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenter.png)
 
 ------------------------------------------------------------------------
+![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenterhw.png)
+
+________________________________________________________________________

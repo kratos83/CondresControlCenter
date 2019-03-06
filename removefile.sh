@@ -28,3 +28,9 @@ echo "Remove file install_cmake"
 find . -type f -name 'cmake_install.cmake' -delete
 echo "Remove file install_manifest"
 find . -type f -name 'install_manifest.txt' -delete
+echo "Remove file CTestTestfile.cmake"
+find . -type f -name 'CTestTestfile.cmake' -delete
+echo "Remove file ecm_uninstall.cmake"
+find . -type f -name 'ecm_uninstall.cmake' -delete
+echo "Remove file prefix.sh"
+find . -type f -name 'prefix.sh' -delete

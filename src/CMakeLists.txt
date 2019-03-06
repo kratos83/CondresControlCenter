@@ -38,6 +38,19 @@ set(CondresControlCenter_moc_hdrs
 	tab_style.h
 	tablewidgetheader.h
 	upgrade.h
+	PageWidget.h
+	keyboard/KeyboardCommon.h
+	keyboard/KeyboardItem.h
+	keyboard/KeyboardModel.h
+	keyboard/KeyboardPreview.h
+	keyboard/KeyboardPage.h
+	keyboard/SetKeyboardLayoutJob.h
+	mhwd/libmhwd/vita/string.hpp
+	mhwd/libmhwd/const.h
+	mhwd/libmhwd/mhwd.h
+	mhwd/libmhwd/mhwd_p.h
+	mhwd/MhwdCommon.h
+	mhwd/MhwdPage.h
 )
 
 
@@ -55,6 +68,8 @@ set(CondresControlCenter_uis
 	gui/upgrade.ui
 	repoeditor/addrepo.ui
 	repoeditor/repoeditor.ui
+	keyboard/ui/PageKeyboard.ui
+	mhwd/ui/PageMhwd.ui
 )
 
 qt5_wrap_ui(CondresControlCenter_ui_hdrs ${CondresControlCenter_uis})
@@ -81,17 +96,27 @@ set(CondresControlCenter_srcs
 	tab_style.cpp
 	tablewidgetheader.cpp
 	upgrade.cpp
+	PageWidget.cpp
+	keyboard/KeyboardCommon.cpp
+	keyboard/KeyboardItem.cpp
+	keyboard/KeyboardModel.cpp
+	keyboard/KeyboardPreview.cpp
+	keyboard/KeyboardPage.cpp
+	keyboard/SetKeyboardLayoutJob.cpp
+	mhwd/libmhwd/vita/string.cpp
+	mhwd/libmhwd/mhwd.cpp
+	mhwd/MhwdCommon.cpp
+	mhwd/MhwdPage.cpp
 )
 
-qt5_add_resources(RESOURCE_FILES images.qrc) 
+qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc) 
 
-
-
-ADD_EXECUTABLE(CondresControlCenter ${CondresControlCenter_srcs} ${CondresControlCenter_mocs} ${CondresControlCenter_ui_hdrs} ${RESOURCE_FILES} ${WINRC} ${SOURCE_FILES})
+ADD_EXECUTABLE(CondresControlCenter ${CondresControlCenter_srcs} ${CondresControlCenter_mocs} ${CondresControlCenter_ui_hdrs} ${RESOURCE_FILES})
 
 target_link_libraries( CondresControlCenter
-  Qt5::Widgets Qt5::Network Qt5::Gui
+  Qt5::Widgets Qt5::Network Qt5::Gui Qt5::DBus
   Qt5::Core ${ALPM_LIBRARIES} ${ALPMOCTOPI_LIBRARIES} ${GLIB_LIBRARIES}
+  KF5::ItemModels KF5::ConfigWidgets KF5::CoreAddons hd
 )
 
 INSTALL( TARGETS CondresControlCenter RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
@@ -109,3 +134,4 @@ INSTALL( FILES "bash/CondresControlCenterUpdateBin" DESTINATION ${CMAKE_INSTALL_
     WORLD_READ WORLD_EXECUTE)
 INSTALL( FILES "images/preferences-system.png" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 INSTALL( FILES "desktop/CondresControlCenter.desktop" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications )
+INSTALL( FILES "keyboard/kbd-model-map" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/systemd)

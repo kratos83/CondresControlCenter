@@ -187,7 +187,7 @@ void NotifierCondres::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
 
 void NotifierCondres::showProgressInDebug()
 {
-    QString m_list = processUpdate->readAllStandardOutput();
+    QString m_list = processUpdate->readAll();
     QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
 
     //process package list

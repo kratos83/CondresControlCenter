@@ -1,14 +1,16 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.7)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 PROJECT(CondresControlCenter)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+find_package(ECM 1.4.0 REQUIRED NO_MODULE)
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-IF(COMMAND CMAKE_POLICY)
-	CMAKE_POLICY(SET CMP0005 NEW)
-	CMAKE_POLICY(SET CMP0003 NEW)
-ENDIF(COMMAND CMAKE_POLICY)
 
+include(ECMInstallIcons)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 INCLUDE(AddFileDependencies)
 INCLUDE(CheckCSourceCompiles)
 INCLUDE(CheckIncludeFiles)
@@ -17,7 +19,7 @@ INCLUDE(FindPkgConfig)
 
 SET(VERSION_MAJOR "0")
 SET(VERSION_MINOR "1")
-SET(VERSION_PATCH "0")
+SET(VERSION_PATCH "4")
 
 #SET(VERSION_SUFFIX "")
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
@@ -26,15 +28,31 @@ IF(VERSION_SUFFIX)
 ENDIF(VERSION_SUFFIX)
 
 INCLUDE(DetectMachine)
-
+include(ECMInstallIcons)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 
 LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
-
+#set(KF5_MIN_VERSION "5.31")
 
 set(QT5 TRUE)
 
 message(STATUS "Checking for Qt5...")
 find_package(Qt5 REQUIRED Widgets Gui Core Network DBus)
+
+message(STATUS "Checking for KF5...")
+find_package(KF5 REQUIRED COMPONENTS
+    CoreAddons
+    Auth
+    ConfigWidgets
+    ItemModels
+    Notifications
+    KCMUtils)
+    
+message(STATUS "Checking for ICU...")
+find_package(ICU REQUIRED)
 
 message(STATUS "Checking for GLIB...")
 find_package(Glib REQUIRED)
@@ -104,6 +122,6 @@ MESSAGE(
 "-----------------------------------------------------------------\n"
 "\n\n")
 
-add_custom_target(uninstall
-    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
-)
+# add_custom_target(uninstall
+#     "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
+# )

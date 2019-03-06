@@ -1,0 +1,17 @@
+[Domain]
+Name=manjaro-settings-manager
+Name[x-test]=xxmanjaro-settings-managerxx
+Icon=kauth-example
+URL=https://github.com/manjaro/manjaro-settings-manager
+
+[org.manjaro.msm.mhwd.install]
+Name=Install MHWD Configuration
+Description=Install MHWD Configuration
+Policy=auth_admin
+Persistence=session
+
+[org.manjaro.msm.mhwd.remove]
+Name=Remove MHWD Configuration
+Description=Remove MHWD Configuration
+Policy=auth_admin
+Persistence=session

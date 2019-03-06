@@ -12,8 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     butt_back = new QPushButton(QIcon(":/images/back.png"),tr("Back"),this);
     connect(butt_back,SIGNAL(clicked(bool)),this,SLOT(ritorna_indietro()));
+    connect(ui->pushKey,&QPushButton::clicked,this,&MainWindow::openKeyboard);
+    connect(ui->hard_conf,&QPushButton::clicked,this,&MainWindow::openHardware);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
-    setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(ALPHA));
+    setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(BETA)+" 1");
     ui->stackedWidget->setCurrentIndex(0);
     visButtonStatusBar();
 }
@@ -104,16 +106,16 @@ void MainWindow::on_butt_install_clicked()
 {
     showMaximized();
     m_packages = new InstallPackages(this);
-    ui->stackedWidget->insertWidget(2,m_packages);
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->insertWidget(1,m_packages);
+    ui->stackedWidget->setCurrentIndex(1);
     butt_back->setVisible(true);
 }
 
 void MainWindow::on_butt_log_clicked()
 {
     m_log = new LogFile("/var/log/pacman.log",this);
-    ui->stackedWidget->insertWidget(3,m_log);
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->insertWidget(1,m_log);
+    ui->stackedWidget->setCurrentIndex(1);
     butt_back->setVisible(true);
 }
 
@@ -121,8 +123,8 @@ void MainWindow::on_butt_clean_clicked()
 {
     if(!getPacCache().isEmpty()){
         m_cache = new CacheCleaner(this);
-        ui->stackedWidget->insertWidget(4,m_cache);
-        ui->stackedWidget->setCurrentIndex(4);
+        ui->stackedWidget->insertWidget(1,m_cache);
+        ui->stackedWidget->setCurrentIndex(1);
         butt_back->setVisible(true);
     }
     else{
@@ -148,6 +150,24 @@ void MainWindow::on_actionUpdate_database_triggered()
 {
     m_upgrade = new Upgrade("update",this);
     m_upgrade->upgradeDB();
+}
+
+void MainWindow::openKeyboard()
+{
+    page = new KeyboardPage(this);
+    page->load();
+    ui->stackedWidget->insertWidget(1,page);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
+}
+
+void MainWindow::openHardware()
+{
+    m_pageHardware = new MhwdPage(this);
+    m_pageHardware->load();
+    ui->stackedWidget->insertWidget(1,m_pageHardware);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event){

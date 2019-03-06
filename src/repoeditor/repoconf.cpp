@@ -1,6 +1,8 @@
 /*
 Copyright 2011 Simone Tobia
 
+Change file 
+Copyright 2019 Angelo Scarna' <angelo.scarna@codelinsoft.it>
 This file is part of AppSet.
 
 AppSet is free software; you can redistribute it and/or modify
@@ -174,7 +176,7 @@ void RepoConf::reload()
  */
 bool RepoConf::saveChanges( const QString & backup )
 {
-  QTemporaryFile tempFile;
+  QFile tempFile(QDir::tempPath()+"/pacmanTemp");
   QProcess *unixC = new QProcess(this);
   QString command;
 
@@ -186,15 +188,15 @@ bool RepoConf::saveChanges( const QString & backup )
 
     //First we test if backup file already exists. If so, we remove it!
     if( QFile::exists( backup ) && mbexists.exec() == QMessageBox::Yes ) {
-      command = "rm " + backup;
+        command = "bash -c \"rm " + backup;
     }
 
     //Then we create a backup, with the user defined name
     if (!command.isEmpty()) command += "; ";
-    command += "cp /etc/pacman.conf " + backup;
+        command += "cp -rv /etc/pacman.conf " + backup;
   }
 
-  if (!tempFile.open())
+  if (!tempFile.open(QIODevice::ReadWrite))
     return false;
 
   tempFile.write( toString().toLatin1() );
@@ -202,9 +204,9 @@ bool RepoConf::saveChanges( const QString & backup )
 
   //Last, we copy the tempfile to the repoconf path
   if (!command.isEmpty()) command += "; ";
-  command += "cp " + tempFile.fileName() + " /etc/pacman.conf; chown root /etc/pacman.conf; chgrp root /etc/pacman.conf; chmod 644 /etc/pacman.conf";
+        command += "cp -rv " + tempFile.fileName() + " /etc/pacman.conf; chown root /etc/pacman.conf; chgrp root /etc/pacman.conf; chmod 644 /etc/pacman.conf\"";
 
-  unixC->start(command);
+  unixC->startDetached(command);
 
   reload();
   return true;

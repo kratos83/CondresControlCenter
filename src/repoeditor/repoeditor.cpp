@@ -61,9 +61,6 @@ RepoEditor::RepoEditor( QWidget *parent )
     connect( ui->buttonBox->button( QDialogButtonBox::Save ), SIGNAL( clicked() ),
                                                               SLOT( apply() ) );
 
-    connect( ui->buttonBox->button( QDialogButtonBox::Discard ), SIGNAL( clicked() ),
-                                                                 SLOT( discard() ) );
-
     connect( ui->remove, SIGNAL( clicked() ),
                          SLOT( removeEntry() ) );
 
@@ -157,17 +154,13 @@ void RepoEditor::apply()
                                   tr( "Success" ),
                                   tr( "Repositories configuration successfully saved." ),
                                   QMessageBox::Ok );
+        repoConf->reload();
     } else {
         QMessageBox::critical( this,
                                tr( "Error" ),
                                tr( "Repositories configuration not saved." ),
                                QMessageBox::Ok );
     }
-}
-
-void RepoEditor::discard()
-{
-    done( QDialog::Rejected );
 }
 
 void RepoEditor::updateMovers( const QItemSelection &cur, const QItemSelection &)

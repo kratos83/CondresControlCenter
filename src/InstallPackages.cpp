@@ -1,6 +1,7 @@
 #include "InstallPackages.h"
 #include "ui_InstallPackages.h"
 #include "backend/backend.h"
+#include "constant.h"
 
 #include <alpm.h>
 #include <alpm_list.h>
@@ -295,6 +296,15 @@ void InstallPackages::TableClicked(const QModelIndex &index)
                        "<p align=justify>Repository: <b>"+repo+"</b></p></br>"
                        "<p align=justify>Size: <b>"+m_size+"</b></p></br>";
         ui->info->setHtml(html);
+        
+        ui->listFile->clear();
+        QString results = getProcess("/usr/bin/pacman -Ql",name);
+        QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
+        for(int i = 0; i < resultsVector.length(); ++i){
+                QString line = resultsVector.at(i);
+                ui->listFile->append(line);
+        }
+        //qCDebug(InstallPackagesDebug) << getProcess("/usr/bin/pacman -Ql",name);
     }
 }
 
