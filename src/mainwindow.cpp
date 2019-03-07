@@ -39,22 +39,6 @@ QString MainWindow::titolo()
     return os_type;
 }
 
-QString MainWindow::getPacCache()
-{
-    QString os_type = "";
-    QString com_lsb = "/usr/bin/paccache";
-    process_locate_paccache = new QProcess;
-    process_locate_paccache->setReadChannel(QProcess::StandardOutput);
-    process_locate_paccache->setProcessChannelMode(QProcess::MergedChannels);
-    process_locate_paccache->start(com_lsb);
-    process_locate_paccache->closeWriteChannel();
-    if(process_locate_paccache->state()!=QProcess::NotRunning){
-        process_locate_paccache->waitForReadyRead();
-        QByteArray result = process_locate_paccache->readAll();
-        os_type += result;
-    }
-    return os_type;
-}
 
 void MainWindow::visButtonStatusBar()
 {
@@ -163,11 +147,17 @@ void MainWindow::openKeyboard()
 
 void MainWindow::openHardware()
 {
-    m_pageHardware = new MhwdPage(this);
-    m_pageHardware->load();
-    ui->stackedWidget->insertWidget(1,m_pageHardware);
-    ui->stackedWidget->setCurrentIndex(1);
-    butt_back->setVisible(true);
+    if(!getMHwd().isEmpty()){
+        m_pageHardware = new MhwdPage(this);
+        m_pageHardware->load();
+        ui->stackedWidget->insertWidget(1,m_pageHardware);
+        ui->stackedWidget->setCurrentIndex(1);
+        butt_back->setVisible(true);
+    }
+    else{
+        m_apply = new Apply(QStringList() << "mhwd" << "mhwd-db","install",this);
+        m_apply->exec();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event){

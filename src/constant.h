@@ -9,6 +9,40 @@
 #define RELEASE_CANDIDATE "RC RELEASE"
 #define STABLE "STABLE RELEASE"
 
+static QString getPacCache()
+{
+    QString os_type = "";
+    QString com_lsb = "/usr/bin/paccache";
+    QProcess process_locate_paccache;
+    process_locate_paccache.setReadChannel(QProcess::StandardOutput);
+    process_locate_paccache.setProcessChannelMode(QProcess::MergedChannels);
+    process_locate_paccache.start(com_lsb);
+    process_locate_paccache.closeWriteChannel();
+    if(process_locate_paccache.state()!=QProcess::NotRunning){
+        process_locate_paccache.waitForReadyRead();
+        QByteArray result = process_locate_paccache.readAll();
+        os_type += result;
+    }
+    return os_type;
+}
+
+static QString getMHwd()
+{
+    QString os_type = "";
+    QString com_lsb = "/usr/bin/mhwd";
+    QProcess process_locate_paccache;
+    process_locate_paccache.setReadChannel(QProcess::StandardOutput);
+    process_locate_paccache.setProcessChannelMode(QProcess::MergedChannels);
+    process_locate_paccache.start(com_lsb);
+    process_locate_paccache.closeWriteChannel();
+    if(process_locate_paccache.state()!=QProcess::NotRunning){
+        process_locate_paccache.waitForReadyRead();
+        QByteArray result = process_locate_paccache.readAll();
+        os_type += result;
+    }
+    return os_type;
+}
+
 static QString getProcess(QString m_proc, QString name)
 {
     QProcess proc;

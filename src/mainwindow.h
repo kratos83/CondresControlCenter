@@ -36,7 +36,6 @@ public:
     ~MainWindow();
 public slots:
     QString titolo();
-    QString getPacCache();
     void visButtonStatusBar();
     void on_butt_repo_clicked();
     void ritorna_indietro();
