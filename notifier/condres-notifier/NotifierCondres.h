@@ -24,12 +24,14 @@
 #include <QSystemTrayIcon>
 #include <QFileSystemWatcher>
 #include <QLoggingCategory>
-#include "../pacmanhelper/CchClient.h"
+#include "../pacmanhelper/pacmanhelperclient.h"
 #include "../../src/about.h"
 #include "../../src/settingsmanager.h"
+#include "../../src/backend/backend.h"
 
 //Database pacman
 const QString DATABASE = "/var/lib/pacman";
+const QString DBUS_PACMANHELPER_SERVICE = "/usr/share/dbus-1/system-services/org.condrescontrolcenter.pacmanhelper.service";
 
 Q_DECLARE_LOGGING_CATEGORY(CondresNotifier)
 
@@ -48,21 +50,19 @@ public slots:
     void viewInfo();
     void viewUpdate();
     void viewInstallPackages();
+    void openControlCenter();
     void syncDatabases();
-    void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
-    void showProgressInDebug();
     void pacmanUpdateTimer();
-    void pacmanReadFile();
+    void sendDatabase();
     
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_Menu;
     QFileSystemWatcher *m_pacmanDatabase;
-    QAction *m_info, *m_upgrade, *m_install, *m_close, *m_sync;
-    CchClient *m_client;
+    QAction *m_info, *m_upgrade, *m_install, *m_close, *m_sync, *m_controlCenter;
+    PacmanHelperClient *m_client;
     About *m_about;
     int m_numberPackages;
-    QProcess *processUpdate;
     QTimer *m_timer, *m_readFile;
     SettingsManager *m_manager;
 };

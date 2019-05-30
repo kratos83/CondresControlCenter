@@ -39,6 +39,8 @@ set(CondresControlCenter_moc_hdrs
 	tablewidgetheader.h
 	upgrade.h
 	PageWidget.h
+	Samba.h
+	nfsshare.h
 	keyboard/KeyboardCommon.h
 	keyboard/KeyboardItem.h
 	keyboard/KeyboardModel.h
@@ -51,6 +53,17 @@ set(CondresControlCenter_moc_hdrs
 	mhwd/libmhwd/mhwd_p.h
 	mhwd/MhwdCommon.h
 	mhwd/MhwdPage.h
+	users/AccountTypeDialog.h
+	users/AddUserDialog.h
+	users/ChangePasswordDialog.h
+	users/FlatButton.h
+	users/PreviewFileDialog.h
+	users/UsersCommon.h
+	users/UsersPage.h
+	ListWidget.h
+	CheckBox.h
+	RadioButton.h
+	itdelegato.h
 )
 
 
@@ -65,11 +78,21 @@ set(CondresControlCenter_uis
 	gui/InstallPackages.ui
 	gui/logfile.ui
 	gui/mainwindow.ui
+	gui/nfsshare.ui
+	gui/NfsConfig.ui
+	gui/Samba.ui
+	gui/samba_conf_dir.ui
+	gui/SambaPrinter.ui
+	gui/sambauser.ui
 	gui/upgrade.ui
 	repoeditor/addrepo.ui
 	repoeditor/repoeditor.ui
 	keyboard/ui/PageKeyboard.ui
 	mhwd/ui/PageMhwd.ui
+	users/ui/AccountTypeDialog.ui
+	users/ui/AddUserDialog.ui
+	users/ui/ChangePasswordDialog.ui
+	users/ui/PageUsers.ui
 )
 
 qt5_wrap_ui(CondresControlCenter_ui_hdrs ${CondresControlCenter_uis})
@@ -97,6 +120,8 @@ set(CondresControlCenter_srcs
 	tablewidgetheader.cpp
 	upgrade.cpp
 	PageWidget.cpp
+	Samba.cpp
+	nfsshare.cpp
 	keyboard/KeyboardCommon.cpp
 	keyboard/KeyboardItem.cpp
 	keyboard/KeyboardModel.cpp
@@ -107,14 +132,25 @@ set(CondresControlCenter_srcs
 	mhwd/libmhwd/mhwd.cpp
 	mhwd/MhwdCommon.cpp
 	mhwd/MhwdPage.cpp
+	users/AccountTypeDialog.cpp
+	users/AddUserDialog.cpp 
+	users/ChangePasswordDialog.cpp
+	users/FlatButton.cpp
+	users/PreviewFileDialog.cpp
+	users/UsersCommon.cpp
+	users/UsersPage.cpp
+	ListWidget.cpp
+	CheckBox.cpp
+	RadioButton.cpp
+	itdelegato.cpp
 )
 
-qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc) 
+qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc users/users.qrc) 
 
 ADD_EXECUTABLE(CondresControlCenter ${CondresControlCenter_srcs} ${CondresControlCenter_mocs} ${CondresControlCenter_ui_hdrs} ${RESOURCE_FILES})
 
 target_link_libraries( CondresControlCenter
-  Qt5::Widgets Qt5::Network Qt5::Gui Qt5::DBus
+  Qt5::Widgets Qt5::Network Qt5::Gui Qt5::DBus Qt5::Sql Qt5::PrintSupport
   Qt5::Core ${ALPM_LIBRARIES} ${ALPMOCTOPI_LIBRARIES} ${GLIB_LIBRARIES}
   KF5::ItemModels KF5::ConfigWidgets KF5::CoreAddons hd
 )
@@ -135,3 +171,4 @@ INSTALL( FILES "bash/CondresControlCenterUpdateBin" DESTINATION ${CMAKE_INSTALL_
 INSTALL( FILES "images/preferences-system.png" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 INSTALL( FILES "desktop/CondresControlCenter.desktop" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications )
 INSTALL( FILES "keyboard/kbd-model-map" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/systemd)
+INSTALL( FILES "database/condrescontrolcenter.db" DESTINATION /usr/lib/condrescontrolcenter)

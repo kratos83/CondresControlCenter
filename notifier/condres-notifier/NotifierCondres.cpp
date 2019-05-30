@@ -41,6 +41,10 @@ void NotifierCondres::createAction()
     m_close->setIconVisibleInMenu(true);
     connect(m_close,&QAction::triggered,qApp,&QApplication::quit);
     
+    m_controlCenter = new QAction(QIcon(":/images/preferences-system.png"),tr("CondresControlCenter"),this);
+    m_controlCenter->setIconVisibleInMenu(true);
+    connect(m_controlCenter,&QAction::triggered,this,&NotifierCondres::openControlCenter);
+    
     m_info = new QAction(QIcon(":/images/svn_status.png"),"Info",this);
     m_info->setIconVisibleInMenu(true);
     connect(m_info,&QAction::triggered,this,&NotifierCondres::viewInfo);
@@ -55,7 +59,7 @@ void NotifierCondres::createAction()
     
     m_sync = new QAction(QIcon(":/images/ark.png"),"Syncronized databases",this);
     m_sync->setIconVisibleInMenu(true);
-    connect(m_sync,&QAction::triggered,this,&NotifierCondres::syncDatabases);
+    connect(m_sync,&QAction::triggered,[this](){ sendDatabase();});
 }
 
 void NotifierCondres::createTrayIcon()
@@ -64,6 +68,8 @@ void NotifierCondres::createTrayIcon()
     m_trayIcon->setIcon(QIcon::fromTheme(":/images/db_green.png"));
     m_Menu = new QMenu(this);
     m_Menu->addAction(m_sync);
+    m_Menu->addSeparator();
+    m_Menu->addAction(m_controlCenter);
     m_Menu->addSeparator();
     m_Menu->addAction(m_upgrade);
     m_Menu->addSeparator();
@@ -74,20 +80,16 @@ void NotifierCondres::createTrayIcon()
     m_Menu->addAction(m_close);
     m_trayIcon->setContextMenu(m_Menu);
     
-    m_client = new CchClient("org.condrescontrolcenter.pacmanhelper","/",QDBusConnection::systemBus(), 0);
-    connect(m_client,&CchClient::syncdbcompleted,this,&NotifierCondres::syncDatabases);
+    m_client = new PacmanHelperClient("org.condrescontrolcenter.pacmanhelper","/",QDBusConnection::systemBus(), 0);
+    connect(m_client,&PacmanHelperClient::syncdbcompleted,this,&NotifierCondres::syncDatabases);
     
     m_timer = new QTimer();
     m_timer->setInterval(1000);
     m_timer->start();
     
-    m_readFile = new QTimer();
-    m_readFile->setInterval(1000);
-    m_readFile->start();
     //Settings manager data 
     m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
     connect(m_timer,&QTimer::timeout,this,&NotifierCondres::pacmanUpdateTimer);
-    connect(m_readFile,&QTimer::timeout,this,&NotifierCondres::pacmanReadFile);
     m_trayIcon->show();
 }
 
@@ -100,43 +102,32 @@ void NotifierCondres::pacmanUpdateTimer()
         //From now on, we verify if it's time to check for updates every 5 minutes
         m_timer->setInterval(60000 * 5);
     }
+    
     if(m_manager->generalValue("Date/hour").toTime().hour() < QTime::currentTime().hour()){
         m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
-        syncDatabases();
+        sendDatabase();
     }
     
     m_timer->stop();
     m_timer->start();
 }
 
+void NotifierCondres::sendDatabase()
+{
+    m_client->syncdb();
+    syncDatabases();
+}
+
 void NotifierCondres::updateIcon()
 {
-    qCDebug(CondresNotifier) << m_numberPackages;
-    if(m_numberPackages > 0 && m_manager->generalValue("Update/upgrade").toString() == "update"){
+    if(m_numberPackages > 0){
         m_trayIcon->setIcon(QIcon(":/images/db_red.png"));
         m_trayIcon->setToolTip("Are avaible "+QString::number(m_numberPackages)+" updates...");
     }
-    else if(m_numberPackages == 0 && m_manager->generalValue("Update/upgrade").toString() == "complete"){
+    else if(m_numberPackages == 0){
         m_trayIcon->setIcon(QIcon(":/images/db_green.png"));
         m_trayIcon->setToolTip("System update complete.");
     }
-}
-
-void NotifierCondres::pacmanReadFile()
-{
-    static bool firstTimePacman = true;
-    if(firstTimePacman)
-    {
-        updateIcon();
-
-        m_readFile->setInterval(20000);
-    }
-    if(m_manager->generalValue("Update/upgrade").toString() == "update" ||
-       m_manager->generalValue("Update/upgrade").toString() == "complete")
-        syncDatabases();
-    
-    m_readFile->stop();
-    m_readFile->start();
 }
 
 void NotifierCondres::viewInfo()
@@ -159,50 +150,19 @@ void NotifierCondres::viewUpdate()
     proc.close();
 }
 
+void NotifierCondres::openControlCenter()
+{
+    QProcess proc;
+    proc.startDetached("sh /usr/bin/CondresControlCenterBin");
+    proc.close();
+}
+
 void NotifierCondres::syncDatabases()
 {
-    m_numberPackages = 0;
-    processUpdate = new QProcess(this);
-    processUpdate->setReadChannel(QProcess::StandardOutput);
-    processUpdate->setProcessChannelMode(QProcess::MergedChannels);
-    connect(processUpdate,&QProcess::readyReadStandardOutput,this,&NotifierCondres::showProgressInDebug);
-    connect(processUpdate,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&NotifierCondres::updatePackagesProcess);
-    processUpdate->start("pacman -Sup --print-format \"%n\"");
-}
-
-void NotifierCondres::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
-{
-    if(exitCode > 1)
-    {
-        qCDebug(CondresNotifier) << processUpdate->errorString();
-    }
-    else if(exitCode == 0){
-        if(m_numberPackages == 0)
-            m_manager->setGeneralValue("Update/upgrade","complete");
-        else
-            m_manager->setGeneralValue("Update/upgrade","update");
-        processUpdate->close();
-    }
-}
-
-void NotifierCondres::showProgressInDebug()
-{
-    QString m_list = processUpdate->readAll();
-    QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
-
-    //process package list
-    for(int i = 0; i < lines.length(); i++)
-    {
-        QString line = lines.at(i);
-
-        if(line.isEmpty())
-            m_numberPackages = i;
-        else{
-            QString str;
-            str.append(line);
-            m_numberPackages = i+1;
-        }
-    }
+    m_trayIcon->setToolTip("Syncronized databases...");
+    qCDebug(CondresNotifier) << "Syncronized databases...";
+    m_numberPackages = Backend::getUpdateList().length();
+    qCDebug(CondresNotifier) << m_numberPackages;
     updateIcon();
 }
 

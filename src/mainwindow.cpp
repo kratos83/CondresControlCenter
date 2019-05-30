@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2019  angelo <angelo.scarna@codelinsoft.it>
+ * 
+ * This file is part of Condres Control Center.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "constant.h"
@@ -14,8 +33,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(butt_back,SIGNAL(clicked(bool)),this,SLOT(ritorna_indietro()));
     connect(ui->pushKey,&QPushButton::clicked,this,&MainWindow::openKeyboard);
     connect(ui->hard_conf,&QPushButton::clicked,this,&MainWindow::openHardware);
+    connect(ui->share,&QPushButton::clicked,this,&MainWindow::openSamba);
+    connect(ui->users,&QPushButton::clicked,this,&MainWindow::openUsers);
+    connect(ui->pushButtonNFS,&QPushButton::clicked,this,&MainWindow::openNfsShare);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
-    setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(BETA)+" 1");
+    setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(BETA)+" 2");
     ui->stackedWidget->setCurrentIndex(0);
     visButtonStatusBar();
 }
@@ -71,19 +93,14 @@ void MainWindow::on_butt_update_clicked()
 {
     showMaximized();
     m_upgrade = new Upgrade("",this);
-    connect(m_upgrade,&Upgrade::finishUpdate,this,&MainWindow::resButton);
-    m_upgrade->upgradeDB();
     ui->stackedWidget->insertWidget(1,m_upgrade);
     ui->stackedWidget->setCurrentIndex(1);
-    butt_back->setVisible(true);
+    resButton(true);
 }
 
 void MainWindow::resButton(bool vero)
 {
-    if(vero)
-    {
-        manager->setGeneralValue("Update/Upgrade","complete");
-    }
+    butt_back->setVisible(vero);
 }
 
 void MainWindow::on_butt_install_clicked()
@@ -130,12 +147,6 @@ void MainWindow::on_actionInformation_triggered()
     m_about->exec();
 }
 
-void MainWindow::on_actionUpdate_database_triggered()
-{
-    m_upgrade = new Upgrade("update",this);
-    m_upgrade->upgradeDB();
-}
-
 void MainWindow::openKeyboard()
 {
     page = new KeyboardPage(this);
@@ -156,6 +167,43 @@ void MainWindow::openHardware()
     }
     else{
         m_apply = new Apply(QStringList() << "mhwd" << "mhwd-db","install",this);
+        m_apply->exec();
+    }
+}
+
+void MainWindow::openSamba()
+{
+    if(!getSamba().isEmpty()){
+        m_samba = new Samba(this);
+        ui->stackedWidget->insertWidget(1,m_samba);
+        ui->stackedWidget->setCurrentIndex(1);
+        butt_back->setVisible(true);
+    }
+    else{
+        m_apply = new Apply("samba","install",this);
+        m_apply->exec();
+    }
+}
+
+void MainWindow::openUsers()
+{
+    m_pageUsers = new UsersPage(this);
+    m_pageUsers->load();
+    ui->stackedWidget->insertWidget(1,m_pageUsers);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
+}
+
+void MainWindow::openNfsShare()
+{
+    if(!getNfs().isEmpty()){
+        m_shareNfs = new NfsShare(this);
+        ui->stackedWidget->insertWidget(1,m_shareNfs);
+        ui->stackedWidget->setCurrentIndex(1);
+        butt_back->setVisible(true);
+    }
+    else{
+        m_apply = new Apply("nfs-utils","install",this);
         m_apply->exec();
     }
 }

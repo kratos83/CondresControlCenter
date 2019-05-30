@@ -18,13 +18,14 @@ ${CMAKE_BINARY_DIR}
 ../../src/gui
 )
 
-include_directories(${NotifierControlCenter_includes})
+include_directories(${NotifierControlCenter_includes} ${ALPM_INCLUDE_DIR} ${ALPMOCTOPI_INCLUDE_DIR} ${GLIB_INCLUDE_DIRS})
 
 set(NotifierControlCenter_moc_hdrs 
-	../pacmanhelper/CchClient.h
+	../pacmanhelper/pacmanhelperclient.h
 	NotifierCondres.h
 	../../src/about.h
 	../../src/settingsmanager.h
+	../../src/backend/backend.h
 )
 
 qt5_wrap_cpp(NotifierControlCenter_mocs ${NotifierControlCenter_moc_hdrs})
@@ -36,11 +37,12 @@ set(NotifierControlCenter_uis
 qt5_wrap_ui(NotifierControlCenter_ui_hdrs ${NotifierControlCenter_uis})
 
 set(NotifierControlCenter_srcs 
-	../pacmanhelper/CchClient.cpp
+	../pacmanhelper/pacmanhelperclient.cpp
 	main.cpp
 	NotifierCondres.cpp
 	../../src/about.cpp
 	../../src/settingsmanager.cpp
+	../../src/backend/backend.cpp
 )
 
 qt5_add_resources(RESOURCE_FILES ../../src/images.qrc) 
@@ -49,6 +51,7 @@ ADD_EXECUTABLE(NotifierControlCenter ${NotifierControlCenter_srcs} ${CondresCont
 
 target_link_libraries( NotifierControlCenter
   Qt5::Widgets Qt5::Network Qt5::Gui Qt5::DBus Qt5::Core
+  ${ALPM_LIBRARIES} ${ALPMOCTOPI_LIBRARIES} ${GLIB_LIBRARIES}
 )
 
 INSTALL( TARGETS NotifierControlCenter RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

@@ -24,7 +24,6 @@
 #include <alpm.h>
 #include <alpm_list.h>
 #include <alpm_octopi_utils.h>
-
 /*
  * This class encapsulates ALPM methods to retrieve package information
  */
@@ -55,10 +54,11 @@ QStringList Backend::getPackageList()
   const char* pkgName;
   alpm_pkg_t* instPkg;
   QString line;
+  alpm_pkg_t* pkg;
 
   for (i = founds; i; i = alpm_list_next(i))
   {
-    alpm_pkg_t* pkg = (alpm_pkg_t*) i->data;
+    pkg  = (alpm_pkg_t*) i->data;
     alpm_db_t* db = alpm_pkg_get_db(pkg);
 
     dbname = alpm_db_get_name(db);
@@ -88,6 +88,7 @@ QStringList Backend::getPackageList()
       installedVersion = "same_version";
     }
 
+    
     char size[10];
     off_t pkgSize = alpm_pkg_get_size(pkg);
 
@@ -179,7 +180,7 @@ QStringList Backend::getForeignList()
 /*
  * Retrieves outdated packages
  */
-QStringList Backend::getOutdatedList()
+QStringList Backend::getUpdateList()
 {
   QStringList res;
 
@@ -192,12 +193,31 @@ QStringList Backend::getOutdatedList()
   // display pkgs information
   alpm_list_t* i;
   const char* pkgName;
-
+  QString line;
+  const char* dbname;
+  const char* repoVersion;
+  
   for (i = founds; i; i = alpm_list_next(i))
   {
     alpm_pkg_t* pkg = (alpm_pkg_t*) i->data;
-    pkgName = alpm_pkg_get_name(pkg),
-    res.append(QString(pkgName));
+    alpm_db_t* db = alpm_pkg_get_db(pkg);
+
+    dbname = alpm_db_get_name(db);
+    
+
+    repoVersion = alpm_pkg_get_version(pkg),
+    pkgName = alpm_pkg_get_name(pkg);
+    
+    char size[10];
+    off_t pkgSize = alpm_pkg_get_size(pkg);
+
+    std::sprintf(size, "%ld", pkgSize);
+
+    line = QString(" ") + dbname + " " +
+           pkgName + " " + repoVersion + " " +
+           QString(size);
+           
+    res.append(line);
   }
 
   // free
@@ -356,3 +376,96 @@ QStringList Backend::getRepoList(const char* package)
 
   return res;
 }
+
+QStringList Backend::getDepsPackages(const char* package)
+{
+    QStringList res;
+
+  // create AlpmUtils instance
+  AlpmUtils* alpm_utils = alpm_utils_new ("/etc/pacman.conf");
+
+  // return a alpm_list of alpm_pkg, see alpm.h and alpm_list.h
+  alpm_list_t* founds = alpm_utils_search_all_dbs (alpm_utils, package);
+
+  // display pkgs information
+  alpm_list_t* i;
+  const char* dbname;
+  const char* repoVersion;
+  const char* pkgName;
+  alpm_list_t* pkgDep;
+  QString line;
+  alpm_pkg_t* pkg;
+
+  for (i = founds; i; i = alpm_list_next(i))
+  {
+    pkg  = (alpm_pkg_t*) i->data;
+    alpm_db_t* db = alpm_pkg_get_db(pkg);
+
+    dbname = alpm_db_get_name(db);
+    if (!strcmp(dbname, "local")) continue;
+
+    repoVersion = alpm_pkg_get_version(pkg),
+    pkgName = alpm_pkg_get_name(pkg);
+
+    pkgDep = alpm_pkg_get_depends(pkg);
+    const char* nameP;
+    while(pkgDep)
+    {
+        nameP = ((alpm_depend_t*)pkgDep->data)->name;
+        line = nameP;
+        res.append(line);
+        pkgDep = pkgDep->next;
+    }
+  }
+
+  // free
+  alpm_utils_free (alpm_utils); // this will free all alpm_pkgs but not the alpm_list
+  alpm_list_free (founds);
+
+  return res;
+}
+
+/*QStringList Backend::getCheckDependes(const char* package)
+{
+    QStringList res;
+
+  // create AlpmUtils instance
+  AlpmUtils* alpm_utils = alpm_utils_new ("/etc/pacman.conf");
+
+  // return a alpm_list of alpm_pkg, see alpm.h and alpm_list.h
+  alpm_list_t* founds = alpm_utils_search_all_dbs (alpm_utils, package);
+
+  // display pkgs information
+  alpm_list_t* i;
+  const char* dbname;
+  const char* repoVersion;
+  const char* pkgName;
+  alpm_list_t* pkgDep, *matches=NULL;
+  QString line;
+  alpm_pkg_t* pkg;
+
+  for (i = founds; i; i = alpm_list_next(i))
+  {
+    pkg  = (alpm_pkg_t*) i->data;
+    alpm_db_t* db = alpm_pkg_get_db(pkg);
+
+    dbname = alpm_db_get_name(db);
+    if (!strcmp(dbname, "local")) continue;
+
+    repoVersion = alpm_pkg_get_version(pkg),
+    pkgName = alpm_pkg_get_name(pkg);
+
+    pkgDep = alpm_pkg_compute_requiredby(pkg);
+    const char* nameP;
+    while(pkgDep != NULL){
+        res.append(QString((char *)alpm_list_getdata(pkgDep)));
+        pkgDep = alpm_list_next(pkgDep);
+    }
+  }
+
+  // free
+  alpm_utils_free (alpm_utils); // this will free all alpm_pkgs but not the alpm_list
+  alpm_list_free (founds);
+
+  return res;
+}*/

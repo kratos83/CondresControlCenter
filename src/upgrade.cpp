@@ -1,6 +1,28 @@
+/*
+ * Copyright (C) 2019  angelo <angelo.scarna@codelinsoft.it>
+ * 
+ * This file is part of Condres Control Center.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "upgrade.h"
 #include "ui_upgrade.h"
 #include <iostream>
+#include "backend/backend.h"
+#include "constant.h"
 
 Q_LOGGING_CATEGORY(ControlCenterUpgrade, "ControlCenter")
 
@@ -23,6 +45,7 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     connect(ui->applica,&QPushButton::clicked,this,&Upgrade::updatePackages);
     connect(ui->tableWidget,&QTableWidget::itemChanged,this,&Upgrade::itemClicked);
     lista();
+    getListUpdate();
 }
 
 void Upgrade::lista()
@@ -63,54 +86,6 @@ bool Upgrade::NoConnection()
     return result;
 }
 
-void Upgrade::upgradeDB()
-{
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->download->setVisible(false);
-    ui->up_progress->setVisible(false);
-    if (!NoConnection())
-        QMessageBox::warning(this,"Condres OS Control Center","Unable to estabilish internet connection");
-
-    ui->console->append("<font color=\"white\">Update database started</font>");
-    ui->up_progress->setText("Update database started");
-    processDB->setReadChannel(QProcess::StandardOutput);
-    processDB->setProcessChannelMode(QProcess::MergedChannels);
-    connect(processDB,&QProcess::readyReadStandardOutput,this,&Upgrade::UpdateDBReady);
-    connect(processDB,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Upgrade::UpdateDb);
-    processDB->start("/usr/bin/pacman -Sy");
-}
-
-void Upgrade::UpdateDb(int exitCode, QProcess::ExitStatus)
-{
-    if(exitCode > 1)
-    {
-      //process failed, provide info on errors
-      QMessageBox::critical(this,"Control Center", "Error whith the underlying process");
-    }
-    else if(exitCode == 0){
-        if(m_database == "update")
-            QMessageBox::information(this,"Condres OS Control Center","Syncronized database successfull.");
-        ui->console->append("<font color=\"white\">Update complete</font>");
-        getListUpdate();
-    }
-}
-
-void Upgrade::UpdateDBReady()
-{
-    QString results = processDB->readAll();
-    QStringList resultsVector = results.split(((QRegExp) "\n"));
-    for(int i=0; i<resultsVector.size();i++)
-    {
-        if(QString(resultsVector.at(i)).isEmpty())
-            continue;
-
-        QString str;
-        str.append(resultsVector.at(i));
-        ui->up_progress->setText(str);
-        ui->console->append("<font color=\"white\">"+resultsVector.at(i)+"</font></br>");
-    }
-}
-
 void Upgrade::getListUpdate()
 {
     if (!NoConnection())
@@ -122,35 +97,33 @@ void Upgrade::getListUpdate()
     {
         ui->tableWidget->removeRow(i);
     }
-    processUpdate.setReadChannel(QProcess::StandardOutput);
-    processUpdate.start("pacman -Sup --print-format \"%n %v %r %s\"");
-    if (processUpdate.waitForStarted(3000))
-    {
-        ui->console->append("<font color=\"white\">Update view list</font>");
-        ui->up_progress->setText("Update view list");
-        if(processUpdate.waitForReadyRead(-1))
-        {
-            manager->setGeneralValue("Update/upgrade","update");
-            ui->stackedWidget->setCurrentIndex(1);
-            ui->download->setVisible(true);
-            ui->up_progress->setVisible(true);
-            processUpdate.waitForFinished(-1);
-            QString results = processUpdate.readAllStandardOutput();
-            QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
-            for(int i = 0; i < resultsVector.length(); ++i){
-
-                QString line = resultsVector.at(i);
-                m_update = line.split(" ");
+    ui->console->append("<font color=\"white\">Update view list</font>");
+    ui->up_progress->setText("Update view list");
+    QStringList list = Backend::getUpdateList();
+    if(list.isEmpty()){
+            ui->stackedWidget->setCurrentIndex(3);
+            ui->applica->setVisible(false);
+            ui->dettagli->setVisible(false);
+            emit finishUpdate(true);
+    }
+    else{
+        foreach(QString txt, list){    
+            if(!txt.isEmpty())
+            {
+                ui->stackedWidget->setCurrentIndex(1);
+                ui->download->setVisible(true);
+                ui->up_progress->setVisible(true);
+                QStringList resultsVector = txt.split(" ");
                 ui->tableWidget->setHorizontalHeaderLabels(QStringList() << tr(" ") << tr("Name") <<
-                                                           tr("Version") << tr("Repository") << tr("Size") << tr("Peso"));
-                QTableWidgetItem *item = new QTableWidgetItem(" ");
+                                                            tr("Version") << tr("Repository") << tr("Size") << tr("Peso"));
+                QTableWidgetItem *item = new QTableWidgetItem(QString(resultsVector.at(0)));
                 item->data(Qt::CheckStateRole);
                 item->setCheckState(Qt::Unchecked);
-                QTableWidgetItem *name = new QTableWidgetItem(QString(m_update.at(0)));
-                QTableWidgetItem *versione = new QTableWidgetItem(QString(m_update.at(1)));
-                QTableWidgetItem *repo = new QTableWidgetItem(QString(m_update.at(2)));
-                QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(m_update.at(3)));
-                QTableWidgetItem *pesoCount = new QTableWidgetItem(m_update.at(3));
+                QTableWidgetItem *name = new QTableWidgetItem(QString(resultsVector.at(2)));
+                QTableWidgetItem *versione = new QTableWidgetItem(QString(resultsVector.at(3)));
+                QTableWidgetItem *repo = new QTableWidgetItem(QString(resultsVector.at(1)));
+                QTableWidgetItem *Peso = new QTableWidgetItem(getPeso(resultsVector.at(4)));
+                QTableWidgetItem *pesoCount = new QTableWidgetItem(resultsVector.at(4));
                 int row = ui->tableWidget->rowCount();
                 ui->tableWidget->insertRow(row);
                 ui->tableWidget->setItem(row,0,item);
@@ -166,8 +139,6 @@ void Upgrade::getListUpdate()
                         else
                             item->setCheckState(Qt::Unchecked);
                 });
-
-                }
                 double peso = 0;
                 for(int x=0; x < ui->tableWidget->rowCount(); ++x){
                     peso += ui->tableWidget->item(x,5)->text().toDouble();
@@ -177,14 +148,8 @@ void Upgrade::getListUpdate()
                 ui->download->clear();
                 ui->download->setText("<center><font size=\"4\"><b>Total size download: "+getPeso(QString::number(peso))+"</b></font></center>");
             }
-            else{
-                ui->stackedWidget->setCurrentIndex(3);
-                ui->applica->setVisible(false);
-                ui->dettagli->setVisible(false);
-                manager->setGeneralValue("Update/upgrade","complete");
-                emit finishUpdate(true);
-            }
         }
+    }
 }
 
 QString Upgrade::getPeso(QString byteReceived)

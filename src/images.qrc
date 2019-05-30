@@ -21,5 +21,13 @@
         <file>images/laptop.png</file>
         <file>images/keyboard.png</file>
         <file>images/document-save.png</file>
+        <file>images/share.png</file>
+        <file>images/service.png</file>
+        <file>images/users.png</file>
+        <file>images/go-up.svg</file>
+        <file>images/go-down.svg</file>
+        <file>images/directory.png</file>
+        <file>images/printer.png</file>
+        <file>images/nfs.png</file>
     </qresource>
 </RCC>

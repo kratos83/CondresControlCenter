@@ -70,15 +70,14 @@ int main(int argc, char *argv[])
 
     const QString arg3 = argv[3];
   
-    NotifierCondres m_not;
-    if((arg1.toLower() == "-u" || arg1.toLower() == "--update"))
+    if (!QFile::exists(DBUS_PACMANHELPER_SERVICE))
     {
-        m_not.syncDatabases();
-        m_not.hide();
+        qDebug() << "Aborting notifier as 'pacmanhelper' DBus service could not be found! [" << DBUS_PACMANHELPER_SERVICE << "]";
+        return (-3);
     }
-    else{
-        m_not.hide();
-    }
+    
+    NotifierCondres m_not;
+    m_not.hide();
 
     return a.exec();
 }

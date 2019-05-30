@@ -74,6 +74,7 @@ RepoEditor::RepoEditor( QWidget *parent )
                              SLOT( loadBackup() ) );
 
     ui->tableView->selectRow(0);
+    ui->checkBox->setChecked(true);
 }
 
 RepoEditor::~RepoEditor()

@@ -32,9 +32,11 @@ public:
   static QStringList getPackageList();
   static QStringList getUnrequiredList();
   static QStringList getForeignList();
-  static QStringList getOutdatedList();
+  static QStringList getUpdateList();
   static QStringList getGroupList(const char* package);
   static QStringList getRepoList(const char* package);
+  static QStringList getDepsPackages(const char* package);
+  //static QStringList getCheckDependes(const char* package);
 };
 
 #endif // ALPMBACKEND_H

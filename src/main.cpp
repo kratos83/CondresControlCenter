@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2019  angelo <angelo.scarna@codelinsoft.it>
+ * 
+ * This file is part of Condres Control Center.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 #include "mainwindow.h"
 #include <QApplication>
 #include <stdio.h>
@@ -8,6 +27,9 @@
 #include "constant.h"
 #include <QtCore>
 #include <QLoggingCategory>
+#include <QtSql/QtSql>
+
+#define CONDRESDB "/usr/lib/condrescontrolcenter/condrescontrolcenter.db"
 
 Q_DECLARE_LOGGING_CATEGORY(CondresControlCenterMain)
 Q_LOGGING_CATEGORY(CondresControlCenterMain, "ControlCenter")
@@ -72,6 +94,10 @@ int main(int argc, char *argv[])
         const QString arg1 = argv[1];
 
         const QString arg3 = argv[3];
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName(CONDRESDB);
+        db.open();
+    
         QScreen *sc = QGuiApplication::primaryScreen();
         MainWindow *w = new MainWindow();
         if((arg1.toLower() == "-i" || arg1.toLower() == "--install"))
@@ -90,6 +116,7 @@ int main(int argc, char *argv[])
             w->setGeometry(sc->geometry());
             w->showMaximized();
         }
+        
     }
     else{
         QMessageBox::warning(nullptr,"Condres OS Control Center",QObject::tr("You cannot perform this operation unless you are root"));

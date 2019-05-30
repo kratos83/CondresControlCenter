@@ -163,12 +163,12 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="CheckBox" name="checkBox"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
           <property name="text">
            <string>Create backup on save</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -225,25 +225,15 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>CheckBox</class>
+   <extends>QWidget</extends>
+   <header location="global">CondresControlCenter/CheckBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>checkBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>backupFile</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>117</x>
-     <y>262</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>411</x>
-     <y>298</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

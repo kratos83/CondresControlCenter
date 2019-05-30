@@ -40,7 +40,7 @@ LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
 set(QT5 TRUE)
 
 message(STATUS "Checking for Qt5...")
-find_package(Qt5 REQUIRED Widgets Gui Core Network DBus)
+find_package(Qt5 REQUIRED Widgets Gui Core Sql Network DBus UiPlugin PrintSupport)
 
 message(STATUS "Checking for KF5...")
 find_package(KF5 REQUIRED COMPONENTS

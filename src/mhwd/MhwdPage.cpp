@@ -86,7 +86,7 @@ MhwdPage::MhwdPage( QWidget* parent ) :
     {
         MhwdCommon::showItemContextMenu( ui, pos );
     } );
-    connect( ui->checkBoxShowAll, &QCheckBox::toggled,
+    connect( ui->checkBoxShowAll, &CheckBox::clicked,
              this, &MhwdPage::load );
 }
 

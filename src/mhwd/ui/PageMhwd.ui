@@ -67,8 +67,8 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" colspan="3">
       <widget class="QTreeWidget" name="treeWidget">
        <property name="styleSheet">
         <string notr="true">QPushButton color rgb(0, 0, 255)</string>
@@ -99,12 +99,15 @@
        </column>
       </widget>
      </item>
-     <item>
-      <widget class="QCheckBox" name="checkBoxShowAll">
+     <item row="1" column="1">
+      <widget class="QLabel" name="label">
        <property name="text">
         <string>Show all devices</string>
        </property>
       </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="CheckBox" name="checkBoxShowAll"/>
      </item>
     </layout>
    </item>
@@ -125,6 +128,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CheckBox</class>
+   <extends>QWidget</extends>
+   <header location="global">CondresControlCenter/CheckBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../mhwd.qrc"/>
   <include location="../../images.qrc"/>

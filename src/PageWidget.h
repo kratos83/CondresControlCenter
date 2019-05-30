@@ -20,12 +20,12 @@
 #ifndef PAGEWIDGET_H
 #define PAGEWIDGET_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QPixmap>
 #include <QString>
 
 
-class PageWidget : public QWidget
+class PageWidget : public QDialog
 {
     Q_OBJECT
 public:

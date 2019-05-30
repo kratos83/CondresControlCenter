@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2019  angelo <angelo.scarna@codelinsoft.it>
+ * 
+ * This file is part of Condres Control Center.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "InstallPackages.h"
 #include "ui_InstallPackages.h"
 #include "backend/backend.h"
@@ -19,10 +39,18 @@ InstallPackages::InstallPackages(QWidget *parent) :
     connect(ui->applica,&QPushButton::clicked,this,&InstallPackages::ApplyImpo);
     connect(ui->remove,&QPushButton::clicked,this,&InstallPackages::removeImpo);
     connect(ui->cerca_line,&QLineEdit::textEdited,this,&InstallPackages::searchPackages);
+    connect(ui->viewInfo,&QToolButton::clicked,this,&InstallPackages::openTabWidget);
+    ui->viewInfo->setToolTip("Open information");
     lista();
     setMenuInstall();
     viewPackagesGroup();
     viewRepo();
+    openTabWidget(false);
+}
+
+void InstallPackages::openTabWidget(bool ok)
+{
+    ui->tabWidget->setVisible(ok);
 }
 
 void InstallPackages::setMenuInstall()
@@ -290,13 +318,18 @@ void InstallPackages::TableClicked(const QModelIndex &index)
         QString repo = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),3),Qt::DisplayRole).toString();
         QString m_size = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),4),Qt::DisplayRole).toString();
         QString m_desc = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),6),Qt::DisplayRole).toString();
-        QString html = "<p align=justify>Description: <b>"+m_desc+"</b></p></br>"
-                       "<p align=justify>Software: <b>"+name+"</b></p></br>"
-                       "<p align=justify>Version: <b>"+version+"</b></p></br>"
-                       "<p align=justify>Repository: <b>"+repo+"</b></p></br>"
-                       "<p align=justify>Size: <b>"+m_size+"</b></p></br>";
+        QStringList m_list = Backend::getDepsPackages(name.toStdString().c_str());
+        QString html;
+        html += "<p align=justify>Description: <b>"+m_desc+"</b></p></br>"
+                 "<p align=justify>Software: <b>"+name+"</b></p></br>";
+        if(!m_list.isEmpty())
+            html += "<p align=justify>Depends: <b>"+QString(m_list.join(" "))+"</b></p></br>";
+        else
+            html += "<p align=justify>Depends: <b>none</b></p></br>";
+        html += "<p align=justify>Version: <b>"+version+"</b></p></br>"
+                "<p align=justify>Repository: <b>"+repo+"</b></p></br>"
+                "<p align=justify>Size: <b>"+m_size+"</b></p></br>";
         ui->info->setHtml(html);
-        
         ui->listFile->clear();
         QString results = getProcess("/usr/bin/pacman -Ql",name);
         QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
@@ -304,7 +337,6 @@ void InstallPackages::TableClicked(const QModelIndex &index)
                 QString line = resultsVector.at(i);
                 ui->listFile->append(line);
         }
-        //qCDebug(InstallPackagesDebug) << getProcess("/usr/bin/pacman -Ql",name);
     }
 }
 
@@ -323,6 +355,7 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
         {
                 ui->textEditRemove->clear();
                 ui->textEdit->append(name);
+                //qCDebug(InstallPackagesDebug) << Backend::getCheckDependes(name.toStdString().c_str());
         }
         else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked){
                 ui->textEdit->clear();

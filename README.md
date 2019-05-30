@@ -1,4 +1,4 @@
-CondresControlCenter 0.2.0 BETA 1
+CondresControlCenter 0.2.1 BETA 2
 =========
 
 CondresControlCenter is a beatiful system software management.
@@ -42,6 +42,6 @@ Partial of code Octopi and Manjaro settings manager
 ![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenter.png)
 
 ------------------------------------------------------------------------
-![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenterhwbonus .png)
+![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenterhw.png)
 
 ________________________________________________________________________

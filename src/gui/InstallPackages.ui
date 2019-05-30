@@ -169,7 +169,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
@@ -224,6 +224,21 @@
        </widget>
       </item>
       <item row="2" column="0">
+       <widget class="QToolButton" name="viewInfo">
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/go-down.svg</normaloff>
+          <normalon>:/images/go-up.svg</normalon>:/images/go-down.svg</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
          <number>0</number>

@@ -62,7 +62,7 @@
       <item row="3" column="1">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Partial of code Octopi. &lt;br/&gt;Use libalpmoctopi&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Partial of code Octopi and Manjaro Settings Manager&lt;br/&gt;Use libalpmoctopi&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

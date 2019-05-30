@@ -21,7 +21,7 @@
 
 
 PageWidget::PageWidget( QWidget* parent ) :
-    QWidget( parent )
+    QDialog( parent )
 {
     m_showApplyButton = false;
 }
