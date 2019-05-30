@@ -42,6 +42,9 @@ Partial of code Octopi and Manjaro settings manager
 ![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenter.png)
 
 ------------------------------------------------------------------------
+![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcentershare.png)
+
+------------------------------------------------------------------------
 ![ScreenShot](https://github.com/kratos83/CondresControlCenter/blob/master/condrescontrolcenterhw.png)
 
 ________________________________________________________________________
