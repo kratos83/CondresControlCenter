@@ -12,12 +12,19 @@ CondresControlCenter now support notifier.
 The software required:
 
 Qt5
+------------------------------
 libalpm
+------------------------------
 libalpm_octopi_utils
+------------------------------
 glib2
+------------------------------
 hd
+------------------------------
 kf5 component CoreAddons Auth ConfigWidgets ItemModels Notifications KCMUtils
-
+------------------------------
+PluginCondresControlCenter
+------------------------------
 For installation follow the guide:
 
 ---------------------------------------------------------------------
