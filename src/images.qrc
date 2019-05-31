@@ -29,5 +29,7 @@
         <file>images/directory.png</file>
         <file>images/printer.png</file>
         <file>images/nfs.png</file>
+        <file>images/preferences-desktop-locale.svg</file>
+        <file>images/preferences-system-time.svg</file>
     </qresource>
 </RCC>

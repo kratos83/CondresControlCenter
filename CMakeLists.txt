@@ -18,8 +18,8 @@ INCLUDE(CheckFunctionExists)
 INCLUDE(FindPkgConfig)
 
 SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "1")
-SET(VERSION_PATCH "4")
+SET(VERSION_MINOR "2")
+SET(VERSION_PATCH "2")
 
 #SET(VERSION_SUFFIX "")
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
@@ -40,7 +40,7 @@ LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
 set(QT5 TRUE)
 
 message(STATUS "Checking for Qt5...")
-find_package(Qt5 REQUIRED Widgets Gui Core Sql Network DBus UiPlugin PrintSupport)
+find_package(Qt5 REQUIRED Widgets Gui Core Sql Network DBus UiPlugin PrintSupport LinguistTools)
 
 message(STATUS "Checking for KF5...")
 find_package(KF5 REQUIRED COMPONENTS

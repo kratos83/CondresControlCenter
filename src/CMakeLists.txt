@@ -60,6 +60,20 @@ set(CondresControlCenter_moc_hdrs
 	users/PreviewFileDialog.h
 	users/UsersCommon.h
 	users/UsersPage.h
+	locale/EnabledLocalesModel.h
+	locale/LanguageCommon.h
+	locale/LanguageListViewDelegate.h
+	locale/LocaleCommon.h
+	locale/LocalePage.h
+	locale/SelectLocalesDialog.h
+	locale/SupportedLocalesItem.h
+	locale/SupportedLocalesModel.h
+	timedate/LocaleGlobal.h
+	timedate/TimeDateCommon.h
+	timedate/TimeDatePage.h
+	timedate/TimeDateService.h
+	timedate/TimeZoneDialog.h
+	timedate/TimeZoneWidget.h
 	ListWidget.h
 	CheckBox.h
 	RadioButton.h
@@ -93,6 +107,10 @@ set(CondresControlCenter_uis
 	users/ui/AddUserDialog.ui
 	users/ui/ChangePasswordDialog.ui
 	users/ui/PageUsers.ui
+	locale/ui/LocaleModule.ui
+	locale/ui/SelectLocalesDialog.ui
+	timedate/ui/PageTimeDate.ui
+	timedate/ui/TimeZoneDialog.ui
 )
 
 qt5_wrap_ui(CondresControlCenter_ui_hdrs ${CondresControlCenter_uis})
@@ -139,20 +157,35 @@ set(CondresControlCenter_srcs
 	users/PreviewFileDialog.cpp
 	users/UsersCommon.cpp
 	users/UsersPage.cpp
+	locale/EnabledLocalesModel.cpp
+	locale/LanguageCommon.cpp
+	locale/LanguageListViewDelegate.cpp 
+	locale/LocaleCommon.cpp
+	locale/LocalePage.cpp
+	locale/SelectLocalesDialog.cpp
+	locale/SupportedLocalesItem.cpp
+	locale/SupportedLocalesModel.cpp
+	timedate/LocaleGlobal.cpp
+	timedate/TimeDateCommon.cpp
+	timedate/TimeDatePage.cpp
+	timedate/TimeDateService.cpp
+	timedate/TimeZoneDialog.cpp
+	timedate/TimeZoneWidget.cpp
 	ListWidget.cpp
 	CheckBox.cpp
 	RadioButton.cpp
 	itdelegato.cpp
 )
 
-qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc users/users.qrc) 
+qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc users/users.qrc timedate/timedate.qrc) 
 
 ADD_EXECUTABLE(CondresControlCenter ${CondresControlCenter_srcs} ${CondresControlCenter_mocs} ${CondresControlCenter_ui_hdrs} ${RESOURCE_FILES})
 
 target_link_libraries( CondresControlCenter
   Qt5::Widgets Qt5::Network Qt5::Gui Qt5::DBus Qt5::Sql Qt5::PrintSupport
   Qt5::Core ${ALPM_LIBRARIES} ${ALPMOCTOPI_LIBRARIES} ${GLIB_LIBRARIES}
-  KF5::ItemModels KF5::ConfigWidgets KF5::CoreAddons hd
+  KF5::ItemModels KF5::ConfigWidgets KF5::CoreAddons hd icudata
+    icuuc
 )
 
 INSTALL( TARGETS CondresControlCenter RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

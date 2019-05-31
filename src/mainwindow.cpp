@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->share,&QPushButton::clicked,this,&MainWindow::openSamba);
     connect(ui->users,&QPushButton::clicked,this,&MainWindow::openUsers);
     connect(ui->pushButtonNFS,&QPushButton::clicked,this,&MainWindow::openNfsShare);
+    connect(ui->pushButtonLanguage,&QPushButton::clicked,this,&MainWindow::openLocalLanguages);
+    connect(ui->pushButtonTime,&QPushButton::clicked,this,&MainWindow::openTimeDate);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
     setWindowTitle(titolo()+tr("Control Center ")+QString(VERSION)+" "+QString(BETA)+" 2");
     ui->stackedWidget->setCurrentIndex(0);
@@ -206,6 +208,24 @@ void MainWindow::openNfsShare()
         m_apply = new Apply("nfs-utils","install",this);
         m_apply->exec();
     }
+}
+
+void MainWindow::openLocalLanguages()
+{
+    m_localLanguage = new LocalePage(this);
+    m_localLanguage->load();
+    ui->stackedWidget->insertWidget(1,m_localLanguage);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
+}
+
+void MainWindow::openTimeDate()
+{
+    m_timePage = new TimeDatePage(this);
+    m_timePage->load();
+    ui->stackedWidget->insertWidget(1,m_timePage);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event){

@@ -139,29 +139,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="0">
-                     <widget class="QPushButton" name="butt_install">
-                      <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Install packages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="text">
-                       <string>Install remove software</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../images.qrc">
-                        <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>64</width>
-                        <height>64</height>
-                       </size>
-                      </property>
-                      <property name="flat">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="3" column="0">
                      <widget class="Line" name="line_4">
                       <property name="orientation">
@@ -222,6 +199,29 @@
                      <widget class="Line" name="line_6">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QPushButton" name="butt_install">
+                      <property name="toolTip">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Install packages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                      <property name="text">
+                       <string>Install remove software</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../images.qrc">
+                        <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>64</width>
+                        <height>64</height>
+                       </size>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -455,12 +455,32 @@
                   <string>Configure users</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
+                  <item row="2" column="0">
+                   <spacer name="verticalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>357</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="0" column="0">
                    <layout class="QGridLayout" name="gridLayout_14">
                     <item row="0" column="1">
                      <widget class="Line" name="line_12">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0" colspan="3">
+                     <widget class="Line" name="line_13">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
@@ -491,32 +511,53 @@
                      </widget>
                     </item>
                     <item row="0" column="2">
-                     <spacer name="horizontalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QPushButton" name="pushButtonLanguage">
+                      <property name="text">
+                       <string>Local languages</string>
                       </property>
-                      <property name="sizeHint" stdset="0">
+                      <property name="icon">
+                       <iconset resource="../images.qrc">
+                        <normaloff>:/images/preferences-desktop-locale.svg</normaloff>:/images/preferences-desktop-locale.svg</iconset>
+                      </property>
+                      <property name="iconSize">
                        <size>
-                        <width>40</width>
-                        <height>20</height>
+                        <width>64</width>
+                        <height>64</height>
                        </size>
                       </property>
-                     </spacer>
+                      <property name="flat">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QPushButton" name="pushButtonTime">
+                      <property name="text">
+                       <string>Date and time</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../images.qrc">
+                        <normaloff>:/images/preferences-system-time.svg</normaloff>:/images/preferences-system-time.svg</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>64</width>
+                        <height>64</height>
+                       </size>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="Line" name="line_14">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item row="1" column="0">
-                   <spacer name="verticalSpacer_4">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>357</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                  </layout>
                 </widget>

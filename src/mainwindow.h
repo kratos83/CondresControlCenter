@@ -42,6 +42,8 @@
 #include "users/UsersPage.h"
 #include "keyboard/KeyboardPage.h"
 #include "mhwd/MhwdPage.h"
+#include "locale/LocalePage.h"
+#include "timedate/TimeDatePage.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterMain)
 
@@ -73,6 +75,8 @@ public slots:
     void openSamba();
     void openUsers();
     void openNfsShare();
+    void openLocalLanguages();
+    void openTimeDate();
 private:
     Ui::MainWindow *ui;
     QProcess *process, *process_locate_paccache;
@@ -91,7 +95,8 @@ private:
     Samba *m_samba;
     UsersPage *m_pageUsers;
     NfsShare *m_shareNfs;
-
+    LocalePage *m_localLanguage;
+    TimeDatePage *m_timePage;
 protected:
     void closeEvent(QCloseEvent *event);
 };
