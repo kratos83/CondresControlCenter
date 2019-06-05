@@ -94,6 +94,7 @@ set(CondresControlCenter_uis
 	gui/mainwindow.ui
 	gui/nfsshare.ui
 	gui/NfsConfig.ui
+	gui/AddSamba.ui
 	gui/Samba.ui
 	gui/samba_conf_dir.ui
 	gui/SambaPrinter.ui
@@ -204,4 +205,9 @@ INSTALL( FILES "bash/CondresControlCenterUpdateBin" DESTINATION ${CMAKE_INSTALL_
 INSTALL( FILES "images/preferences-system.png" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 INSTALL( FILES "desktop/CondresControlCenter.desktop" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications )
 INSTALL( FILES "keyboard/kbd-model-map" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/systemd)
-INSTALL( FILES "database/condrescontrolcenter.db" DESTINATION /usr/lib/condrescontrolcenter)
+set(DATABASE_FILE "/usr/lib/condrescontrolcenter/condrescontrolcenter.db")
+if(EXISTS ${DATABASE_FILE})
+  message("${DATABASE_FILE} exists.")
+else()
+  INSTALL( FILES "database/condrescontrolcenter.db" DESTINATION /usr/lib/condrescontrolcenter)
+endif()

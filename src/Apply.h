@@ -47,6 +47,7 @@ public slots:
     void read_packages(int exitCode);
     void ReadyPkg();
     void localPackages();
+    void stopJobs();
 private:
     Ui::Apply *ui;
     QString _arg, m_args, m_install_remove;

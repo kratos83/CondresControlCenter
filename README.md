@@ -1,4 +1,4 @@
-CondresControlCenter 0.2.1 BETA 2
+CondresControlCenter 0.2.2 BETA 3
 =========
 
 CondresControlCenter is a beatiful system software management.
@@ -20,6 +20,8 @@ libalpm_octopi_utils
 glib2
 ------------------------------
 hd
+------------------------------
+gksu
 ------------------------------
 kf5 component CoreAddons Auth ConfigWidgets ItemModels Notifications KCMUtils
 ------------------------------

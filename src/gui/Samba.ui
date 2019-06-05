@@ -404,7 +404,7 @@
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="title">
-          <string>Sharing file</string>
+          <string>Sharing</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="1">
@@ -488,85 +488,6 @@
              <number>25</number>
             </attribute>
            </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_3">
-         <attribute name="title">
-          <string>Sharing printers</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="1">
-           <widget class="QGroupBox" name="groupBox_3">
-            <property name="title">
-             <string/>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_7">
-             <item row="1" column="0">
-              <widget class="Line" name="line_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QPushButton" name="remove_printer">
-               <property name="text">
-                <string>Remove</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../images.qrc">
-                 <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QPushButton" name="add_share_printer">
-               <property name="text">
-                <string>Add printer</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../images.qrc">
-                 <normaloff>:/images/printer.png</normaloff>:/images/printer.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="modify_printer">
-               <property name="text">
-                <string>Modify </string>
-               </property>
-               <property name="icon">
-                <iconset resource="../images.qrc">
-                 <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>265</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="3" column="0">
-              <widget class="Line" name="line_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QTableView" name="tableView"/>
           </item>
          </layout>
         </widget>
@@ -790,10 +711,6 @@
   <tabstop>add_share</tabstop>
   <tabstop>modify_file</tabstop>
   <tabstop>remove_file</tabstop>
-  <tabstop>tableView</tabstop>
-  <tabstop>add_share_printer</tabstop>
-  <tabstop>modify_printer</tabstop>
-  <tabstop>remove_printer</tabstop>
   <tabstop>tableView_2</tabstop>
   <tabstop>add_user</tabstop>
   <tabstop>modify_user</tabstop>

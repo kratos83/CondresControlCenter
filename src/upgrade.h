@@ -46,7 +46,6 @@ public slots:
     //View list
     void getListUpdate();
     void lista();
-    QString getPeso(QString byteReceived);
     void itemClicked(QTableWidgetItem *item);
     void setList(QStringList item);
     QStringList getList();
@@ -55,6 +54,7 @@ public slots:
     void updatePackages();
     void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
     void showProgressInqDebug();
+    void stopJobs();
 
 private slots:
     void on_dettagli_clicked();

@@ -32,6 +32,7 @@
 class SambaConfiguration;
 class SambaPrinter;
 class SambaUser;
+class AddSamba;
 
 #define SAMBA_FILE "/etc/samba/smb.conf"
 #define SAMBA_TEMP "/tmp/smb.conf"
@@ -44,7 +45,8 @@ namespace Ui
 {class Samba;
  class SambaConfiguration;
  class SambaPrinter;
- class SambaUser;}
+ class SambaUser;
+ class AddSamba;}
 
 /**
  * @todo write docs
@@ -59,7 +61,7 @@ public:
     void load(QString nameFile);
     
 private slots:
-    void readShareFileDirectory();
+    void readShareFileDirectory(QString nameFile);
     void loadFile();
     void startSamba();
     void restartSamba();
@@ -69,15 +71,11 @@ private slots:
     void statusSamba();
     void readChecBox(bool ok);
     void saveFile();
-    void saveFile(QString nameFile);
+    void saveFile(QString nameFile, QStringList m_list);
     void openConfigDir();
     void addCongigDir();
+    void addShareAll(QString m_share);
     void delSambaShare();
-    //Samba printer
-    void readSharePrinter();
-    void addSambaPrinter();
-    void configSambaPrinter();
-    void delSambaPrinter();
     //Samba user
     void readUser();
     void addUser();
@@ -91,6 +89,7 @@ private:
     bool m_modify, m_edit;
     SettingsManager *manager;
     UsersPage *m_pageUsers;
+    bool m_shared;
 };
 
 //Samba configuration shared directory 
@@ -99,7 +98,7 @@ class SambaConfiguration : public QDialog
     Q_OBJECT
 
 public:
-    explicit SambaConfiguration(QStringList listConfigDir, QString create_modify, QString id, QWidget *parent = nullptr);
+    explicit SambaConfiguration(QStringList listConfigDir, QString create_modify, QWidget *parent = nullptr);
     ~SambaConfiguration();
     
 private slots:
@@ -108,10 +107,10 @@ private slots:
 private:
     Ui::SambaConfiguration *m_ui;
     QStringList m_list;
-    QString m_createModify, m_id;
+    QString m_createModify;
 signals:
-    void saveConfig(QString);
-    void saveList();
+    void saveConfig(QString,QStringList);
+    void saveList(QString);
 };
 
 //Samba configuration shared printer
@@ -120,7 +119,7 @@ class SambaPrinter : public QDialog
     Q_OBJECT
 
 public:
-    explicit SambaPrinter(QStringList listConfigDir, QString create_modify, QString id, QWidget *parent = nullptr);
+    explicit SambaPrinter(QStringList listConfigDir, QString create_modify, QWidget *parent = nullptr);
     ~SambaPrinter();
     
 private slots:
@@ -130,10 +129,10 @@ private slots:
 private:
     Ui::SambaPrinter *_ui;
     QStringList m_list;
-    QString m_createModify, m_id;
+    QString m_createModify;
 signals:
-    void saveConfig(QString);
-    void saveList();
+    void saveConfig(QString,QStringList);
+    void saveList(QString);
 };
 
 //Samba user
@@ -142,7 +141,7 @@ class SambaUser : public QDialog
     Q_OBJECT
 
 public:
-    explicit SambaUser(QString id, QString users, QString edit, QWidget *parent = nullptr);
+    explicit SambaUser(QString users, QString edit, QWidget *parent = nullptr);
     ~SambaUser();
 
 private slots:
@@ -151,9 +150,28 @@ private slots:
 private:
     Ui::SambaUser *_ui_;
     QProcess process,*process_user;
-    QString m_id, m_user, m_edit;
+    QString m_user, m_edit;
 signals:
     void saveList();
 };
 
+//AddSamba
+class AddSamba : public QDialog
+{
+   Q_OBJECT
+   
+public:
+    explicit AddSamba(QWidget *parent=nullptr);
+    ~AddSamba();
+    
+private slots:
+    void addShareDirectory();
+    void addPrinterDirectory();
+
+private:
+    Ui::AddSamba *_ui_;
+    
+signals:
+    void shareSamba(QString);
+};
 #endif // SAMBA_H

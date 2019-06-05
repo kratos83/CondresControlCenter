@@ -25,11 +25,12 @@
 #include <QtWidgets>
 #include <QtSql/QtSql>
 
-#define VERSION "0.2.2"
+#define VERSION "0.2.3"
 #define ALPHA "ALPHA RELEASE"
 #define BETA "BETA RELEASE"
 #define RELEASE_CANDIDATE "RC RELEASE"
 #define STABLE "STABLE RELEASE"
+#define DATABASE_VAR "/var/lib/pacman/db.lck"
 
 static QString getPacCache()
 {
@@ -140,10 +141,7 @@ static QString getProcessName(QString m_proc)
             results = list.at(0);
         }
     }
-    if(results != "")
-        return results;
-    else
-        return QString("No information to download.");
+    return results;
 }
 
 static QString searchItem(QString nameFile, QString name)
@@ -186,8 +184,24 @@ static QStringList searchItemName(QString nameFile, QString name)
     return text;
 }
 
-/*static QString returnQuery(QString name)
+static QString getPeso(QString byteReceived)
 {
+    //Calcolo la dimensione del file da scaricare
+     double peso = byteReceived.toDouble();
+
+    QString dt;
+    if (peso < 1024) {
+        dt = "bytes";
+    } else if (peso < 1024*1024) {
+        peso /= 1024;
+        dt = "kB";
+    } else {
+        peso /= 1024*1024;
+        dt = "MB";
+    }
+
+    QString text = QString::fromLatin1("%1 %2").arg(peso,3,'f',1).arg(dt);
     
-}*/
+    return text;
+}
 #endif // CONSTANT_H

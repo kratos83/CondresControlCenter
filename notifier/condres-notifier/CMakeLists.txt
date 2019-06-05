@@ -56,5 +56,4 @@ target_link_libraries( NotifierControlCenter
 
 INSTALL( TARGETS NotifierControlCenter RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 INSTALL( FILES "../../src/images/db_green.png" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
-INSTALL( FILES "NotifierControlCenter.desktop" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications )
 INSTALL( FILES "NotifierControlCenter.desktop" DESTINATION /etc/xdg/autostart )

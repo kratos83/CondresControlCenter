@@ -26,6 +26,8 @@ esci::esci(QWidget *parent) :
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
+    QIcon icon(":/images/application-exit.png");
+    ui->label->setPixmap(icon.pixmap(QSize(64,64)));
 }
 
 esci::~esci()

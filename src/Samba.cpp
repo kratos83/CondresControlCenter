@@ -23,6 +23,7 @@
 #include "ui_samba_conf_dir.h"
 #include "ui_SambaPrinter.h"
 #include "ui_sambauser.h"
+#include "ui_AddSamba.h"
 #include "constant.h"
 #include "itdelegato.h"
 
@@ -34,7 +35,8 @@ Samba::Samba(QWidget* parent) :
     proc(new QProcess),
     m_modify(false),
     m_edit(false),
-    manager(new SettingsManager)
+    manager(new SettingsManager),
+    m_shared(false)
 {
     ui->setupUi(this);
     connect(ui->loadConfigFile,&QPushButton::clicked,this,&Samba::loadFile);
@@ -47,42 +49,65 @@ Samba::Samba(QWidget* parent) :
     connect(ui->add_share,&QPushButton::clicked,this,&Samba::addCongigDir);
     connect(ui->remove_file,&QPushButton::clicked,this,&Samba::delSambaShare);
     connect(ui->pushButtonApply,&QPushButton::clicked,this,static_cast< void(Samba::*)()>(&Samba::saveFile));
-    //Samba printer
-    connect(ui->add_share_printer,&QPushButton::clicked,this,&Samba::addSambaPrinter);
-    connect(ui->modify_printer,&QPushButton::clicked,this,&Samba::configSambaPrinter);
-    connect(ui->remove_printer,&QPushButton::clicked,this,&Samba::delSambaPrinter);
     //SambaUser
     connect(ui->add_user,&QPushButton::clicked,this,&Samba::addUser);
     connect(ui->modify_user,&QPushButton::clicked,this,&Samba::configUser);
     connect(ui->remove_user,&QPushButton::clicked,this,&Samba::delUser);
     connect(ui->open_user,&QPushButton::clicked,this,&Samba::openUser);
     load(SAMBA_FILE);
-    readShareFileDirectory();
-    readSharePrinter();
     readUser();
     readChecBox(false);
+    manager->setGeneralValue("Shared/directory","");
+    manager->setGeneralValue("Shared/printer","");
 }
 
 void Samba::load(QString nameFile)
 {
     Q_UNUSED(nameFile)
     
-    QSqlQuery query;
-    query.prepare("select * from samba");
-    query.exec();
-    while(query.next()){
-        ui->lineEditSambaConfig->setText(SAMBA_FILE);
-        ui->lineEditWorkgroup->setText(query.value("workgroup").toString());
-        ui->lineEditServer->setText(query.value("server_string").toString());
-        ui->lineEditSecurity->setText(query.value("security").toString());
-        ui->lineEditNetbios->setText(query.value("netbios").toString());
-        ui->lineEditHost->setText(query.value("host_allow").toString());
-        ui->lineEditGuest->setText(query.value("guest_account").toString());
-        ui->lineEdit->setText(query.value("log_file").toString());
-        ui->spinBoxLogSize->setValue(query.value("max_log_size").toInt());
-        ui->comboBoxLoadPrinters->setCurrentText(query.value("load_printers").toString());
-        ui->lineEditPrinting->setText(query.value("printing").toString());
-    }   
+    ui->lineEditSambaConfig->setText(SAMBA_FILE);
+    if(!searchItem(nameFile,"workgroup").isEmpty()){
+    QStringList list = searchItem(nameFile,"workgroup").split("=");
+    ui->lineEditWorkgroup->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditWorkgroup->clear();
+    if(!searchItem(nameFile,"server string").isEmpty()){
+    QStringList list = searchItem(nameFile,"server string").split("=");
+    ui->lineEditServer->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditServer->clear();
+    if(!searchItem(nameFile,"netbios name").isEmpty()){
+    QStringList list = searchItem(nameFile,"netbios name").split("=");
+    ui->lineEditNetbios->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditNetbios->clear();
+    if(!searchItem(nameFile,"security").isEmpty()){
+    QStringList list = searchItem(nameFile,"security").split("=");
+    ui->lineEditSecurity->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditSecurity->clear();
+    if(!searchItem(nameFile,"hosts allow").isEmpty()){
+    QStringList list = searchItem(nameFile,"hosts allow").split("=");
+    ui->lineEditHost->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditHost->clear();
+    if(!searchItem(nameFile,"guest account").isEmpty()){
+    QStringList list = searchItem(nameFile,"guest account").split("=");
+    ui->lineEditGuest->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditGuest->clear();
+    if(!searchItem(nameFile,"log file").isEmpty()){
+    QStringList list = searchItem(nameFile,"log file").split("=");
+    ui->lineEdit->setText(QString(list[1]).remove(" "));}
+    else ui->lineEdit->clear();
+    if(!searchItem(nameFile,"max log size").isEmpty()){
+    QStringList list = searchItem(nameFile,"max log size").split("=");
+    int number = list[1].toInt();
+    ui->spinBoxLogSize->setValue(number);}
+    else ui->spinBoxLogSize->setValue(0);
+    if(!searchItem(nameFile,"load printers").isEmpty()){
+    QStringList list = searchItem(nameFile,"load printers").split("=");
+    ui->comboBoxLoadPrinters->setCurrentText(QString(list[1]).remove(" "));}
+    else ui->comboBoxLoadPrinters->setCurrentIndex(0);
+    if(!searchItem(nameFile,"printing").isEmpty()){
+    QStringList list = searchItem(nameFile,"printing").split("=");
+    ui->lineEditPrinting->setText(QString(list[1]).remove(" "));}
+    else ui->lineEditPrinting->clear();       
+    readShareFileDirectory(nameFile);
 }
 
 void Samba::loadFile()
@@ -182,9 +207,9 @@ void Samba::readChecBox(bool ok)
     ui->textEditDebug->setVisible(ok);
 }
 
-void Samba::readShareFileDirectory()
+void Samba::readShareFileDirectory(QString nameFile)
 {
-    model = new QStandardItemModel(0,10,this);
+    model = new QStandardItemModel(0,11,this);
     model->setHeaderData(0,Qt::Horizontal,tr("Comment"));
     model->setHeaderData(1,Qt::Horizontal,tr("Shared"));
     model->setHeaderData(2,Qt::Horizontal,tr("Browseable"));
@@ -195,27 +220,99 @@ void Samba::readShareFileDirectory()
     model->setHeaderData(7,Qt::Horizontal,tr("Create mask"));
     model->setHeaderData(8,Qt::Horizontal,tr("Mask directory"));
     model->setHeaderData(9,Qt::Horizontal,tr("Valid users"));
-    model->setHeaderData(10,Qt::Horizontal,tr("ID"));
-    QSqlQuery query;
-    query.prepare("select * from samba_share");
-    int count = 0;
-    if(query.exec())
-        while(query.next())
-        {
-            QStandardItem *path = new QStandardItem(query.value("path").toString());
-            path->setIcon(QIcon(":/images/directory.png"));
-            model->setItem(count,0,new QStandardItem(query.value("comment").toString()));
-            model->setItem(count,1,path);
-            model->setItem(count,2,new QStandardItem(query.value("browseable").toString()));
-            model->setItem(count,3,new QStandardItem(query.value("public").toString()));
-            model->setItem(count,4,new QStandardItem(query.value("writable").toString()));
-            model->setItem(count,5,new QStandardItem(query.value("printable").toString()));
-            model->setItem(count,6,new QStandardItem(query.value("guest_ok").toString()));
-            model->setItem(count,7,new QStandardItem(query.value("create_mask").toString()));
-            model->setItem(count,8,new QStandardItem(query.value("directory_mask").toString()));
-            model->setItem(count,9,new QStandardItem(query.value("valid_users").toString()));
-            model->setItem(count,10,new QStandardItem(query.value("id").toString()));
-            ++count;
+    model->setHeaderData(10,Qt::Horizontal,tr("Printing"));
+    int count = 0, com=0, br=0, pc=0, wr=0,pn=0,gt=0,cr=0,mr=0,vl=0,prt=0;
+        if(!searchItemName(nameFile,QString("comment")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("comment"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("comment=");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(com,0,path);
+                ++com;
+            }
+        }
+        if(!searchItemName(nameFile,QString("path")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("path"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("path=");
+                QStandardItem *path = new QStandardItem(pt);
+                if(pt == SAMBA_SPOOL)
+                    path->setIcon(QIcon(":/images/printer.png"));
+                else
+                    path->setIcon(QIcon(":/images/directory.png"));
+                model->setItem(count,1,path);
+                ++count;
+            }
+        }
+        if(!searchItemName(nameFile,QString("browseable")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("browseable"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("browseable=");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(br,2,path);
+                ++br;
+            }
+        }
+        if(!searchItemName(nameFile,QString("public")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("public"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("public=");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(pc,3,path);
+                ++pc;
+            }
+        }
+        if(!searchItemName(nameFile,QString("writable")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("writable"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("writable=");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(wr,4,path);
+                ++wr;
+            }
+        }
+        if(!searchItemName(nameFile,QString("printable")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("printable"))){
+                QString pt = pr.remove("\t").remove("\n").remove(" ").remove("printable=");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(pn,5,path);
+                ++pn;
+            }
+        }
+        if(!searchItemName(nameFile,QString("guest ok")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("guest ok"))){
+                QString pt = pr.remove("\t").remove("\n").remove("guest ok =");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(gt,6,path);
+                ++gt;
+            }
+        }
+        if(!searchItemName(nameFile,QString("create mask")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("create mask"))){
+                QString pt = pr.remove("\t").remove("\n").remove("create mask =");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(cr,7,path);
+                ++cr;
+            }
+        }
+        if(!searchItemName(nameFile,QString("directory mask")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("directory mask"))){
+                QString pt = pr.remove("\t").remove("\n").remove("directory mask =");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(mr,8,path);
+                ++mr;
+            }
+        }
+        if(!searchItemName(nameFile,QString("valid users")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("valid users"))){
+                QString pt = pr.remove("\t").remove("\n").remove("valid users =");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(vl,9,path);
+                ++vl;
+            }
+        }
+        if(!searchItemName(nameFile,QString("printing")).isEmpty()){
+            foreach(QString pr, searchItemName(nameFile,QString("printing"))){
+                QString pt = pr.remove("\t").remove("\n").remove("printing =");
+                QStandardItem *path = new QStandardItem(pt);
+                model->setItem(prt,10,path);
+                ++prt;
+            }
         }
     ui->tableViewFile->setModel(model);
     ui->tableViewFile->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -224,75 +321,35 @@ void Samba::readShareFileDirectory()
     ui->tableViewFile->setColumnHidden(10,true);
     ui->tableViewFile->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableViewFile->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableViewFile->setItemDelegateForColumn(10,new coldxdelegato(this));
-}
-
-void Samba::readSharePrinter()
-{
-    modelPrinter = new QStandardItemModel(0,10,this);
-    modelPrinter->setHeaderData(0,Qt::Horizontal,tr("Printer"));
-    modelPrinter->setHeaderData(1,Qt::Horizontal,tr("Comment"));
-    modelPrinter->setHeaderData(2,Qt::Horizontal,tr("Directory"));
-    modelPrinter->setHeaderData(3,Qt::Horizontal,tr("Writable"));
-    modelPrinter->setHeaderData(4,Qt::Horizontal,tr("Browseable"));
-    modelPrinter->setHeaderData(5,Qt::Horizontal,tr("Printable"));
-    modelPrinter->setHeaderData(6,Qt::Horizontal,tr("ID"));
-    modelPrinter->setHeaderData(7,Qt::Horizontal,tr("Guest"));
-    modelPrinter->setHeaderData(8,Qt::Horizontal,tr("Printing"));
-    modelPrinter->setHeaderData(9,Qt::Horizontal,tr("Valid users"));
-    QSqlQuery query;
-    query.prepare("select * from samba_print");
-    int count = 0;
-    if(query.exec())
-        while(query.next())
-        {
-            QStandardItem *printer = new QStandardItem(query.value("printer").toString());
-            printer->setIcon(QIcon(":/images/printer.png"));
-            modelPrinter->setItem(count,0,printer);
-            modelPrinter->setItem(count,1,new QStandardItem(query.value("comment").toString()));
-            QStandardItem *path = new QStandardItem(query.value("directory").toString());
-            path->setIcon(QIcon(":/images/directory.png"));
-            modelPrinter->setItem(count,2,path);
-            modelPrinter->setItem(count,3,new QStandardItem(query.value("writable").toString()));
-            modelPrinter->setItem(count,4,new QStandardItem(query.value("browseable").toString()));
-            modelPrinter->setItem(count,5,new QStandardItem(query.value("printable").toString()));
-            modelPrinter->setItem(count,6,new QStandardItem(query.value("id").toString()));
-            modelPrinter->setItem(count,7,new QStandardItem(query.value("guest").toString()));
-            modelPrinter->setItem(count,8,new QStandardItem(query.value("printing").toString()));
-            modelPrinter->setItem(count,9,new QStandardItem(query.value("valid_users").toString()));
-            ++count;
-        }
-    ui->tableView->setModel(modelPrinter);
-    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tableView->setColumnWidth(0,200);
-    ui->tableView->setColumnWidth(1,150);
-    ui->tableView->setColumnHidden(6,true);
-    ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView->setItemDelegateForColumn(9,new coldxdelegato(this));
+    ui->tableViewFile->setItemDelegateForColumn(11,new coldxdelegato(this));
 }
 
 void Samba::readUser()
 {
-    modelUser = new QStandardItemModel(0,2,this);
+    modelUser = new QStandardItemModel(0,1,this);
     modelUser->setHeaderData(0,Qt::Horizontal,tr("User"));
-    modelUser->setHeaderData(1,Qt::Horizontal,tr("ID"));
-    QSqlQuery query;
-    query.prepare("select * from samba_user");
     int count = 0;
-    if(query.exec())
-        while(query.next())
+    QProcess proc;
+    QString results;
+    proc.setReadChannel(QProcess::StandardOutput);
+    proc.start("pdbedit -L");
+    if (proc.waitForStarted(3000))
+    {
+        if(proc.waitForReadyRead(-1))
         {
-            QStandardItem *printer = new QStandardItem(query.value("user").toString());
-            printer->setIcon(QIcon(":/images/users.png"));
-            modelUser->setItem(count,0,printer);
-            modelUser->setItem(count,1,new QStandardItem(query.value("id").toString()));
+            proc.waitForFinished(-1);
+            QString m_tex = proc.readAllStandardOutput();
+            QStringList list = m_tex.split(":");
+            results = list.at(0);
+            QStandardItem *user = new QStandardItem(results);
+            user->setIcon(QIcon(":/images/users.png"));
+            modelUser->setItem(count,0,user);
             ++count;
         }
+    }
     ui->tableView_2->setModel(modelUser);
     ui->tableView_2->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView_2->setColumnWidth(0,200);
-    ui->tableView_2->setColumnHidden(1,true);
     ui->tableView_2->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView_2->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableView_2->setItemDelegateForColumn(1,new coldxdelegato(this));
@@ -319,43 +376,23 @@ void Samba::openConfigDir()
             QString m_dirmask = model->data(model->index(newindex.row(),8),Qt::DisplayRole).toString();
             QString m_validUsers = model->data(model->index(newindex.row(),9),Qt::DisplayRole).toString();
             QString m_brow = model->data(model->index(newindex.row(),2),Qt::DisplayRole).toString();
-            QString m_id = model->data(model->index(newindex.row(),10),Qt::DisplayRole).toString();
-            list << m_com << m_dir << m_brow << m_pub << m_write << m_print << m_guest << m_cmask << m_dirmask << m_validUsers;
-            SambaConfiguration *smb = new SambaConfiguration(list,"modify",m_id,this);
-            connect(smb,&SambaConfiguration::saveConfig,this,static_cast< void(Samba::*)(QString)>(&Samba::saveFile));
-            connect(smb,&SambaConfiguration::saveList,this,&Samba::readShareFileDirectory);
-            smb->exec();
-        }
-    }
-    else QMessageBox::warning(this,tr("CondresControlCenter"),tr("Select row to modified"));
-}
-
-void Samba::configSambaPrinter()
-{
-    if(ui->tableView->selectionModel()->currentIndex().isValid())
-    {
-        QModelIndex modelIndex = ui->tableView->selectionModel()->currentIndex();
-        int riga = modelIndex.row();
-        QModelIndex newindex = modelIndex.sibling(riga,0);
-        ui->tableView->setCurrentIndex(newindex);
-        if(newindex.row() < modelPrinter->rowCount())
-        {
-            QStringList list;
-            QString m_printer = modelPrinter->data(modelPrinter->index(newindex.row(),0),Qt::DisplayRole).toString();
-            QString m_com = modelPrinter->data(modelPrinter->index(newindex.row(),1),Qt::DisplayRole).toString();
-            QString m_dir = modelPrinter->data(modelPrinter->index(newindex.row(),2),Qt::DisplayRole).toString();
-            QString m_write = modelPrinter->data(modelPrinter->index(newindex.row(),3),Qt::DisplayRole).toString();
-            QString m_brow = modelPrinter->data(modelPrinter->index(newindex.row(),4),Qt::DisplayRole).toString();
-            QString m_print = modelPrinter->data(modelPrinter->index(newindex.row(),5),Qt::DisplayRole).toString();
-            QString m_guest = modelPrinter->data(modelPrinter->index(newindex.row(),7),Qt::DisplayRole).toString();
-            QString m_printing = modelPrinter->data(modelPrinter->index(newindex.row(),8),Qt::DisplayRole).toString();
-            QString m_validUsers = modelPrinter->data(modelPrinter->index(newindex.row(),9),Qt::DisplayRole).toString();
-            QString m_id = modelPrinter->data(modelPrinter->index(newindex.row(),6),Qt::DisplayRole).toString();
-            list << m_printer << m_com << m_dir << m_write << m_brow << m_print << m_guest << m_printing << m_validUsers;
-            SambaPrinter *smb = new SambaPrinter(list,"modify",m_id,this);
-            connect(smb,&SambaPrinter::saveConfig,this,static_cast< void(Samba::*)(QString)>(&Samba::saveFile));
-            connect(smb,&SambaPrinter::saveList,this,&Samba::readSharePrinter);
-            smb->exec();
+            QString m_printing = model->data(model->index(newindex.row(),10),Qt::DisplayRole).toString();
+            list << m_com << m_dir << m_brow << m_pub << m_write << m_print << m_guest << m_cmask << m_dirmask << m_validUsers << m_printing;
+            if(m_dir == SAMBA_SPOOL)
+            {
+                manager->setGeneralValue("Shared/printer","printer");
+                SambaPrinter *smb = new SambaPrinter(list,"modify",this);
+                connect(smb,&SambaPrinter::saveConfig,this,static_cast< void(Samba::*)(QString,QStringList)>(&Samba::saveFile));
+                connect(smb,&SambaPrinter::saveList,this,&Samba::readShareFileDirectory);
+                smb->exec();
+            }
+            else{
+                manager->setGeneralValue("Shared/directory","directory");
+                SambaConfiguration *smb = new SambaConfiguration(list,"modify",this);
+                connect(smb,&SambaConfiguration::saveConfig,this,static_cast< void(Samba::*)(QString,QStringList)>(&Samba::saveFile));
+                connect(smb,&SambaConfiguration::saveList,this,&Samba::readShareFileDirectory);
+                smb->exec();
+            }
         }
     }
     else QMessageBox::warning(this,tr("CondresControlCenter"),tr("Select row to modified"));
@@ -372,8 +409,7 @@ void Samba::configUser()
         if(newindex.row() < modelUser->rowCount())
         {
             QString m_user = modelUser->data(modelUser->index(newindex.row(),0),Qt::DisplayRole).toString();
-            QString m_id = modelUser->data(modelUser->index(newindex.row(),6),Qt::DisplayRole).toString();
-            SambaUser *smb = new SambaUser(m_id,m_user,"modify",this);
+            SambaUser *smb = new SambaUser(m_user,"modify",this);
             connect(smb,&SambaUser::saveList,this,&Samba::readUser);
             smb->exec();
         }
@@ -383,43 +419,38 @@ void Samba::configUser()
 
 void Samba::addCongigDir()
 {
-    QSqlQuery query;
-    query.prepare("select count(id)+1 from samba_share");
-    query.exec();
-    if(query.next()){
-        SambaConfiguration *smb = new SambaConfiguration(QStringList(),"edit",query.value(0).toString(),this);
-        connect(smb,&SambaConfiguration::saveConfig,this,static_cast< void(Samba::*)(QString)>(&Samba::saveFile));
-        connect(smb,&SambaConfiguration::saveList,this,&Samba::readShareFileDirectory);
-        smb->exec();
-    }
+    AddSamba *smb = new AddSamba(this);
+    connect(smb,&AddSamba::shareSamba,this,&Samba::addShareAll);
+    smb->exec();
 }
 
-void Samba::addSambaPrinter()
+void Samba::addShareAll(QString m_share)
 {
-    QSqlQuery query;
-    query.prepare("select count(id)+1 from samba_print");
-    query.exec();
-    if(query.next()){
-        SambaPrinter *smb = new SambaPrinter(QStringList(),"edit",query.value(0).toString(),this);
-        connect(smb,&SambaPrinter::saveConfig,this,static_cast< void(Samba::*)(QString)>(&Samba::saveFile));
-        connect(smb,&SambaPrinter::saveList,this,&Samba::readSharePrinter);
+    if(m_share == "printer")
+    {
+        manager->setGeneralValue("Shared/printer","printer");
+        SambaPrinter *smb = new SambaPrinter(QStringList(),"edit",this);
+        connect(smb,&SambaPrinter::saveConfig,this,static_cast< void(Samba::*)(QString,QStringList)>(&Samba::saveFile));
+        connect(smb,&SambaPrinter::saveList,this,&Samba::readShareFileDirectory);
+        smb->exec();
+    }
+    else if(m_share == "directory"){
+        manager->setGeneralValue("Shared/directory","directory");
+        SambaConfiguration *smb = new SambaConfiguration(QStringList(),"edit",this);
+        connect(smb,&SambaConfiguration::saveConfig,this,static_cast< void(Samba::*)(QString,QStringList)>(&Samba::saveFile));
+        connect(smb,&SambaConfiguration::saveList,this,&Samba::readShareFileDirectory);
         smb->exec();
     }
 }
 
 void Samba::addUser()
 {
-    QSqlQuery query;
-    query.prepare("select count(id)+1 from samba_user");
-    query.exec();
-    if(query.next()){
-        SambaUser *smb = new SambaUser(query.value(0).toString(),QString(),"edit",this);
-        connect(smb,&SambaUser::saveList,this,&Samba::readUser);
-        smb->exec();
-    }
+    SambaUser *smb = new SambaUser(QString(),"edit",this);
+    connect(smb,&SambaUser::saveList,this,&Samba::readUser);
+    smb->exec();
 }
 
-void Samba::saveFile(QString nameFile)
+void Samba::saveFile(QString nameFile, QStringList m_list)
 {
     QFile file(nameFile);
     if(file.open(QIODevice::ReadWrite | QIODevice::Text))
@@ -429,12 +460,12 @@ void Samba::saveFile(QString nameFile)
         stream << "[global]" << "\n";
         stream << QString("\tworkgroup =")+QString(ui->lineEditWorkgroup->text()) << "\n";
         stream << QString("\tserver string =")+QString(ui->lineEditServer->text()) << "\n";
-        if(ui->lineEditNetbios->text() == "")
+        if(ui->lineEditNetbios->text().remove("\n") == "")
             stream << QString("\t;netbios name =") << "\n";
         else
             stream << QString("\tnetbios name =")+QString(ui->lineEditNetbios->text()) << "\n";
         stream << QString("\tsecurity = ")+QString(ui->lineEditSecurity->text()) << "\n";
-        if(ui->lineEditHost->text() == "")
+        if(ui->lineEditHost->text().remove("\n") == "")
             stream << QString("\t;hosts allow =") << "\n";
         else
             stream << QString("\thosts allow =")+QString(ui->lineEditHost->text()) << "\n";
@@ -458,139 +489,120 @@ void Samba::saveFile(QString nameFile)
                 QString m_cmask = ui->tableViewFile->model()->data(ui->tableViewFile->model()->index(i,7),Qt::DisplayRole).toString();
                 QString m_dirmask = ui->tableViewFile->model()->data(ui->tableViewFile->model()->index(i,8),Qt::DisplayRole).toString();
                 QString m_validUsers = ui->tableViewFile->model()->data(ui->tableViewFile->model()->index(i,9),Qt::DisplayRole).toString();
-                QStringList dir = QString(m_dir).split("/");
-                QVector<QString> str;
-                for(int i=0; i < dir.size(); i++)
-                    str << dir.at(i);
-                stream << QString("["+str.back()).remove("\n")+QString("]") << "\n";
-                stream << QString("\tcomment =")+QString(m_com.remove("\n")).remove(" ") << "\n";
-                stream << QString("\tpath =")+QString(m_dir.remove("\n")).remove(" ") << "\n";
-                stream << QString("\tbrowseable =")+QString(m_brow.remove("\n")).remove(" ") << "\n";
-                stream << QString("\tpublic =")+QString(m_pub) << "\n";
-                stream << QString("\twritable =")+QString(m_write) << "\n";
-                stream << QString("\tprintable =")+QString(m_print) << "\n";
-                stream << QString("\tguest ok =")+QString(m_guest) << "\n";
-                stream << QString("\tcreate mask =")+QString(m_cmask) << "\n";
-                stream << QString("\tdirectory mask =")+QString(m_dirmask) << "\n";
-                if(m_validUsers == "")
-                    stream << QString("\t;valid users =")+QString("") << "\n";
-                else
-                    stream << QString("\tvalid users =")+QString(m_validUsers) << "\n";
+                QString m_printing = ui->tableViewFile->model()->data(ui->tableViewFile->model()->index(i,10),Qt::DisplayRole).toString();
+                    if(m_dir == SAMBA_SPOOL){
+                        stream << QString("[")+QString(m_com).remove("\n")+QString("]") << "\n";
+                        stream << QString("\tcomment =")+QString(m_com.remove("\n")).remove(" ") << "\n";
+                        stream << QString("\tpath =")+QString(m_dir.remove("\n")).remove(" ") << "\n";
+                        stream << QString("\tbrowseable =")+QString(m_brow.remove("\n")).remove(" ") << "\n";
+                        stream << QString("\twritable =")+QString(m_write) << "\n";
+                        stream << QString("\tprintable =")+QString(m_print) << "\n";
+                        stream << QString("\tguest ok =")+QString(m_guest) << "\n";
+                        stream << QString("\tprinting =")+QString(m_printing) << "\n";
+                        if(m_validUsers == "")
+                            stream << QString("\t;valid users =")+QString("") << "\n";
+                        else
+                            stream << QString("\tvalid users =")+QString(m_validUsers) << "\n";
+                    }
+                    else if(m_dir != SAMBA_SPOOL){
+                        QStringList dir = QString(m_dir).split("/");
+                        QVector<QString> str;
+                        for(int i=0; i < dir.size(); i++)
+                            str << dir.at(i);
+                            stream << QString("["+str.back()).remove("\n")+QString("]") << "\n";
+                            stream << QString("\tcomment =")+QString(m_com.remove("\n")).remove(" ") << "\n";
+                            stream << QString("\tpath =")+QString(m_dir.remove("\n")).remove(" ") << "\n";
+                            stream << QString("\tbrowseable =")+QString(m_brow.remove("\n")).remove(" ") << "\n";
+                            stream << QString("\tpublic =")+QString(m_pub) << "\n";
+                            stream << QString("\twritable =")+QString(m_write) << "\n";
+                            stream << QString("\tprintable =")+QString(m_print) << "\n";
+                            stream << QString("\tguest ok =")+QString(m_guest) << "\n";
+                            stream << QString("\tcreate mask =")+QString(m_cmask) << "\n";
+                            stream << QString("\tdirectory mask =")+QString(m_dirmask) << "\n";
+                            if(m_validUsers == "")
+                                stream << QString("\t;valid users =")+QString("") << "\n";
+                            else
+                                stream << QString("\tvalid users =")+QString(m_validUsers) << "\n";
+                    }
             }
         }
-        for(int x=0; x < ui->tableView->model()->rowCount(); x++){
-            if(x != -1)
-            {
-                QString m_printer = ui->tableView->model()->data(ui->tableView->model()->index(x,0),Qt::DisplayRole).toString();
-                QString m_com = ui->tableView->model()->data(ui->tableView->model()->index(x,1),Qt::DisplayRole).toString();
-                QString m_dir = ui->tableView->model()->data(ui->tableView->model()->index(x,2),Qt::DisplayRole).toString();
-                QString m_write = ui->tableView->model()->data(ui->tableView->model()->index(x,3),Qt::DisplayRole).toString();
-                QString m_brow = ui->tableView->model()->data(ui->tableView->model()->index(x,4),Qt::DisplayRole).toString();
-                QString m_print = ui->tableView->model()->data(ui->tableView->model()->index(x,5),Qt::DisplayRole).toString();
-                QString m_guest = ui->tableView->model()->data(ui->tableView->model()->index(x,7),Qt::DisplayRole).toString();
-                QString m_printing = ui->tableView->model()->data(ui->tableView->model()->index(x,8),Qt::DisplayRole).toString();
-                QString m_validUsers = ui->tableView->model()->data(ui->tableView->model()->index(x,9),Qt::DisplayRole).toString();
-                //Write printer
-                stream << QString("["+m_printer).remove("\n")+QString("]") << "\n";
-                stream << QString("\tcomment =")+QString(m_com.remove("\n")).remove(" ") << "\n";
-                stream << QString("\tpath =")+QString(m_dir.remove("\n")).remove(" ") << "\n";
-                stream << QString("\tbrowseable =")+QString(m_brow.remove("\n")).remove(" ") << "\n";
-                stream << QString("\twritable =")+QString(m_write) << "\n";
-                stream << QString("\tprintable =")+QString(m_print) << "\n";
-                stream << QString("\tguest ok =")+QString(m_guest) << "\n";
-                stream << QString("\tprinting =")+QString(m_printing) << "\n";
-                if(m_validUsers == "")
-                    stream << QString("\t;valid users =")+QString("") << "\n";
-                else
-                    stream << QString("\tvalid users =")+QString(m_validUsers) << "\n";
-            }
+        if(manager->generalValue("Shared/printer",QVariant()).toString() == "printer"){
+            stream << QString("[")+QString(m_list.at(0)).remove("\n")+QString("]") << "\n";
+            stream << QString("\tcomment =")+QString(m_list.at(1)).remove("\n").remove(" ") << "\n";
+            stream << QString("\tpath =")+QString(m_list.at(2)).remove("\n").remove(" ") << "\n";
+            stream << QString("\tbrowseable =")+QString(m_list.at(3)).remove("\n").remove(" ") << "\n";
+            stream << QString("\twritable =")+QString(m_list.at(4)) << "\n";
+            stream << QString("\tprintable =")+QString(m_list.at(5)) << "\n";
+            stream << QString("\tguest ok =")+QString(m_list.at(6)) << "\n";
+            stream << QString("\tprinting =")+QString(m_list.at(7)) << "\n";
+            if(m_list.at(8) == "")
+                stream << QString("\t;valid users =")+QString("") << "\n";
+            else
+                stream << QString("\tvalid users =")+QString(m_list.at(8)) << "\n";
+        }
+        else if(manager->generalValue("Shared/directory",QVariant()).toString() == "directory"){
+            QStringList dir = QString(m_list.at(0)).split("/");
+            QVector<QString> str;
+            for(int i=0; i < dir.size(); i++)
+                str << dir.at(i);
+            stream << QString("["+str.back()).remove("\n")+QString("]") << "\n";
+            stream << QString("\tcomment =")+QString(m_list.at(1)).remove("\n").remove(" ") << "\n";
+            stream << QString("\tpath =")+QString(m_list.at(0)).remove("\n").remove(" ") << "\n";
+            stream << QString("\tbrowseable =")+QString(m_list.at(2)).remove("\n").remove(" ") << "\n";
+            stream << QString("\tpublic =")+QString(m_list.at(3)) << "\n";
+            stream << QString("\twritable =")+QString(m_list.at(4)) << "\n";
+            stream << QString("\tprintable =")+QString(m_list.at(5)) << "\n";
+            stream << QString("\tguest ok =")+QString(m_list.at(6)) << "\n";
+            stream << QString("\tcreate mask =")+QString(m_list.at(7)) << "\n";
+            stream << QString("\tdirectory mask =")+QString(m_list.at(8)) << "\n";
+            if(m_list.at(9) == "")
+                stream << QString("\t;valid users =")+QString("") << "\n";
+            else
+                stream << QString("\tvalid users =")+QString(m_list.at(9)) << "\n";
         }
     }
     file.close();
+    if(manager->generalValue("Shared/directory",QVariant()).toString() == "directory" || 
+        manager->generalValue("Shared/printer",QVariant()).toString() == "printer") 
+        load(SAMBA_TEMP);
 }
 
 void Samba::saveFile()
-{
-    QSqlQuery query;
-    query.prepare("UPDATE samba SET workgroup='"+ui->lineEditWorkgroup->text()+"', "
-                  "server_string='"+ui->lineEditServer->text()+"', security='"+ui->lineEditSecurity->text()+"',"
-                  "load_printers='"+ui->comboBoxLoadPrinters->currentText()+"', guest_account='"+ui->lineEditGuest->text()+"', " "log_file='"+ui->lineEdit->text()+"', max_log_size='"+QString::number(ui->spinBoxLogSize->value())+"',"
-                  "netbios='"+ui->lineEditNetbios->text()+"', host_allow='"+ui->lineEditHost->text()+"',"
-                  "printing='"+ui->lineEditPrinting->text()+"' where id=1");
-    if(query.exec())
-        qCDebug(CondresSambaConfig) << "update samba config successfull...";
-    else
-        qCDebug(CondresSambaConfig) << "Cannot update samba config...\n" << query.lastError();
-    
-    saveFile(SAMBA_TEMP);
-    QProcess::startDetached("cp -rv /etc/samba/smb.conf /etc/samba/smb.conf.bak");
-    QProcess::startDetached("cp -rv /tmp/smb.conf /etc/samba/smb.conf");
-    load(SAMBA_FILE);
-    QProcess::startDetached("rm -rf "+QString(SAMBA_TEMP));
+{    
+    if(ui->lineEditWorkgroup->text().isEmpty() || ui->lineEdit->text().isEmpty() || ui->lineEditGuest->text().isEmpty()
+        || ui->lineEditSecurity->text().isEmpty() || ui->lineEditPrinting->text().isEmpty() || ui->lineEditServer->text().isEmpty())
+    {
+        ui->lineEditWorkgroup->setStyleSheet("QLineEdit{background-color:red}");
+        ui->lineEdit->setStyleSheet("QLineEdit{background-color:red}");
+        ui->lineEditGuest->setStyleSheet("QLineEdit{background-color:red}");
+        ui->lineEditSecurity->setStyleSheet("QLineEdit{background-color:red}");
+        ui->lineEditPrinting->setStyleSheet("QLineEdit{background-color:red}");
+        ui->lineEditServer->setStyleSheet("QLineEdit{background-color:red}");
+        QMessageBox::warning(this,tr("CondresControlCenter"),tr("This strings is required"));
+    }
+    else{
+        manager->setGeneralValue("Shared/directory","");
+        manager->setGeneralValue("Shared/printer","");
+        saveFile(SAMBA_TEMP,QStringList());
+        QProcess::startDetached("cp -rv /etc/samba/smb.conf /etc/samba/smb.conf.bak");
+        QProcess::startDetached("cp -rv /tmp/smb.conf /etc/samba/smb.conf");
+        load(SAMBA_FILE);
+        QProcess::startDetached("rm -rf "+QString(SAMBA_TEMP));
+    }
 }
 
 void Samba::delSambaShare()
 {
-    QString m_id = ui->tableViewFile->model()->data(ui->tableViewFile->model()->index(ui->tableViewFile->selectionModel()->currentIndex().row(),10),Qt::DisplayRole).toString();
-    if (!m_id.isEmpty())
-    {
-        QSqlQuery query;
-        query.prepare("DELETE FROM samba_share WHERE id='"+m_id+"'");
-        if (query.exec())
-        {
-            qCDebug(CondresSambaConfig) << tr("Delete id ")+m_id+tr(" successfull...");
-        }
-        else
-        {
-            QMessageBox::warning(this,"SambaConfiguration",tr("Cannot delete ")+query.lastError().text());
-        }
-    }
-    readShareFileDirectory();
-}
-
-void Samba::delSambaPrinter()
-{
-    QString m_id = ui->tableView->model()->data(ui->tableView->model()->index(ui->tableView->selectionModel()->currentIndex().row(),6),Qt::DisplayRole).toString();
-    if (!m_id.isEmpty())
-    {
-        QSqlQuery query;
-        query.prepare("DELETE FROM samba_print WHERE id='"+m_id+"'");
-        if (query.exec())
-        {
-            qCDebug(CondresSambaConfig) << tr("Delete id ")+m_id+tr(" successfull...");
-        }
-        else
-        {
-            QMessageBox::warning(this,"SambaPrinter",tr("Cannot delete ")+query.lastError().text());
-        }
-    }
-    readSharePrinter();
+    manager->setGeneralValue("Shared/directory","");
+    manager->setGeneralValue("Shared/printer","");
+    QModelIndex currentIndex = ui->tableViewFile->selectionModel()->currentIndex();
+    model->removeRow(currentIndex.row());
 }
 
 void Samba::delUser()
 {
-    QString m_id = ui->tableView_2->model()->data(ui->tableView_2->model()->index(ui->tableView_2->selectionModel()->currentIndex().row(),1),Qt::DisplayRole).toString();
-    if (!m_id.isEmpty())
-    {
-        QSqlQuery qctrl;
-        qctrl.prepare("SELECT * FROM samba_user WHERE id='"+m_id+"'");
-        qctrl.exec();
-        if (qctrl.next())
-        {
-            QProcess::startDetached(QString("smbpasswd -x ")+qctrl.value("user").toString());
-        }
-
-        QSqlQuery query;
-        query.prepare("DELETE FROM samba_user WHERE id='"+m_id+"'");
-        if (query.exec())
-        {
-            qCDebug(CondresSambaConfig) << tr("Delete id ")+m_id+tr(" successfull...");
-        }
-        else
-        {
-            QMessageBox::warning(this,"SambaPrinter",tr("Cannot delete ")+query.lastError().text());
-        }
-    }
+    QString m_user = ui->tableView_2->model()->data(ui->tableView_2->model()->index(ui->tableView_2->selectionModel()->currentIndex().row(),0),Qt::DisplayRole).toString();
+    QProcess::startDetached(QString("smbpasswd -x ")+m_user);
     readUser();
 }
 
@@ -610,14 +622,13 @@ Samba::~Samba()
 
 //Samba config directory
 SambaConfiguration::SambaConfiguration(QStringList listConfigDir, 
-                                       QString create_modify, QString id, QWidget* parent) :
+                                       QString create_modify, QWidget* parent) :
                                        QDialog(parent),
                                        m_ui(new Ui::SambaConfiguration)
 {
     m_ui->setupUi(this);
     m_list = listConfigDir;
     m_createModify = create_modify;
-    m_id = id;
     m_ui->lineEditDir->setReadOnly(true);
     if(m_createModify == tr("modify"))
     {
@@ -647,36 +658,23 @@ SambaConfiguration::SambaConfiguration(QStringList listConfigDir,
 
 void SambaConfiguration::saveFile()
 {
-    if(m_createModify == tr("modify"))
+    if(m_ui->lineEditCreateMask->text().isEmpty() ||  m_ui->lineEditDirectoryMask->text().isEmpty())
     {
-        QSqlQuery query; query.prepare("UPDATE samba_share SET comment='"+m_ui->lineEditComment->text()+"',"
-            "path='"+m_ui->lineEditDir->text()+"', browseable='"+m_ui->comboBoxBrow->currentText()+"',"
-            "public='"+m_ui->comboBoxPublic->currentText()+"',writable='"+m_ui->comboBoxWritable->currentText()+"',"
-            "printable='"+m_ui->comboBoxPrintable->currentText()+"',"
-            "guest_ok='"+m_ui->comboBoxGuest->currentText()+"',create_mask='"+m_ui->lineEditCreateMask->text()+"',"
-            "directory_mask='"+m_ui->lineEditDirectoryMask->text()+"', valid_users='"+m_ui->lineEditValidUser->text()+"' "
-            "where id='"+m_id+"'");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Update successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot update..." << query.lastError().text();;
+        m_ui->lineEditCreateMask->setStyleSheet("QLineEdit{background-color:red}");
+        m_ui->lineEditDirectoryMask->setStyleSheet("QLineEdit{background-color:red}");
+        QMessageBox::warning(this,tr("CondresControlCenter"),tr("This strings is required"));
     }
-    else if(m_createModify == tr("edit"))
-    {
-        QSqlQuery query; query.prepare("INSERT INTO samba_share VALUES ('"+m_ui->lineEditComment->text()+"',"
-            "'"+m_ui->lineEditDir->text()+"','"+m_ui->comboBoxBrow->currentText()+"',"
-            "'"+m_ui->comboBoxPublic->currentText()+"','"+m_ui->comboBoxWritable->currentText()+"',"
-            "'"+m_ui->comboBoxPrintable->currentText()+"','"+m_ui->comboBoxGuest->currentText()+"','"+m_ui->lineEditCreateMask->text()+"',"
-            "'"+m_ui->lineEditDirectoryMask->text()+"','"+m_ui->lineEditValidUser->text()+"','"+m_id+"')");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Insert successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot insert..." << query.lastError().text();
+    else{
+        QStringList list;
+        list << m_ui->lineEditDir->text() << m_ui->lineEditComment->text() << m_ui->comboBoxBrow->currentText() <<
+                m_ui->comboBoxPublic->currentText() << m_ui->comboBoxWritable->currentText() << m_ui->comboBoxPrintable->currentText() <<
+                m_ui->comboBoxGuest->currentText() << m_ui->lineEditCreateMask->text() << m_ui->lineEditDirectoryMask->text() <<
+                m_ui->lineEditValidUser->text();
+        
+        emit saveConfig(SAMBA_TEMP,list);
+        emit saveList(SAMBA_TEMP);
+        close();
     }
-    
-    emit saveConfig(SAMBA_TEMP);
-    emit saveList();
-    close();
 }
 
 void SambaConfiguration::openDirectory()
@@ -699,26 +697,25 @@ SambaConfiguration::~SambaConfiguration()
 
 //Samba config printer
 SambaPrinter::SambaPrinter(QStringList listConfigDir, QString create_modify, 
-                           QString id, QWidget* parent) :
+                           QWidget* parent) :
                            QDialog(parent),
                            _ui(new Ui::SambaPrinter),
                            m_list(listConfigDir),
-                           m_createModify(create_modify),
-                           m_id(id)
+                           m_createModify(create_modify)
 {
     _ui->setupUi(this);
     if(m_createModify == tr("modify"))
     {
         setWindowTitle(tr("Edit Samba Printer"));
         _ui->comboBoxPrinter->setCurrentText(QString(m_list.at(0)));
-        _ui->lineEditComment->setText(QString(m_list.at(1)));
-        _ui->lineEditDirectory->setText(QString(m_list.at(2)));
-        _ui->comboBoxWritable->setCurrentText(QString(m_list.at(3)));
-        _ui->comboBoxBrow->setCurrentText(QString(m_list.at(4)));
+        _ui->lineEditComment->setText(QString(m_list.at(0)));
+        _ui->lineEditDirectory->setText(QString(m_list.at(1)));
+        _ui->comboBoxWritable->setCurrentText(QString(m_list.at(4)));
+        _ui->comboBoxBrow->setCurrentText(QString(m_list.at(2)));
         _ui->comboBoxPrintable->setCurrentText(QString(m_list.at(5)));
         _ui->comboBoxGuest->setCurrentText(QString(m_list.at(6)));
-        _ui->lineEditPrinting->setText(QString(m_list.at(7)));
-        _ui->lineEditValidUsers->setText(QString(m_list.at(8)));
+        _ui->lineEditPrinting->setText(QString(m_list.at(10)));
+        _ui->lineEditValidUsers->setText(QString(m_list.at(9)));
     }
     else if(m_createModify == tr("edit")){ 
         setWindowTitle(tr("Add Samba Printer"));
@@ -755,34 +752,12 @@ void SambaPrinter::viewPrinter()
 
 void SambaPrinter::saveFile()
 {
-    if(m_createModify == tr("modify"))
-    {
-        QSqlQuery query; query.prepare("UPDATE samba_print SET comment='"+_ui->lineEditComment->text()+"',"
-            "directory='"+_ui->lineEditDirectory->text()+"', browseable='"+_ui->comboBoxBrow->currentText()+"',"
-            "printer='"+_ui->comboBoxPrinter->currentText()+"',writable='"+_ui->comboBoxWritable->currentText()+"',"
-            "printable='"+_ui->comboBoxPrintable->currentText()+"',"
-            "guest='"+_ui->comboBoxGuest->currentText()+"',printing='"+_ui->lineEditPrinting->text()+"',"
-            "valid_users='"+_ui->lineEditValidUsers->text()+"' "
-            "where id='"+m_id+"'");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Update successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot update..." << query.lastError().text();;
-    }
-    else if(m_createModify == tr("edit"))
-    {
-        QSqlQuery query; query.prepare("INSERT INTO samba_print VALUES ('"+_ui->comboBoxPrinter->currentText()+"',"
-            "'"+_ui->lineEditComment->text()+"','"+_ui->lineEditDirectory->text()+"',"
-            "'"+_ui->comboBoxWritable->currentText()+"','"+_ui->comboBoxBrow->currentText()+"',"
-            "'"+_ui->comboBoxPrintable->currentText()+"','"+m_id+"','"+_ui->comboBoxGuest->currentText()+"',"
-            "'"+_ui->lineEditPrinting->text()+"','"+_ui->lineEditValidUsers->text()+"')");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Insert successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot insert..." << query.lastError().text();
-    }
-    emit saveConfig(SAMBA_TEMP);
-    emit saveList();
+    QStringList list;
+    list << _ui->comboBoxPrinter->currentText() << _ui->lineEditComment->text() << _ui->lineEditDirectory->text() <<
+            _ui->comboBoxBrow->currentText() << _ui->comboBoxWritable->currentText() << _ui->comboBoxPrintable->currentText() <<
+            _ui->comboBoxGuest->currentText() << _ui->lineEditPrinting->text() << _ui->lineEditValidUsers->text();
+    emit saveConfig(SAMBA_TEMP,list);
+    emit saveList(SAMBA_TEMP);
     close();
 }
 
@@ -792,10 +767,9 @@ SambaPrinter::~SambaPrinter()
 }
 
 //Samba user 
-SambaUser::SambaUser(QString id, QString users, QString edit, QWidget *parent) :
+SambaUser::SambaUser(QString users, QString edit, QWidget *parent) :
     QDialog(parent),
     _ui_(new Ui::SambaUser),
-    m_id(id),
     m_user(users),
     m_edit(edit)
 {
@@ -860,29 +834,40 @@ void SambaUser::readProcess()
 
 void SambaUser::saveConfig()
 {
-    if(m_edit == tr("modify"))
-    {
-        QSqlQuery query; query.prepare("UPDATE samba_user SET user='"+_ui_->lineEditUser->text()+"' "
-            "where id='"+m_id+"'");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Update successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot update..." << query.lastError().text();;
-    }
-    else if(m_edit == tr("edit"))
-    {
-        QSqlQuery query; query.prepare("INSERT INTO samba_user VALUES ('"+_ui_->lineEditUser->text()+"',"
-            "'"+m_id+"')");
-        if(query.exec())
-            qCDebug(CondresSambaConfig) << "Insert successfull...";
-        else
-            qCDebug(CondresSambaConfig) << "Cannot insert..." << query.lastError().text();
-    }
     emit saveList();
     close();
 }
 
 SambaUser::~SambaUser()
+{
+    delete _ui_;
+}
+
+//addSamba
+AddSamba::AddSamba(QWidget* parent) :
+    QDialog(parent),
+    _ui_(new Ui::AddSamba)
+{
+    _ui_->setupUi(this);
+    setWindowTitle("Select option");
+    connect(_ui_->toolButtonDir,&QToolButton::clicked,this,&AddSamba::addShareDirectory);
+    connect(_ui_->toolButtonPrinter,&QToolButton::clicked,this,&AddSamba::addPrinterDirectory);
+    connect(_ui_->toolButtonClose,&QToolButton::clicked,this,&AddSamba::close);
+}
+
+void AddSamba::addPrinterDirectory()
+{
+    close();
+    emit shareSamba(QString("printer"));
+}
+
+void AddSamba::addShareDirectory()
+{
+    close();
+    emit shareSamba(QString("directory"));
+}
+
+AddSamba::~AddSamba()
 {
     delete _ui_;
 }

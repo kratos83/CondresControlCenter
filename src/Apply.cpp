@@ -20,6 +20,7 @@
 #include "Apply.h"
 #include "ui_Apply.h"
 #include <iostream>
+#include "constant.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ Apply::Apply(QStringList listPackages, QString install_remove,
     m_install_remove = install_remove;
     ui->listWidget->addItems(m_list);
     connect(ui->cancel,&QPushButton::clicked,this,&Apply::closeDialog);
+    connect(ui->pushButtonJobs, &QPushButton::clicked,this,&Apply::stopJobs);
     if(m_install_remove == "install"){
         ui->remove->setVisible(false);
         ui->local->setVisible(false);
@@ -92,7 +94,7 @@ void Apply::installPackages()
 {
     QStringList list,list1;
     m_process->setReadChannel(QProcess::StandardOutput);
-    m_process->setProcessChannelMode(QProcess::MergedChannels);
+    m_process->setProcessChannelMode(QProcess::ForwardedOutputChannel);
     connect(m_process,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -157,7 +159,7 @@ void Apply::ReadyPkg()
     QString results;
     ui->stackedWidget->setCurrentIndex(1);
     if(m_install_remove == "install")
-        results = m_process->readAll();
+        results = m_process->readAllStandardOutput();
     else if(m_install_remove == "remove")
         results = m_process_remove->readAll();
     else if(m_install_remove == "local")
@@ -170,6 +172,7 @@ void Apply::ReadyPkg()
 
         QString str;
         str.append(resultsVector.at(i));
+        std::cout << str.toStdString() << std::endl;
         ui->console->append("<font color=\"white\">"+resultsVector.at(i)+"</font></br>");
     }
 }
@@ -198,6 +201,14 @@ void Apply::closeDialog()
     }
     else
         close();
+}
+
+void Apply::stopJobs()
+{
+  QProcess pacman;
+  QString command = "\"killall pacman; rm " + QString(DATABASE_VAR) + "\"";
+  pacman.start(command);
+  pacman.waitForFinished();
 }
 
 Apply::~Apply()

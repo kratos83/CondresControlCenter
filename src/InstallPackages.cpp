@@ -38,7 +38,7 @@ InstallPackages::InstallPackages(QWidget *parent) :
     setWindowTitle("Install packages");
     connect(ui->applica,&QPushButton::clicked,this,&InstallPackages::ApplyImpo);
     connect(ui->remove,&QPushButton::clicked,this,&InstallPackages::removeImpo);
-    connect(ui->cerca_line,&QLineEdit::textEdited,this,&InstallPackages::searchPackages);
+    connect(ui->cerca_line,&QLineEdit::textChanged,this,&InstallPackages::searchPackages);
     connect(ui->viewInfo,&QToolButton::clicked,this,&InstallPackages::openTabWidget);
     ui->viewInfo->setToolTip("Open information");
     lista();
@@ -142,11 +142,18 @@ void InstallPackages::clickListRepo(QListWidgetItem* item)
                 m_item = new QTableWidgetItem(" ");
                 if(list.at(0) == "i"){
                     m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(197,255,201));
                     m_item->setCheckState(Qt::Checked);
                 }
                 else if(list.at(0) == "n"){
                     m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
                     m_item->setCheckState(Qt::Unchecked);
+                }
+                else if(list.at(0) == "o"){
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
+                    m_item->setCheckState(Qt::Checked);
                 }
                 name = new QTableWidgetItem(QString(list.at(2)));
                 versione = new QTableWidgetItem(QString(list.at(3)));
@@ -213,11 +220,18 @@ void InstallPackages::clickListItem(QListWidgetItem* item)
                 m_item = new QTableWidgetItem(" ");
                 if(list.at(0) == "i"){
                     m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(197,255,201));
                     m_item->setCheckState(Qt::Checked);
                 }
                 else if(list.at(0) == "n"){
                     m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
                     m_item->setCheckState(Qt::Unchecked);
+                }
+                else if(list.at(0) == "o"){
+                    m_item->data(Qt::CheckStateRole);
+                    m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
+                    m_item->setCheckState(Qt::Checked);
                 }
                 name = new QTableWidgetItem(QString(list.at(2)));
                 versione = new QTableWidgetItem(QString(list.at(3)));
@@ -261,11 +275,18 @@ void InstallPackages::lista()
         m_item = new QTableWidgetItem(" ");
         if(list.at(0) == "i"){
             m_item->data(Qt::CheckStateRole);
+            m_item->setData(Qt::BackgroundRole,QColor(197,255,201));
             m_item->setCheckState(Qt::Checked);
         }
         else if(list.at(0) == "n"){
             m_item->data(Qt::CheckStateRole);
+            m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
             m_item->setCheckState(Qt::Unchecked);
+        }
+        else if(list.at(0) == "o"){
+            m_item->data(Qt::CheckStateRole);
+            m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
+            m_item->setCheckState(Qt::Checked);
         }
         name = new QTableWidgetItem(QString(list.at(2)));
         versione = new QTableWidgetItem(QString(list.at(3)));
@@ -386,28 +407,6 @@ void InstallPackages::removeImpo()
         m_apply = new Apply(list,"remove",this);
         m_apply->exec();
     }
-}
-
-QString InstallPackages::getPeso(QString byteReceived)
-{
-    //Calcolo la dimensione del file da scaricare
-     double peso = byteReceived.toDouble();
-
-    QString dt;
-    if (peso < 1024) {
-        dt = "bytes";
-    } else if (peso < 1024*1024) {
-        peso /= 1024;
-        dt = "kB";
-    } else {
-        peso /= 1024*1024;
-        dt = "MB";
-    }
-
-    QString text = QString::fromLatin1("%1 %2").arg(peso,3,'f',1).arg(dt);
-    m_peso = text;
-
-    return m_peso;
 }
 
 InstallPackages::~InstallPackages()

@@ -43,7 +43,6 @@ public:
     void lista();
     void setMenuInstall();
 public slots:
-    QString getPeso(QString byteReceived);
     void TableClicked(const QModelIndex &index);
     void TableClickedItem(QTableWidgetItem *item);
     void ApplyImpo();

@@ -68,8 +68,8 @@
         <property name="text">
          <string/>
         </property>
-        <property name="pixmap">
-         <pixmap resource="../images.qrc">:/images/application-exit.png</pixmap>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>

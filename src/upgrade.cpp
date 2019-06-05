@@ -44,6 +44,7 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     mov->start();
     connect(ui->applica,&QPushButton::clicked,this,&Upgrade::updatePackages);
     connect(ui->tableWidget,&QTableWidget::itemChanged,this,&Upgrade::itemClicked);
+    connect(ui->pushButtonStop,&QPushButton::clicked,this,&Upgrade::stopJobs);
     lista();
     getListUpdate();
 }
@@ -104,6 +105,7 @@ void Upgrade::getListUpdate()
             ui->stackedWidget->setCurrentIndex(3);
             ui->applica->setVisible(false);
             ui->dettagli->setVisible(false);
+            ui->pushButtonStop->setVisible(false);
             emit finishUpdate(true);
     }
     else{
@@ -152,28 +154,6 @@ void Upgrade::getListUpdate()
     }
 }
 
-QString Upgrade::getPeso(QString byteReceived)
-{
-    //Calcolo la dimensione del file da scaricare
-     double peso = byteReceived.toDouble();
-
-    QString dt;
-    if (peso < 1024) {
-        dt = "bytes";
-    } else if (peso < 1024*1024) {
-        peso /= 1024;
-        dt = "kB";
-    } else {
-        peso /= 1024*1024;
-        dt = "MB";
-    }
-
-    QString text = QString::fromLatin1("%1 %2").arg(peso,3,'f',1).arg(dt);
-    m_peso = text;
-
-    return m_peso;
-}
-
 Upgrade::~Upgrade()
 {
     delete ui;
@@ -203,7 +183,7 @@ void Upgrade::updatePackages()
     processUpgrade->setProcessChannelMode(QProcess::MergedChannels);
     connect(processUpgrade,&QProcess::readyReadStandardOutput,this,&Upgrade::showProgressInqDebug);
     connect(processUpgrade,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Upgrade::updatePackagesProcess);
-    list1 << "-S" << "--noconfirm" << getList();
+    list1 << "-S" << "--overwrite" << "--noconfirm" << getList();
     if(getList().isEmpty()){
         ui->console->append("<font color=\"white\">Select a packages</font>");
         QMessageBox::warning(this,"Condres OS Control Center","Select a packages");
@@ -282,6 +262,14 @@ QStringList Upgrade::getList()
 
 void Upgrade::removeDBPacman()
 {
-    remove_db->start("rm -rf /var/lib/pacman/db.lck");
+    remove_db->start(QString(DATABASE_VAR));
     ui->console->setText("<font color=\"white\">Remove database pacman </font>");
+}
+
+void Upgrade::stopJobs()
+{
+    QProcess pacman;
+    QString command = "\"killall pacman; rm " + QString(DATABASE_VAR) + "\"";
+    pacman.start(command);
+    pacman.waitForFinished();
 }
