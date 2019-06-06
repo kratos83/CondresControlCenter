@@ -89,7 +89,6 @@ private:
     bool m_modify, m_edit;
     SettingsManager *manager;
     UsersPage *m_pageUsers;
-    bool m_shared;
 };
 
 //Samba configuration shared directory 

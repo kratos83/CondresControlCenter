@@ -1,6 +1,6 @@
-Condres Control Center 0.2.1
+Condres Control Center 0.2.3
 
-Fix update system
 Fix notify tray icon
-Add Samba and NFS share
-Add user(Manjaro users)
+Fix Samba add directory and printer
+Fix NFS add directory
+Add cancel to upgrade and install

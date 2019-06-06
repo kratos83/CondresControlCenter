@@ -51,7 +51,7 @@ public:
     
 public slots:
     void viewTerminal(bool vero);
-    void readNfsShare();
+    void readNfsShare(QString nameFile);
     void startNfs();
     void restartNfs();
     void stopNfs();
@@ -63,7 +63,7 @@ public slots:
     void modifyNfsConfig();
     void delNfsConfig();
     //Save file
-    void saveFile(QString nameFile);
+    void saveFile(QString nameFile,QStringList m_list);
     void saveFile();
 
 private:
@@ -79,7 +79,7 @@ class NfsConfig : public QDialog
    Q_OBJECT
    
 public:
-    explicit NfsConfig(QStringList list, QString create_modify, QString id, QWidget *parent = nullptr);
+    explicit NfsConfig(QStringList list, QString create_modify, QWidget *parent = nullptr);
     ~NfsConfig();
     
 private slots:
@@ -88,10 +88,10 @@ private slots:
 private:
     Ui::NfsConfig *_ui;
     QStringList m_list;
-    QString m_createModify, m_id;
+    QString m_createModify;
 
 signals:
-    void saveConfig(QString);
-    void saveList();
+    void saveConfig(QString,QStringList);
+    void saveList(QString);
 };
 #endif // NFSSHARE_H
