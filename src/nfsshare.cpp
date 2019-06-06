@@ -70,7 +70,7 @@ void NfsShare::readNfsShare(QString nameFile)
         int count = 0;
         while(!file.atEnd())
         {
-            if(!file.readline().isEmpty()){
+            if(!file.readLine().isEmpty()){
             QStringList list = QString(file.readLine()).split(" ");
             QStandardItem *path = new QStandardItem(list.at(0));
             path->setIcon(QIcon(":/images/directory.png"));
