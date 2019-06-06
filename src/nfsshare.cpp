@@ -56,7 +56,8 @@ void NfsShare::viewTerminal(bool vero)
 void NfsShare::readNfsShare(QString nameFile)
 {
     QFile file(nameFile);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+        if(file.exists()){
         model = new QStandardItemModel(0,8,this);
         model->setHeaderData(0,Qt::Horizontal,tr("Directory"));
         model->setHeaderData(1,Qt::Horizontal,tr("Host access"));
@@ -87,7 +88,6 @@ void NfsShare::readNfsShare(QString nameFile)
                 model->setItem(count,7,new QStandardItem(QString(vir.at(5))));
             }
             count++;
-            qCDebug(CondresControlNfs) << vir;
         }
         ui->tableView->setModel(model);
         ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
