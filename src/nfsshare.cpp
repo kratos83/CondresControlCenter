@@ -70,6 +70,7 @@ void NfsShare::readNfsShare(QString nameFile)
         int count = 0;
         while(!file.atEnd())
         {
+            if(!file.readline().isEmpty()){
             QStringList list = QString(file.readLine()).split(" ");
             QStandardItem *path = new QStandardItem(list.at(0));
             path->setIcon(QIcon(":/images/directory.png"));
@@ -88,6 +89,7 @@ void NfsShare::readNfsShare(QString nameFile)
                 model->setItem(count,7,new QStandardItem(QString(vir.at(5))));
             }
             count++;
+          }
         }
         ui->tableView->setModel(model);
         ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
