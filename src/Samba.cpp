@@ -65,6 +65,8 @@ void Samba::load(QString nameFile)
     QFile file(nameFile);
     file.open(QIODevice::ReadOnly);
     if(file.exists()){
+        while(!file.atEnd()){
+        if(!file.readline().isEmpty()){
         ui->lineEditSambaConfig->setText(SAMBA_FILE);
         if(!searchItem(nameFile,"workgroup").isEmpty()){
         QStringList list = searchItem(nameFile,"workgroup").split("=");
@@ -108,6 +110,8 @@ void Samba::load(QString nameFile)
         ui->lineEditPrinting->setText(QString(list[1]).remove("\n"));}
         else ui->lineEditPrinting->clear();       
         readShareFileDirectory(nameFile);
+        }
+      }
     }
     else
         QMessageBox::warning(this,"CondresControlCenter",tr("Can't open file <b>")+QFileInfo(nameFile).fileName()+tr("</b>. Find smb.conf in /etc/samba"));
