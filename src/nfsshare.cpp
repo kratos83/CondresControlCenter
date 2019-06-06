@@ -70,6 +70,7 @@ void NfsShare::readNfsShare(QString nameFile)
         int count = 0;
         while(!file.atEnd())
         {
+<<<<<<< HEAD
             QString line = file.readLine();
             if("#" == line.left(1))
                 continue;
@@ -92,7 +93,7 @@ void NfsShare::readNfsShare(QString nameFile)
                     model->setItem(count,7,new QStandardItem(QString(vir.at(5))));
                 }
                 count++;
-          }
+            }
         }
         ui->tableView->setModel(model);
         ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
