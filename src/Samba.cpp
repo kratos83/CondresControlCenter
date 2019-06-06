@@ -66,7 +66,7 @@ void Samba::load(QString nameFile)
     file.open(QIODevice::ReadOnly);
     if(file.exists()){
         while(!file.atEnd()){
-        if(!file.readline().isEmpty()){
+        if(!file.readLine().isEmpty()){
         ui->lineEditSambaConfig->setText(SAMBA_FILE);
         if(!searchItem(nameFile,"workgroup").isEmpty()){
         QStringList list = searchItem(nameFile,"workgroup").split("=");
