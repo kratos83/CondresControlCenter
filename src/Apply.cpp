@@ -94,7 +94,7 @@ void Apply::installPackages()
 {
     QStringList list,list1;
     m_process->setReadChannel(QProcess::StandardOutput);
-    m_process->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+    m_process->setProcessChannelMode(QProcess::MergedChannels);
     connect(m_process,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -159,7 +159,7 @@ void Apply::ReadyPkg()
     QString results;
     ui->stackedWidget->setCurrentIndex(1);
     if(m_install_remove == "install")
-        results = m_process->readAllStandardOutput();
+        results = m_process->readAll();
     else if(m_install_remove == "remove")
         results = m_process_remove->readAll();
     else if(m_install_remove == "local")

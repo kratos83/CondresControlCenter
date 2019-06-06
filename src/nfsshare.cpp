@@ -56,7 +56,8 @@ void NfsShare::viewTerminal(bool vero)
 void NfsShare::readNfsShare(QString nameFile)
 {
     QFile file(nameFile);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+        if(file.exists()){
         model = new QStandardItemModel(0,8,this);
         model->setHeaderData(0,Qt::Horizontal,tr("Directory"));
         model->setHeaderData(1,Qt::Horizontal,tr("Host access"));
@@ -69,25 +70,29 @@ void NfsShare::readNfsShare(QString nameFile)
         int count = 0;
         while(!file.atEnd())
         {
-            QStringList list = QString(file.readLine()).split(" ");
-            QStandardItem *path = new QStandardItem(list.at(0));
-            path->setIcon(QIcon(":/images/directory.png"));
-            model->setItem(count,0,path);
-            QStringList host = QString(list.at(1)).split("(");
-            model->setItem(count,1,new QStandardItem(QString(host.at(0))));
-            QStringList par = QString(host.at(1)).split(")");
-            QStringList vir = QString(par.at(0)).split(",");
-            model->setItem(count,2,new QStandardItem(QString(vir.at(0))));
-            model->setItem(count,3,new QStandardItem(QString(vir.at(1))));
-            model->setItem(count,4,new QStandardItem(QString(vir.at(2))));
-            if(searchItem(nameFile,"anonuid").isEmpty() && searchItem(nameFile,"anongid").isEmpty())
-                model->setItem(count,7,new QStandardItem(QString(vir.at(3))));
-            else{ model->setItem(count,5,new QStandardItem(QString(vir.at(3))));
-                model->setItem(count,6,new QStandardItem(QString(vir.at(4))));
-                model->setItem(count,7,new QStandardItem(QString(vir.at(5))));
-            }
-            count++;
-            qCDebug(CondresControlNfs) << vir;
+            QString line = file.readLine();
+            if("#" == line.left(1))
+                continue;
+            else{
+                QStringList list = QString(line).split(" ");
+                QStandardItem *path = new QStandardItem(list.at(0));
+                path->setIcon(QIcon(":/images/directory.png"));
+                model->setItem(count,0,path);
+                QStringList host = QString(list.at(1)).split("(");
+                model->setItem(count,1,new QStandardItem(QString(host.at(0))));
+                QStringList par = QString(host.at(1)).split(")");
+                QStringList vir = QString(par.at(0)).split(",");
+                model->setItem(count,2,new QStandardItem(QString(vir.at(0))));
+                model->setItem(count,3,new QStandardItem(QString(vir.at(1))));
+                model->setItem(count,4,new QStandardItem(QString(vir.at(2))));
+                if(searchItem(nameFile,"anonuid").isEmpty() && searchItem(nameFile,"anongid").isEmpty())
+                    model->setItem(count,7,new QStandardItem(QString(vir.at(3))));
+                else{ model->setItem(count,5,new QStandardItem(QString(vir.at(3))));
+                    model->setItem(count,6,new QStandardItem(QString(vir.at(4))));
+                    model->setItem(count,7,new QStandardItem(QString(vir.at(5))));
+                }
+                count++;
+          }
         }
         ui->tableView->setModel(model);
         ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);

@@ -65,49 +65,56 @@ void Samba::load(QString nameFile)
     QFile file(nameFile);
     file.open(QIODevice::ReadOnly);
     if(file.exists()){
-        ui->lineEditSambaConfig->setText(SAMBA_FILE);
-        if(!searchItem(nameFile,"workgroup").isEmpty()){
-        QStringList list = searchItem(nameFile,"workgroup").split("=");
-        ui->lineEditWorkgroup->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditWorkgroup->clear();
-        if(!searchItem(nameFile,"server string").isEmpty()){
-        QStringList list = searchItem(nameFile,"server string").split("=");
-        ui->lineEditServer->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditServer->clear();
-        if(!searchItem(nameFile,"netbios name").isEmpty()){
-        QStringList list = searchItem(nameFile,"netbios name").split("=");
-        ui->lineEditNetbios->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditNetbios->clear();
-        if(!searchItem(nameFile,"security").isEmpty()){
-        QStringList list = searchItem(nameFile,"security").split("=");
-        ui->lineEditSecurity->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditSecurity->clear();
-        if(!searchItem(nameFile,"hosts allow").isEmpty()){
-        QStringList list = searchItem(nameFile,"hosts allow").split("=");
-        ui->lineEditHost->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditHost->clear();
-        if(!searchItem(nameFile,"guest account").isEmpty()){
-        QStringList list = searchItem(nameFile,"guest account").split("=");
-        ui->lineEditGuest->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditGuest->clear();
-        if(!searchItem(nameFile,"log file").isEmpty()){
-        QStringList list = searchItem(nameFile,"log file").split("=");
-        ui->lineEdit->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEdit->clear();
-        if(!searchItem(nameFile,"max log size").isEmpty()){
-        QStringList list = searchItem(nameFile,"max log size").split("=");
-        int number = list[1].toInt();
-        ui->spinBoxLogSize->setValue(number);}
-        else ui->spinBoxLogSize->setValue(0);
-        if(!searchItem(nameFile,"load printers").isEmpty()){
-        QStringList list = searchItem(nameFile,"load printers").split("=");
-        ui->comboBoxLoadPrinters->setCurrentText(QString(list[1]).remove("\n"));}
-        else ui->comboBoxLoadPrinters->setCurrentIndex(0);
-        if(!searchItem(nameFile,"printing").isEmpty()){
-        QStringList list = searchItem(nameFile,"printing").split("=");
-        ui->lineEditPrinting->setText(QString(list[1]).remove("\n"));}
-        else ui->lineEditPrinting->clear();       
-        readShareFileDirectory(nameFile);
+        while(!file.atEnd()){
+        QString line = file.readLine();
+        if(";" == line.left(1))
+            continue;
+        else{
+            ui->lineEditSambaConfig->setText(SAMBA_FILE);
+            if(!searchItem(nameFile,"workgroup").isEmpty()){
+            QStringList list = searchItem(nameFile,"workgroup").split("=");
+            ui->lineEditWorkgroup->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditWorkgroup->clear();
+            if(!searchItem(nameFile,"server string").isEmpty()){
+            QStringList list = searchItem(nameFile,"server string").split("=");
+            ui->lineEditServer->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditServer->clear();
+            if(!searchItem(nameFile,"netbios name").isEmpty()){
+            QStringList list = searchItem(nameFile,"netbios name").split("=");
+            ui->lineEditNetbios->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditNetbios->clear();
+            if(!searchItem(nameFile,"security").isEmpty()){
+            QStringList list = searchItem(nameFile,"security").split("=");
+            ui->lineEditSecurity->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditSecurity->clear();
+            if(!searchItem(nameFile,"hosts allow").isEmpty()){
+            QStringList list = searchItem(nameFile,"hosts allow").split("=");
+            ui->lineEditHost->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditHost->clear();
+            if(!searchItem(nameFile,"guest account").isEmpty()){
+            QStringList list = searchItem(nameFile,"guest account").split("=");
+            ui->lineEditGuest->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditGuest->clear();
+            if(!searchItem(nameFile,"log file").isEmpty()){
+            QStringList list = searchItem(nameFile,"log file").split("=");
+            ui->lineEdit->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEdit->clear();
+            if(!searchItem(nameFile,"max log size").isEmpty()){
+            QStringList list = searchItem(nameFile,"max log size").split("=");
+            int number = list[1].toInt();
+            ui->spinBoxLogSize->setValue(number);}
+            else ui->spinBoxLogSize->setValue(0);
+            if(!searchItem(nameFile,"load printers").isEmpty()){
+            QStringList list = searchItem(nameFile,"load printers").split("=");
+            ui->comboBoxLoadPrinters->setCurrentText(QString(list[1]).remove("\n"));}
+            else ui->comboBoxLoadPrinters->setCurrentIndex(0);
+            if(!searchItem(nameFile,"printing").isEmpty()){
+            QStringList list = searchItem(nameFile,"printing").split("=");
+            ui->lineEditPrinting->setText(QString(list[1]).remove("\n"));}
+            else ui->lineEditPrinting->clear();       
+            readShareFileDirectory(nameFile);
+        }
+      }
     }
     else
         QMessageBox::warning(this,"CondresControlCenter",tr("Can't open file <b>")+QFileInfo(nameFile).fileName()+tr("</b>. Find smb.conf in /etc/samba"));
