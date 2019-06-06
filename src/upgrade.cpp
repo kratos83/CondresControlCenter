@@ -183,7 +183,7 @@ void Upgrade::updatePackages()
     processUpgrade->setProcessChannelMode(QProcess::MergedChannels);
     connect(processUpgrade,&QProcess::readyReadStandardOutput,this,&Upgrade::showProgressInqDebug);
     connect(processUpgrade,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Upgrade::updatePackagesProcess);
-    list1 << "-S" << "--overwrite" << "--noconfirm" << getList();
+    list1 << "-S" << "--noconfirm" << getList();
     if(getList().isEmpty()){
         ui->console->append("<font color=\"white\">Select a packages</font>");
         QMessageBox::warning(this,"Condres OS Control Center","Select a packages");
@@ -262,14 +262,14 @@ QStringList Upgrade::getList()
 
 void Upgrade::removeDBPacman()
 {
-    remove_db->start(QString(DATABASE_VAR));
+    remove_db->start("rm " +QString(DATABASE_VAR));
     ui->console->setText("<font color=\"white\">Remove database pacman </font>");
 }
 
 void Upgrade::stopJobs()
 {
     QProcess pacman;
-    QString command = "\"killall pacman; rm " + QString(DATABASE_VAR) + "\"";
-    pacman.start(command);
-    pacman.waitForFinished();
+    QString command = "killall pacman";
+    pacman.startDetached(command);
+    removeDBPacman();
 }

@@ -206,9 +206,9 @@ void Apply::closeDialog()
 void Apply::stopJobs()
 {
   QProcess pacman;
-  QString command = "\"killall pacman; rm " + QString(DATABASE_VAR) + "\"";
+  QString command = "killall pacman";
   pacman.start(command);
-  pacman.waitForFinished();
+  QProcess::startDetached("rm " + QString(DATABASE_VAR));
 }
 
 Apply::~Apply()
