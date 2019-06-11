@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
  *
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Roland Singer <roland@manjaro.org>
  *
  *  Manjaro Settings Manager is free software: you can redistribute it and/or modify
@@ -18,12 +19,10 @@
  */
 
 #include "AccountTypeDialog.h"
-#include "../ui_AccountTypeDialog.h"
-
-#include <KAuth>
-#include <KAuthAction>
+#include "ui_AccountTypeDialog.h"
 
 #include <QtCore/QFile>
+#include <QtCore/QProcess>
 #include <QtCore/QTextStream>
 #include <QtWidgets/QMessageBox>
 
@@ -138,24 +137,13 @@ AccountTypeDialog::buttonApply_clicked()
     m_userGroupDataChanged = true;
 
     // Set groups
-    KAuth::Action installAction( QLatin1String( "org.manjaro.msm.users.changeaccounttype" ) );
-    installAction.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-    QVariantMap args;
-    args["arguments"] = QStringList() << "-G" << groups.join( "," ) << m_username;
-    installAction.setArguments( args );
-    KAuth::ExecuteJob* jobAdd = installAction.execute();
-    connect( jobAdd, &KAuth::ExecuteJob::newData,
-             [=] ( const QVariantMap &data )
-    {
-        qDebug() << data;
-    } );
-    if ( jobAdd->exec() )
-        qDebug() << "Groups set successfully";
-    else
+    QProcess proc;
+    if(proc.execute("usermod",QStringList() << "-G" << groups.join( "," ) << m_username) != 0)
     {
         QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to set groups!" ) ), QMessageBox::Ok, QMessageBox::Ok );
         close();
     }
+    else {qDebug() << "Groups set successfully"; close();}
 }
 
 

@@ -18,7 +18,7 @@
  */
 
 #include "UsersPage.h"
-#include "../ui_PageUsers.h"
+#include "ui_PageUsers.h"
 
 
 UsersPage::UsersPage( QWidget* parent ) :

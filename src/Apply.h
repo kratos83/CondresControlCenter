@@ -25,6 +25,8 @@
 #include <QtWidgets>
 #include <QtNetwork>
 
+Q_DECLARE_LOGGING_CATEGORY(CondresApplyPackages)
+
 namespace Ui{
     class Apply;
 }

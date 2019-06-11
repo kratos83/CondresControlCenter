@@ -18,7 +18,7 @@ along with AppSet; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include "repoeditor.h"
-#include "../ui_repoeditor.h"
+#include "ui_repoeditor.h"
 
 #include "repoconf.h"
 #include "checkboxdelegate.h"

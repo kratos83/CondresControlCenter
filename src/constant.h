@@ -25,7 +25,7 @@
 #include <QtWidgets>
 #include <QtSql/QtSql>
 
-#define VERSION "0.2.3"
+#define VERSION "0.2.4"
 #define ALPHA "ALPHA RELEASE"
 #define BETA "BETA RELEASE"
 #define RELEASE_CANDIDATE "RC RELEASE"

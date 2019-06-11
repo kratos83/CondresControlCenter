@@ -109,9 +109,9 @@ void NfsShare::readNfsShare(QString nameFile)
 void NfsShare::addNfsConfig()
 {
     manager->setGeneralValue("NFS/shared","share");
-    NfsConfig *smb = new NfsConfig(QStringList(),"edit",this);
-    connect(smb,&NfsConfig::saveConfig,this,static_cast< void(NfsShare::*)(QString,QStringList)>(&NfsShare::saveFile));
-    connect(smb,&NfsConfig::saveList,this,&NfsShare::readNfsShare);
+    manager->setGeneralValue("NFS/sharedEdit","edit");
+    NfsConfig *smb = new NfsConfig(QStringList(),"edit",QModelIndex(),this);
+    connect(smb,&NfsConfig::saveConfig,this,static_cast< void(NfsShare::*)(QModelIndex,QStringList)>(&NfsShare::saveFile));
     smb->exec();
 }
 
@@ -136,9 +136,9 @@ void NfsShare::modifyNfsConfig()
             QString m_tree = model->data(model->index(newindex.row(),7),Qt::DisplayRole).toString();
             list << m_dir << m_host << m_rw << m_sync << m_squash << m_anonuid << m_anongid << m_tree;
             manager->setGeneralValue("NFS/shared","share");
-            NfsConfig *smb = new NfsConfig(list,"modify",this);
-            connect(smb,&NfsConfig::saveConfig,this,static_cast< void(NfsShare::*)(QString,QStringList)>(&NfsShare::saveFile));
-            connect(smb,&NfsConfig::saveList,this,&NfsShare::readNfsShare);
+            manager->setGeneralValue("NFS/sharedEdit","modify");
+            NfsConfig *smb = new NfsConfig(list,"modify",newindex,this);
+            connect(smb,&NfsConfig::saveConfig,this,static_cast< void(NfsShare::*)(QModelIndex,QStringList)>(&NfsShare::saveFile));
             smb->exec();
         }
     }
@@ -152,8 +152,30 @@ void NfsShare::delNfsConfig()
     model->removeRow(currentIndex.row());
 }
 
+void NfsShare::saveFile(QModelIndex index, QStringList list)
+{
+    if(manager->generalValue("NFS/shared",QVariant()).toString() == "share" && 
+        manager->generalValue("NFS/sharedEdit",QVariant()).toString() == "modify"){
+        for(int i=0; i < list.size(); i++)
+            model->setData(model->index(index.row(),i),list.at(i));
+    }
+    else if(manager->generalValue("NFS/shared",QVariant()).toString() == "share" && 
+        manager->generalValue("NFS/sharedEdit",QVariant()).toString() == "edit"
+    ){
+        int count = model->rowCount();
+        QStandardItem *path = new QStandardItem(list[0]);
+        path->setIcon(QIcon(":/images/directory.png"));
+        model->setItem(count,0,path);
+        for(int i=1; i < list.size(); i++){
+            model->setItem(count,i,new QStandardItem(list.at(i)));
+        }
+    }
+}
+
 void NfsShare::saveFile(QString nameFile, QStringList m_list)
 {
+    Q_UNUSED(m_list)
+    
     QFile file(nameFile);
     if(file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
@@ -182,19 +204,6 @@ void NfsShare::saveFile(QString nameFile, QStringList m_list)
                 stream << exports << "\n";
             }
         }
-         if(manager->generalValue("NFS/shared",QVariant()).toString() == "share"){
-                    QString exports = m_list.at(0);
-                    exports += " "+m_list.at(1);
-                    exports += "("+m_list.at(2)+",";
-                    exports += m_list.at(3)+",";
-                    exports += m_list.at(4)+",";
-                    if(m_list.at(5) != "")
-                        exports += m_list.at(5)+",";
-                    if(m_list.at(6) != "")
-                        exports += m_list.at(6)+",";
-                    exports += m_list.at(7)+")";
-                    stream << exports << "\n";
-                }
     }
     file.close();
     if(manager->generalValue("NFS/shared",QVariant()).toString() == "share")
@@ -204,6 +213,7 @@ void NfsShare::saveFile(QString nameFile, QStringList m_list)
 void NfsShare::saveFile()
 {
     manager->setGeneralValue("NFS/shared","");
+    manager->setGeneralValue("NFS/sharedEdit","");
     saveFile(NFS_TEMP,QStringList());
     QProcess::startDetached("cp -rv /etc/exports /etc/exports.bak");
     QProcess::startDetached("cp -rv /tmp/exports /etc/exports");
@@ -299,11 +309,13 @@ NfsShare::~NfsShare()
 
 //Nfs config
 NfsConfig::NfsConfig(QStringList list, QString create_modify, 
+                     QModelIndex index,
                      QWidget* parent) :
                      QDialog(parent),
                      _ui(new Ui::NfsConfig),
                      m_list(list),
-                     m_createModify(create_modify)
+                     m_createModify(create_modify),
+                     m_index(index)
 {
     _ui->setupUi(this);
     if(m_createModify == tr("modify"))
@@ -345,8 +357,7 @@ void NfsConfig::saveFile()
         list << _ui->lineEditDir->text() << _ui->lineEditAccess->text() << _ui->comboBoxRW->currentText() << _ui->lineEditSync->text()
              << _ui->comboBoxSquash->currentText() << _ui->lineEditAnonUID->text() << _ui->lineEditAnonGID->text()
              << _ui->comboBoxSub->currentText();
-        emit saveConfig(NFS_TEMP,list);
-        emit saveList(NFS_TEMP);
+        emit saveConfig(m_index,list);
         close();
     }
 }

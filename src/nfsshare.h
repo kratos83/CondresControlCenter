@@ -63,6 +63,7 @@ public slots:
     void modifyNfsConfig();
     void delNfsConfig();
     //Save file
+    void saveFile(QModelIndex index,QStringList list);
     void saveFile(QString nameFile,QStringList m_list);
     void saveFile();
 
@@ -79,7 +80,7 @@ class NfsConfig : public QDialog
    Q_OBJECT
    
 public:
-    explicit NfsConfig(QStringList list, QString create_modify, QWidget *parent = nullptr);
+    explicit NfsConfig(QStringList list, QString create_modify, QModelIndex index, QWidget *parent = nullptr);
     ~NfsConfig();
     
 private slots:
@@ -89,9 +90,8 @@ private:
     Ui::NfsConfig *_ui;
     QStringList m_list;
     QString m_createModify;
-
+    QModelIndex m_index;
 signals:
-    void saveConfig(QString,QStringList);
-    void saveList(QString);
+    void saveConfig(QModelIndex,QStringList);
 };
 #endif // NFSSHARE_H

@@ -47,6 +47,7 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     connect(ui->pushButtonStop,&QPushButton::clicked,this,&Upgrade::stopJobs);
     lista();
     getListUpdate();
+    ui->progressBar->setVisible(false);
 }
 
 void Upgrade::lista()
@@ -64,6 +65,7 @@ void Upgrade::lista()
     ui->tableWidget->setColumnWidth(2,150);
     ui->tableWidget->setColumnWidth(3,150);
     ui->tableWidget->setColumnWidth(4,150);
+    ui->progressBar->setVisible(true);
 }
 
 bool Upgrade::NoConnection()
@@ -106,6 +108,7 @@ void Upgrade::getListUpdate()
             ui->applica->setVisible(false);
             ui->dettagli->setVisible(false);
             ui->pushButtonStop->setVisible(false);
+            ui->progressBar->setVisible(false);
             emit finishUpdate(true);
     }
     else{
@@ -179,8 +182,6 @@ void Upgrade::updatePackages()
 
     ui->console->append("<font color=\"white\">Update packages</font>");
     ui->up_progress->setText("Update packages");
-    processUpgrade->setReadChannel(QProcess::StandardOutput);
-    processUpgrade->setProcessChannelMode(QProcess::MergedChannels);
     connect(processUpgrade,&QProcess::readyReadStandardOutput,this,&Upgrade::showProgressInqDebug);
     connect(processUpgrade,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Upgrade::updatePackagesProcess);
     list1 << "-S" << "--noconfirm" << getList();
@@ -215,21 +216,24 @@ void Upgrade::showProgressInqDebug()
 {
     QString m_list = processUpgrade->readAll();
     QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
-
     //process package list
     for(int i = 0; i < lines.length(); i++)
     {
        QString line = lines.at(i);
-
+       
        if(line.isEmpty())
             continue;
-
+    
+       ui->progressBar->setMinimum(0);
+       ui->progressBar->setMaximum(i);
+       ui->progressBar->setValue(i);
        QString str;
        str.append(line);
        ui->up_progress->setText(str);
        ui->console->append("<font color=\"white\">"+line+"</font>");
     }
 }
+
 
 void Upgrade::itemClicked(QTableWidgetItem *item)
 {

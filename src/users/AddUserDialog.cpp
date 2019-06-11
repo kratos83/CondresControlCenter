@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
- *
+ *  
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Roland Singer <roland@manjaro.org>
  *
  *  Manjaro Settings Manager is free software: you can redistribute it and/or modify
@@ -18,10 +19,9 @@
  */
 
 #include "AddUserDialog.h"
-#include "../ui_AddUserDialog.h"
+#include "ui_AddUserDialog.h"
 
-#include <KAuth>
-#include <KAuthAction>
+#include <QProcess>
 
 #include <QDebug>
 
@@ -99,48 +99,44 @@ void AddUserDialog::buttonCreate_clicked()
 
     dataChanged = true;
 
-    // Add user
-    KAuth::Action installActionAdd( QLatin1String( "org.manjaro.msm.users.add" ) );
-    installActionAdd.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-    QVariantMap args;
     QString defaultUserGroups {"video,audio,power,disk,storage,optical,network,lp,scanner"};
-    args["arguments"] = QStringList() << "-m" << "-p" << "" << "-U" << "-G" << defaultUserGroups << username;
-    installActionAdd.setArguments( args );
-    KAuth::ExecuteJob* jobAdd = installActionAdd.execute();
-    connect( jobAdd, &KAuth::ExecuteJob::newData,
-             [=] ( const QVariantMap &data )
+    QStringList args;
+    args << "-m" << "-p" << "" << "-U" << "-G" << defaultUserGroups << username;
+    QProcess proc;
+    if(proc.execute("useradd",args) != 0)
     {
-        qDebug() << data;
-    } );
-    if ( jobAdd->exec() )
-        qDebug() << "Add User Job Succesfull";
-    else
-    {
-        QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to add user!" ) + "\n" + errorMessage ), QMessageBox::Ok, QMessageBox::Ok );
+        QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to add user!" ) ), QMessageBox::Ok, QMessageBox::Ok );
         close();
+    }
+    else {qDebug() << "Add User Job Succesfull";}
+    
+    QProcess cmd2;
+    cmd2.setReadChannel(QProcess::StandardOutput);
+    cmd2.setProcessChannelMode(QProcess::MergedChannels);
+    cmd2.start("passwd "+username);
+    if (!cmd2.waitForStarted()){
+        qDebug() << tr("Error: Could not start!") << endl;
         return;
     }
-
-    // Set password
-    KAuth::Action installActionUsersChangePassword( QLatin1String( "org.manjaro.msm.users.changepassword" ) );
-    installActionUsersChangePassword.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-    args.clear();
-    args["arguments"] = QStringList() << username;
-    args["writeArgs"] = QStringList() << password << password;
-    installActionUsersChangePassword.setArguments( args );
-    KAuth::ExecuteJob* jobChangePassword = installActionUsersChangePassword.execute();
-    connect( jobChangePassword, &KAuth::ExecuteJob::newData,
-             [=] ( const QVariantMap &data )
-    {
-        qDebug() << data;
-    } );
-    if ( jobChangePassword->exec() )
-        qDebug() << "Add User Job Succesfull";
-    else
-    {
-        QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to set user's password!" ) + "\n" + errorMessage ), QMessageBox::Ok, QMessageBox::Ok );
-        close();
-        return;
+    QByteArray stdinData = QByteArray(password.toUtf8());
+    stdinData += "\n";
+    stdinData += QByteArray(password.toUtf8());
+    stdinData += "\n";
+    if(!stdinData.isEmpty()){
+        cmd2.waitForStarted();
+        cmd2.write(stdinData);
+        cmd2.waitForBytesWritten();
+        cmd2.closeWriteChannel();
     }
+    cmd2.waitForFinished(-1);
+    QByteArray pkexec_error = cmd2.readAllStandardError();
+    qDebug() << pkexec_error;
+    const bool succeeded = cmd2.exitCode() == 0;
+    if(!succeeded)
+    {
+        QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to set user's password!" ) ), QMessageBox::Ok, QMessageBox::Ok );
+        close();
+    }
+    else qDebug() << "Add User Job Succesfull";
     close();
 }

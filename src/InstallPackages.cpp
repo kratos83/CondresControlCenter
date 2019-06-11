@@ -22,6 +22,7 @@
 #include "ui_InstallPackages.h"
 #include "backend/backend.h"
 #include "constant.h"
+#include "ctablewidget.h"
 
 #include <alpm.h>
 #include <alpm_list.h>
@@ -40,6 +41,7 @@ InstallPackages::InstallPackages(QWidget *parent) :
     connect(ui->remove,&QPushButton::clicked,this,&InstallPackages::removeImpo);
     connect(ui->cerca_line,&QLineEdit::textChanged,this,&InstallPackages::searchPackages);
     connect(ui->viewInfo,&QToolButton::clicked,this,&InstallPackages::openTabWidget);
+    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->viewInfo->setToolTip("Open information");
     lista();
     setMenuInstall();
@@ -176,6 +178,7 @@ void InstallPackages::clickListRepo(QListWidgetItem* item)
             }
         }
     }
+    connect(ui->tableWidget,&CTableWidget::addInstallPkg,this,&InstallPackages::installGroup);
 }
 
 void InstallPackages::viewPackagesGroup()
@@ -254,6 +257,7 @@ void InstallPackages::clickListItem(QListWidgetItem* item)
             }
         }
     }
+    connect(ui->tableWidget,&CTableWidget::addInstallPkg,this,&InstallPackages::installGroup);
 }
 
 void InstallPackages::lista()
@@ -262,6 +266,7 @@ void InstallPackages::lista()
     m_table->setSectionsClickable(true);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->setHorizontalHeader(m_table);
     ui->tableWidget->setColumnHidden(5,true);
     ui->tableWidget->setColumnWidth(0,30);
     ui->tableWidget->setColumnWidth(1,400);
@@ -418,4 +423,17 @@ void InstallPackages::on_pul_list_clicked()
 {
     ui->textEdit->clear();
     ui->textEditRemove->clear();
+}
+
+void InstallPackages::installGroup(QString pkg, QString in_rem)
+{
+    if(in_rem == "install"){
+        ui->textEditRemove->clear();
+        ui->textEdit->append(pkg);
+    }
+    else if(in_rem == "remove")
+    {
+        ui->textEdit->clear();
+        ui->textEditRemove->append(pkg);
+    }
 }

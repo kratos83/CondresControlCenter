@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
  *
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Roland Singer <roland@manjaro.org>
  *  Ramon Buldó <ramon@manjaro.org>
  *
@@ -27,7 +28,7 @@
 #include "../ListWidget.h"
 #include "PreviewFileDialog.h"
 
-#include <KAuth>
+#include <QProcess>
 
 #include <QtWidgets/QMessageBox>
 
@@ -147,20 +148,8 @@ UsersCommon::removeUser( QListWidgetItem* currentItem )
         removeHome = "-r";
 
     // Remove user
-    KAuth::Action installAction( QLatin1String( "org.manjaro.msm.users.remove" ) );
-    installAction.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-    QVariantMap args;
-    args["arguments"] = QStringList() << removeHome << username;
-    installAction.setArguments( args );
-    KAuth::ExecuteJob* jobAdd = installAction.execute();
-    connect( jobAdd, &KAuth::ExecuteJob::newData,
-             [=] ( const QVariantMap &data )
-    {
-        qDebug() << data;
-    } );
-    if ( jobAdd->exec() )
-        qDebug() << "Remove user job succesfull";
-    else
+    QProcess proc;
+    if(proc.execute("userdel",QStringList() << removeHome <<  username) != 0)
     {
         QMessageBox::warning( nullptr,
                               tr( "Error!" ),
@@ -168,6 +157,7 @@ UsersCommon::removeUser( QListWidgetItem* currentItem )
                               QMessageBox::Ok, QMessageBox::Ok );
         return;
     }
+    else {qDebug() << "Remove user job succesfull";}
 }
 
 
@@ -208,29 +198,20 @@ UsersCommon::setUserImage( Ui::PageUsers* ui )
     }
 
     // Copy face image to dirs that need admin rights
-    QStringList copyDest;
+    QString copyVar,copyShare;
     if ( QDir( "/var/lib/AccountsService/icons/" ).exists() )
-        copyDest << QString( "/var/lib/AccountsService/icons/%1" ).arg( item->user.username );
+        copyVar = QString( "%1" ).arg( item->user.username );
     if ( QDir( "/usr/share/sddm/faces/" ).exists() )
-        copyDest  << QString( "/usr/share/sddm/faces/%1.face.icon" ).arg( item->user.username );
+        copyShare = QString( "%1.face.icon" ).arg( item->user.username );
 
-    if ( !copyDest.isEmpty() )
+    if ( !copyVar.isEmpty() || !copyShare.isEmpty())
     {
-        KAuth::Action installAction( QLatin1String( "org.manjaro.msm.users.changeimage" ) );
-        installAction.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-        QVariantMap args;
-        args["copyDest"] = copyDest;
-        args["filename"] = filename;
-        installAction.setArguments( args );
-        KAuth::ExecuteJob* jobAdd = installAction.execute();
-        connect( jobAdd, &KAuth::ExecuteJob::newData,
-                 [=] ( const QVariantMap &data )
-        {
-            qDebug() << data;
-        } );
-        if ( jobAdd->exec() )
-            qDebug() << "Change image job succesfull";
-        else
+        QProcess proc,proc1;
+        qDebug() << filename;
+        QStringList copy,symlink;
+        copy << "-f" << filename <<"/var/lib/AccountsService/icons/"+copyVar;
+        symlink << "-f" << filename <<"/usr/share/sddm/faces/"+copyShare;
+        if(proc.execute("cp",copy ) != 0 && proc1.execute("cp",symlink ) != 0)
         {
             QMessageBox::warning( nullptr,
                                   tr( "Error!" ),
@@ -238,6 +219,8 @@ UsersCommon::setUserImage( Ui::PageUsers* ui )
                                   QMessageBox::Ok, QMessageBox::Ok );
             return;
         }
+        else {qDebug() << "Change image job succesfull";}
+        loadUsers(ui->listWidget);
     }
 }
 

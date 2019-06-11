@@ -72,6 +72,7 @@ private slots:
     void readChecBox(bool ok);
     void saveFile();
     void saveFile(QString nameFile, QStringList m_list);
+    void saveFile(QModelIndex index, QStringList list);
     void openConfigDir();
     void addCongigDir();
     void addShareAll(QString m_share);
@@ -97,7 +98,7 @@ class SambaConfiguration : public QDialog
     Q_OBJECT
 
 public:
-    explicit SambaConfiguration(QStringList listConfigDir, QString create_modify, QWidget *parent = nullptr);
+    explicit SambaConfiguration(QStringList listConfigDir, QString create_modify, QModelIndex index, QWidget *parent = nullptr);
     ~SambaConfiguration();
     
 private slots:
@@ -107,9 +108,9 @@ private:
     Ui::SambaConfiguration *m_ui;
     QStringList m_list;
     QString m_createModify;
+    QModelIndex m_index;
 signals:
-    void saveConfig(QString,QStringList);
-    void saveList(QString);
+    void saveConfig(QModelIndex,QStringList);
 };
 
 //Samba configuration shared printer
@@ -118,7 +119,7 @@ class SambaPrinter : public QDialog
     Q_OBJECT
 
 public:
-    explicit SambaPrinter(QStringList listConfigDir, QString create_modify, QWidget *parent = nullptr);
+    explicit SambaPrinter(QStringList listConfigDir, QString create_modify, QModelIndex index, QWidget *parent = nullptr);
     ~SambaPrinter();
     
 private slots:
@@ -129,9 +130,9 @@ private:
     Ui::SambaPrinter *_ui;
     QStringList m_list;
     QString m_createModify;
+    QModelIndex m_index;
 signals:
-    void saveConfig(QString,QStringList);
-    void saveList(QString);
+    void saveConfig(QModelIndex,QStringList);
 };
 
 //Samba user

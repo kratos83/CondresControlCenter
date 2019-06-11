@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
  *
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Ramon Buldó <ramon@manjaro.org>
  *
  *  Manjaro Settings Manager is free software: you can redistribute it and/or modify
@@ -416,25 +417,6 @@ KeyboardModel::saveKeyboardLayout()
     }
 
     saveModel(args);
-    /*KAuth::Action saveAction( QLatin1String( "org.manjaro.msm.keyboard.save" ) );
-    saveAction.setHelperId( QLatin1String( "org.manjaro.msm.keyboard" ) );
-    saveAction.setArguments( args );
-    KAuth::ExecuteJob* job = saveAction.execute();
-    if ( job->exec() )
-    {
-        m_model = m_newModel;
-        m_layout = m_newLayout;
-        m_variant = m_newVariant;
-        return true;
-    }
-    else
-    {
-        QMessageBox::warning( nullptr,
-                              tr( "Error!" ),
-                              QString( tr( "Failed to set keyboard layout" ) ),
-                              QMessageBox::Ok, QMessageBox::Ok );
-        return false;
-    }*/
 }
 
 void KeyboardModel::saveModel(const QVariantMap& args)

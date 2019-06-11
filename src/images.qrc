@@ -34,5 +34,6 @@
         <file>images/never.png</file>
         <file>images/true.png</file>
         <file>images/update.png</file>
+        <file>images/terminal.svg</file>
     </qresource>
 </RCC>

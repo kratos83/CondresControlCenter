@@ -1,6 +1,11 @@
-Condres Control Center 0.2.3
+Condres Control Center 0.2.4 RC1
 
-Fix notify tray icon
-Fix Samba add directory and printer
-Fix NFS add directory
-Add cancel to upgrade and install
+Fix change password user
+Fix change group user
+Fix delete user
+Fix add user
+Fix change image user
+Fix change timeZone
+Fix add and modified samba and nfs
+Add install all packages select group or repository
+Add progress bar install and upgrade packages

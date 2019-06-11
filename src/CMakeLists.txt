@@ -13,7 +13,7 @@ SET( CMAKE_CXX_FLAGS  "-fexceptions -std=c++11 -fPIC" )
 set(CondresControlCenter "CondresControlCenter")
 
 set(CondresControlCenter_includes
-${CMAKE_BINARY_DIR}
+${CMAKE_SOURCE_DIR}
 )
 
 include_directories(${CondresControlCenter_includes} ${ALPM_INCLUDE_DIR} ${ALPMOCTOPI_INCLUDE_DIR} ${GLIB_INCLUDE_DIRS})
@@ -78,6 +78,7 @@ set(CondresControlCenter_moc_hdrs
 	CheckBox.h
 	RadioButton.h
 	itdelegato.h
+	ctablewidget.h
 )
 
 
@@ -176,6 +177,7 @@ set(CondresControlCenter_srcs
 	CheckBox.cpp
 	RadioButton.cpp
 	itdelegato.cpp
+	ctablewidget.cpp
 )
 
 qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc users/users.qrc timedate/timedate.qrc) 
@@ -204,10 +206,3 @@ INSTALL( FILES "bash/CondresControlCenterUpdateBin" DESTINATION ${CMAKE_INSTALL_
     WORLD_READ WORLD_EXECUTE)
 INSTALL( FILES "images/preferences-system.png" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 INSTALL( FILES "desktop/CondresControlCenter.desktop" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications )
-INSTALL( FILES "keyboard/kbd-model-map" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/systemd)
-set(DATABASE_FILE "/usr/lib/condrescontrolcenter/condrescontrolcenter.db")
-if(EXISTS ${DATABASE_FILE})
-  message("${DATABASE_FILE} exists.")
-else()
-  INSTALL( FILES "database/condrescontrolcenter.db" DESTINATION /usr/lib/condrescontrolcenter)
-endif()

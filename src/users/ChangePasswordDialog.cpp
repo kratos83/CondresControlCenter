@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
- *
+ *  
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Roland Singer <roland@manjaro.org>
  *
  *  Manjaro Settings Manager is free software: you can redistribute it and/or modify
@@ -18,10 +19,9 @@
  */
 
 #include "ChangePasswordDialog.h"
-#include "../ui_ChangePasswordDialog.h"
+#include "ui_ChangePasswordDialog.h"
 
-#include <KAuth>
-#include <KAuthAction>
+#include <QProcess>
 
 #include <QDebug>
 
@@ -60,7 +60,7 @@ int ChangePasswordDialog::exec( QString username )
 void ChangePasswordDialog::textbox_textChanged()
 {
     if ( ui->textBoxPassword->text().isEmpty() ||
-            ui->textBoxVerifiedPassword->text().isEmpty() )
+            ui->textBoxVerifiedPassword->text().isEmpty())
         ui->buttonApply->setEnabled( false );
     else
         ui->buttonApply->setEnabled( true );
@@ -71,32 +71,39 @@ void ChangePasswordDialog::buttonApply_clicked()
 {
     // Check passwords
     QString password = ui->textBoxVerifiedPassword->text();
-    if ( ui->textBoxPassword->text() != password )
+    if ( ui->textBoxPassword->text() != password)
     {
         QMessageBox::warning( this, tr( "Error!" ), tr( "Your passwords do not match!" ), QMessageBox::Ok, QMessageBox::Ok );
         return;
     }
-
-    // Set password
-    KAuth::Action installAction( QLatin1String( "org.manjaro.msm.users.changepassword" ) );
-    installAction.setHelperId( QLatin1String( "org.manjaro.msm.users" ) );
-    QVariantMap args;
-    args["arguments"] = QStringList() << username;
-    args["writeArgs"] = QStringList() << password << password;
-    installAction.setArguments( args );
-    KAuth::ExecuteJob* job = installAction.execute();
-    connect( job, &KAuth::ExecuteJob::newData,
-             [=] ( const QVariantMap &data )
-    {
-        qDebug() << data;
-    } );
-    if ( job->exec() )
-        qDebug() << "Add User Job Succesfull";
-    else
+    
+    QProcess cmd2;
+    cmd2.setReadChannel(QProcess::StandardOutput);
+    cmd2.setProcessChannelMode(QProcess::MergedChannels);
+    cmd2.start("passwd "+username);
+    if (!cmd2.waitForStarted()){
+        qDebug() << tr("Error: Could not start!") << endl;
+        return;
+    }
+    QByteArray stdinData = QByteArray(password.toUtf8());
+    stdinData += "\n";
+    stdinData += QByteArray(password.toUtf8());
+    stdinData += "\n";
+    if(!stdinData.isEmpty()){
+        cmd2.waitForStarted();
+        cmd2.write(stdinData);
+        cmd2.waitForBytesWritten();
+        cmd2.closeWriteChannel();
+    }
+    cmd2.waitForFinished(-1);
+    QByteArray pkexec_error = cmd2.readAllStandardError();
+    qDebug() << pkexec_error;
+    const bool succeeded = cmd2.exitCode() == 0;
+    if(!succeeded)
     {
         QMessageBox::warning( this, tr( "Error!" ), QString( tr( "Failed to set user's password!" ) ), QMessageBox::Ok, QMessageBox::Ok );
         close();
-        return;
     }
+    else qDebug() << "Add User Job Succesfull";
     close();
 }

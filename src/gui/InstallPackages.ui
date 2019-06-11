@@ -179,7 +179,7 @@
        <widget class="QGroupBox" name="groupBox">
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
-          <widget class="QTableWidget" name="tableWidget">
+          <widget class="CTableWidget" name="tableWidget">
            <property name="styleSheet">
             <string notr="true"/>
            </property>
@@ -360,6 +360,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>ctablewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cerca_line</tabstop>
   <tabstop>menuFile</tabstop>

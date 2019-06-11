@@ -22,8 +22,7 @@
 
 #include "UsersCommon.h"
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QTreeWidgetItem>
+#include <QtWidgets>
 
 namespace Ui
 {

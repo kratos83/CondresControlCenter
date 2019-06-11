@@ -21,7 +21,7 @@
 #ifndef USERSCOMMON_H
 #define USERSCOMMON_H
 
-#include "../ui_PageUsers.h"
+#include "ui_PageUsers.h"
 
 #include "../ListWidget.h"
 

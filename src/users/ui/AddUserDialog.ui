@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>306</width>
-    <height>193</height>
+    <height>197</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,6 +163,10 @@
        <property name="text">
         <string>Cancel</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../images.qrc">
+         <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -183,6 +187,10 @@
        <property name="text">
         <string>Create</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../images.qrc">
+         <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
+       </property>
       </widget>
      </item>
     </layout>
@@ -198,6 +206,7 @@
  </tabstops>
  <resources>
   <include location="../users.qrc"/>
+  <include location="../../images.qrc"/>
  </resources>
  <connections/>
 </ui>

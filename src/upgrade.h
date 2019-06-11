@@ -42,6 +42,7 @@ public:
     explicit Upgrade(QString database, QWidget *parent = nullptr);
     ~Upgrade();
     bool NoConnection();
+
 public slots:
     //View list
     void getListUpdate();
@@ -55,7 +56,7 @@ public slots:
     void updatePackagesProcess(int exitCode, QProcess::ExitStatus);
     void showProgressInqDebug();
     void stopJobs();
-
+    
 private slots:
     void on_dettagli_clicked();
     void on_back_clicked();

@@ -57,7 +57,7 @@ public slots:
     void clickListItem(QListWidgetItem *item);
     void clickListRepo(QListWidgetItem *item);
     void openTabWidget(bool ok);
-
+    void installGroup(QString pkg,QString in_rem);
 private:
     Ui::InstallPackages *ui;
     TableWidgetHeader *m_table;

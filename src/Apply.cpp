@@ -19,10 +19,9 @@
  */
 #include "Apply.h"
 #include "ui_Apply.h"
-#include <iostream>
 #include "constant.h"
 
-using namespace std;
+Q_LOGGING_CATEGORY(CondresApplyPackages,"ControlCenter")
 
 Apply::Apply(QStringList listPackages, QString install_remove,
              QWidget *parent) :
@@ -93,8 +92,6 @@ Apply::Apply(QString args, QString install_remove, QWidget *parent) :
 void Apply::installPackages()
 {
     QStringList list,list1;
-    m_process->setReadChannel(QProcess::StandardOutput);
-    m_process->setProcessChannelMode(QProcess::MergedChannels);
     connect(m_process,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -104,13 +101,14 @@ void Apply::installPackages()
     }
     list1 << "-S" << "--noconfirm" << list;
     m_process->start("/usr/bin/pacman",list1);
+    ui->stackedWidget->setCurrentWidget(ui->page);
 }
 
 void Apply::removePackages()
 {
     QStringList list,list1;
-    m_process_remove->setReadChannel(QProcess::StandardOutput);
     m_process_remove->setProcessChannelMode(QProcess::MergedChannels);
+    m_process_remove->setReadChannel(QProcess::StandardOutput);
     connect(m_process_remove,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process_remove,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -120,13 +118,14 @@ void Apply::removePackages()
     }
     list1 << "-R" << "--noconfirm" << list;
     m_process_remove->start("/usr/bin/pacman",list1);
+    ui->stackedWidget->setCurrentWidget(ui->page);
 }
 
 void Apply::localPackages()
 {
     QStringList list,list1;
-    m_process_local->setReadChannel(QProcess::StandardOutput);
     m_process_local->setProcessChannelMode(QProcess::MergedChannels);
+    m_process_local->setReadChannel(QProcess::StandardOutput);
     connect(m_process_local,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process_local,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -136,6 +135,7 @@ void Apply::localPackages()
     }
     list1 << "-U" << "--noconfirm" << list;
     m_process_local->start("/usr/bin/pacman",list1);
+    ui->stackedWidget->setCurrentWidget(ui->page);
 }
 
 void Apply::read_packages(int exitCode)
@@ -151,13 +151,14 @@ void Apply::read_packages(int exitCode)
         else if(m_install_remove == "remove")
             ui->console->append("<font color=\"white\">Packages removed</font>");
         ui->listWidget->clear();
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setMaximum(100);
     }
 }
 
 void Apply::ReadyPkg()
 {
     QString results;
-    ui->stackedWidget->setCurrentIndex(1);
     if(m_install_remove == "install")
         results = m_process->readAll();
     else if(m_install_remove == "remove")
@@ -167,13 +168,15 @@ void Apply::ReadyPkg()
     QStringList resultsVector = results.split(((QRegExp) "\n"));
     for(int i=0; i<resultsVector.size();i++)
     {
-        if(QString(resultsVector.at(i)).isEmpty())
-            continue;
-
+         if(QString(resultsVector.at(i)).isEmpty())
+             continue;
+        
         QString str;
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setMaximum(i);
+        ui->progressBar->setValue(i);
         str.append(resultsVector.at(i));
-        std::cout << str.toStdString() << std::endl;
-        ui->console->append("<font color=\"white\">"+resultsVector.at(i)+"</font></br>");
+        ui->console->append("<font color=\"white\">"+str+"</font></br>");
     }
 }
 
@@ -207,7 +210,7 @@ void Apply::stopJobs()
 {
   QProcess pacman;
   QString command = "killall pacman";
-  pacman.start(command);
+  pacman.startDetached(command);
   QProcess::startDetached("rm " + QString(DATABASE_VAR));
 }
 

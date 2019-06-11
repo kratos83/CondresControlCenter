@@ -1,6 +1,7 @@
 /*
  *  This file is part of Manjaro Settings Manager.
  *
+ *  Modify to Angelo Scarnà <angelo.scarnaòcodelinsoft.it>
  *  Ramon Buldó <ramon@manjaro.org>
  *
  *  Manjaro Settings Manager is free software: you can redistribute it and/or modify
@@ -52,6 +53,7 @@ TimeDatePage::TimeDatePage( QWidget* parent ) :
     {
         ui->timeEdit->setEnabled( !checked );
         ui->dateEdit->setEnabled( !checked );
+        save();
     } );
     connect( ui->timeZonePushButton, &QPushButton::clicked,
              [=] ( bool checked )
@@ -63,6 +65,7 @@ TimeDatePage::TimeDatePage( QWidget* parent ) :
             m_timeZone = newTimeZone;
             TimeDateCommon::updateUi( ui, m_timeDateService, m_isTimeEdited, m_isDateEdited, m_timeZone );
             this -> setApplyEnabled( this, true );
+            save();
         }
     } );
 
@@ -81,7 +84,7 @@ TimeDatePage::TimeDatePage( QWidget* parent ) :
     connect( ui->isRtcLocalCheckBox, &QCheckBox::toggled,
              [this] ()
     {
-        this -> setApplyEnabled( this, true );
+        save();
     } );
 }
 

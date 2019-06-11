@@ -114,6 +114,10 @@
        <property name="text">
         <string>Cancel</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../images.qrc">
+         <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -134,6 +138,10 @@
        <property name="text">
         <string>Apply</string>
        </property>
+       <property name="icon">
+        <iconset resource="../../images.qrc">
+         <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
+       </property>
       </widget>
      </item>
     </layout>
@@ -142,6 +150,7 @@
  </widget>
  <resources>
   <include location="../users.qrc"/>
+  <include location="../../images.qrc"/>
  </resources>
  <connections/>
 </ui>
