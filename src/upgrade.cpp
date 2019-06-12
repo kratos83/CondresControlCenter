@@ -47,7 +47,6 @@ Upgrade::Upgrade(QString database,QWidget *parent) :
     connect(ui->pushButtonStop,&QPushButton::clicked,this,&Upgrade::stopJobs);
     lista();
     getListUpdate();
-    ui->progressBar->setVisible(false);
 }
 
 void Upgrade::lista()
