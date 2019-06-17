@@ -24,6 +24,10 @@
 
 #include <QStringList>
 
+#include <alpm.h>
+#include <alpm_list.h>
+#include <alpm_octopi_utils.h>
+
 class Backend
 {
 public:
@@ -36,7 +40,6 @@ public:
   static QStringList getGroupList(const char* package);
   static QStringList getRepoList(const char* package);
   static QStringList getDepsPackages(const char* package);
-  //static QStringList getCheckDependes(const char* package);
 };
 
 #endif // ALPMBACKEND_H

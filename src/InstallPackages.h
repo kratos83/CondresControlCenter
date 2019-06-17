@@ -26,6 +26,7 @@
 #include <QLoggingCategory>
 #include "tablewidgetheader.h"
 #include "Apply.h"
+#include "depends.h"
 
 Q_DECLARE_LOGGING_CATEGORY(InstallPackagesDebug)
 
@@ -45,6 +46,7 @@ public:
 public slots:
     void TableClicked(const QModelIndex &index);
     void TableClickedItem(QTableWidgetItem *item);
+    void readPackages(QString pkg);
     void ApplyImpo();
     void removeImpo();
     void searchPackages(QString text);
@@ -69,6 +71,10 @@ private:
     QProcess *m_process_group,*m_process_list;
     QTableWidget *widgetLista,*widgetListaGroup;
     QTableWidgetItem *name,*m_item, *versione,*repo, *Peso, *pesoCount, *desc;
+    Depends *m_depends;
+    QStringList _deps;
+    void setDepends(QStringList deps);
+    QStringList getDepends();
 };
 
 #endif // INSTALLPACKAGES_H

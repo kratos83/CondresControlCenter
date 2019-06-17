@@ -173,6 +173,7 @@ void Upgrade::on_back_clicked()
 
 void Upgrade::updatePackages()
 {
+    ui->progressBar->setMinimum(0);
     QStringList list1;
     if (!NoConnection())
        QMessageBox::warning(this,"Condres OS Control Center","Unable to estabilish internet connection");
@@ -222,8 +223,7 @@ void Upgrade::showProgressInqDebug()
        
        if(line.isEmpty())
             continue;
-    
-       ui->progressBar->setMinimum(0);
+        
        ui->progressBar->setMaximum(i);
        ui->progressBar->setValue(i);
        QString str;

@@ -23,6 +23,7 @@
 #include "backend/backend.h"
 #include "constant.h"
 #include "ctablewidget.h"
+#include <QVector>
 
 #include <alpm.h>
 #include <alpm_list.h>
@@ -337,7 +338,7 @@ void InstallPackages::searchPackages(QString text)
 
 void InstallPackages::TableClicked(const QModelIndex &index)
 {
-    if(index.isValid())
+    if(index.column() == 0)
     {
         QString name = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),1),Qt::DisplayRole).toString();
         QString version = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),2),Qt::DisplayRole).toString();
@@ -379,15 +380,54 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
         QString name = ui->tableWidget->model()->index(item->row(),1,QModelIndex()).data(Qt::DisplayRole).toString();
         if(m_index.data(Qt::CheckStateRole) == Qt::Checked)
         {
+            
                 ui->textEditRemove->clear();
-                ui->textEdit->append(name);
-                //qCDebug(InstallPackagesDebug) << Backend::getCheckDependes(name.toStdString().c_str());
+                QStringList list;
+                list << name;
+                foreach(QString m_name, list)
+                    ui->textEdit->append(m_name);
+                QStringList m_list = Backend::getDepsPackages(name.toStdString().c_str());
+                readPackages(m_list.join(" "));
         }
         else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked){
                 ui->textEdit->clear();
-                ui->textEditRemove->append(name);
+                QStringList list;
+                list << name;
+                foreach(QString m_name, list)
+                    ui->textEditRemove->append(m_name);
         }
     }
+}
+
+void InstallPackages::readPackages(QString pkg)
+{
+    if(!pkg.isEmpty())
+    {
+        QProcess proc;
+        QString results = getProcessQuery("/usr/bin/pacman -Qqk",pkg);        
+        QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
+        foreach(QString deps, resultsVector)
+        {
+            QStringList m_deps = deps.split("'");
+            setDepends(QStringList() << m_deps.at(1));
+        }
+        m_depends = new Depends(getDepends(),this);
+        connect(m_depends,&Depends::save,[this](const QVariant &results){
+            ui->textEdit->append(results.toString());
+        });
+        m_depends->exec();
+    }
+}
+
+void InstallPackages::setDepends(QStringList deps)
+{
+    _deps.append(deps);
+    _deps.removeDuplicates();
+}
+
+QStringList InstallPackages::getDepends()
+{
+    return _deps;
 }
 
 void InstallPackages::ApplyImpo()

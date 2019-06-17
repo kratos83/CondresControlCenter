@@ -91,7 +91,10 @@ Apply::Apply(QString args, QString install_remove, QWidget *parent) :
 
 void Apply::installPackages()
 {
+    ui->progressBar->setMinimum(0);
     QStringList list,list1;
+    m_process->setProcessChannelMode(QProcess::MergedChannels);
+    m_process->setReadChannel(QProcess::StandardOutput);
     connect(m_process,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
     connect(m_process,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
 
@@ -106,6 +109,7 @@ void Apply::installPackages()
 
 void Apply::removePackages()
 {
+    ui->progressBar->setMinimum(0);
     QStringList list,list1;
     m_process_remove->setProcessChannelMode(QProcess::MergedChannels);
     m_process_remove->setReadChannel(QProcess::StandardOutput);
@@ -123,6 +127,7 @@ void Apply::removePackages()
 
 void Apply::localPackages()
 {
+    ui->progressBar->setMinimum(0);
     QStringList list,list1;
     m_process_local->setProcessChannelMode(QProcess::MergedChannels);
     m_process_local->setReadChannel(QProcess::StandardOutput);
@@ -151,33 +156,32 @@ void Apply::read_packages(int exitCode)
         else if(m_install_remove == "remove")
             ui->console->append("<font color=\"white\">Packages removed</font>");
         ui->listWidget->clear();
-        ui->progressBar->setMinimum(0);
-        ui->progressBar->setMaximum(100);
     }
 }
 
 void Apply::ReadyPkg()
 {
+    
     QString results;
     if(m_install_remove == "install")
-        results = m_process->readAll();
+        results = m_process->readAllStandardOutput();
     else if(m_install_remove == "remove")
         results = m_process_remove->readAll();
     else if(m_install_remove == "local")
         results = m_process_local->readAll();
-    QStringList resultsVector = results.split(((QRegExp) "\n"));
+    QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
     for(int i=0; i<resultsVector.size();i++)
     {
-         if(QString(resultsVector.at(i)).isEmpty())
-             continue;
-        
-        QString str;
-        ui->progressBar->setMinimum(0);
+        if(QString(resultsVector.at(i)).isEmpty())
+              continue;
+
         ui->progressBar->setMaximum(i);
         ui->progressBar->setValue(i);
+        QString str;
         str.append(resultsVector.at(i));
         ui->console->append("<font color=\"white\">"+str+"</font></br>");
     }
+    
 }
 
 void Apply::closeDialog()

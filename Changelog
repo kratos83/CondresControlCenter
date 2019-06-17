@@ -1,11 +1,3 @@
-Condres Control Center 0.2.4 RC1
+Condres Control Center 0.2.5 RC2
 
-Fix change password user
-Fix change group user
-Fix delete user
-Fix add user
-Fix change image user
-Fix change timeZone
-Fix add and modified samba and nfs
-Add install all packages select group or repository
-Add progress bar install and upgrade packages
+Add depends packages

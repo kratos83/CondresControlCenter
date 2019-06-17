@@ -31,6 +31,7 @@
 #define RELEASE_CANDIDATE "RC RELEASE"
 #define STABLE "STABLE RELEASE"
 #define DATABASE_VAR "/var/lib/pacman/db.lck"
+#define CACHE_PKG "/var/lib/pacman/pkg/"
 
 static QString getPacCache()
 {
@@ -123,6 +124,25 @@ static QString getProcess(QString m_proc, QString name)
         return results;
     else
         return QString("No information to download.");
+}
+
+static QString getProcessQuery(QString m_proc, QString name)
+{
+    QProcess proc;
+    QString results;
+    proc.setReadChannel(QProcess::StandardError);
+    proc.start(m_proc+" "+name);
+    if (proc.waitForStarted(3000))
+    {
+        if(proc.waitForReadyRead(-1))
+        {
+            proc.waitForFinished(-1);
+            
+            results = QString(proc.readAll());
+        }
+    }
+
+    return results;
 }
 
 static QString getProcessName(QString m_proc)

@@ -79,6 +79,7 @@ set(CondresControlCenter_moc_hdrs
 	RadioButton.h
 	itdelegato.h
 	ctablewidget.h
+	depends.h
 )
 
 
@@ -101,6 +102,7 @@ set(CondresControlCenter_uis
 	gui/SambaPrinter.ui
 	gui/sambauser.ui
 	gui/upgrade.ui
+	gui/depends.ui
 	repoeditor/addrepo.ui
 	repoeditor/repoeditor.ui
 	keyboard/ui/PageKeyboard.ui
@@ -178,6 +180,7 @@ set(CondresControlCenter_srcs
 	RadioButton.cpp
 	itdelegato.cpp
 	ctablewidget.cpp
+	depends.cpp
 )
 
 qt5_add_resources(RESOURCE_FILES images.qrc keyboard/keyboard.qrc mhwd/mhwd.qrc users/users.qrc timedate/timedate.qrc) 
