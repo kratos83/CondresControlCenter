@@ -54,6 +54,4 @@ void CTableWidget::Popup(const QPoint& pt)
     }
 }
 
-CTableWidget::~CTableWidget()
-{
-}
+CTableWidget::~CTableWidget(){}
