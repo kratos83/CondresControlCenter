@@ -34,7 +34,7 @@ void About::viewPacman()
 {
     ui->label_centro->setText("<p><b>CondresOS Control Center</b><br>"
                               "Site web: <a href=\"https://condresos.codelinsoft.it\">https://condresos.codelinsoft.it/</a><br>"
-                              "Version: <b>"+QString(VERSION)+" "+QString(RELEASE_CANDIDATE)+" 1</b><br>"
+                              "Version: <b>"+QString(VERSION)+" "+QString(RELEASE_CANDIDATE)+" 2</b><br>"
                               "(C) 2019 Angelo Scarnà - Team Codelinsoft</p>");
 }
 

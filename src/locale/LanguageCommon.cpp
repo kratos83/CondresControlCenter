@@ -94,20 +94,14 @@ LanguageCommon::supportedLocales( bool clean )
                 line.isEmpty() )
             continue;
 
-        qDebug() << line;
-
         if ( line.startsWith( "#" ) )
             line.remove( 0, 1 );
-
-        qDebug() << line;
 
         // Remove UTF-8, ISO-8895-15, etc
         QString lineString = QString::fromUtf8( line );
         lineString = lineString.split( " ", QString::SkipEmptyParts )
                      .first()
                      .trimmed();
-
-        qDebug() << lineString;
 
         if ( clean )
         {
