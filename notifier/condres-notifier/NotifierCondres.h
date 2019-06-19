@@ -24,6 +24,7 @@
 #include <QSystemTrayIcon>
 #include <QFileSystemWatcher>
 #include <QLoggingCategory>
+#include <KNotifications/KStatusNotifierItem>
 #include "../pacmanhelper/pacmanhelperclient.h"
 #include "../../src/about.h"
 #include "../../src/settingsmanager.h"
@@ -35,12 +36,12 @@ const QString DBUS_PACMANHELPER_SERVICE = "/usr/share/dbus-1/system-services/org
 
 Q_DECLARE_LOGGING_CATEGORY(CondresNotifier)
 
-class NotifierCondres : public QMainWindow
+class NotifierCondres : public QObject
 {
     Q_OBJECT
     
 public:
-    NotifierCondres(QWidget *parent=nullptr);
+    explicit NotifierCondres(QObject *parent=0);
     virtual ~NotifierCondres();
     
 public slots:
@@ -56,7 +57,7 @@ public slots:
     void sendDatabase();
     
 private:
-    QSystemTrayIcon *m_trayIcon;
+    KStatusNotifierItem *m_trayIcon;
     QMenu *m_Menu;
     QFileSystemWatcher *m_pacmanDatabase;
     QAction *m_info, *m_upgrade, *m_install, *m_close, *m_sync, *m_controlCenter;

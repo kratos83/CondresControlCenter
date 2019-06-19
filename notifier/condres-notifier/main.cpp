@@ -23,6 +23,8 @@
 #include <QDebug>
 #include <QProcess>
 #include <QLoggingCategory>
+#include "kdsingleapplicationguard/kdsingleapplicationguard.h"
+#include "NotifierApp.h"
 
 #include "../src/settingsmanager.h"
 
@@ -59,9 +61,9 @@ static bool parseArguments(const QStringList &argomento)
 int main(int argc, char *argv[])
 {  
 
-    QApplication a(argc, argv);
+    NotifierApp app(argc, argv);
   
-    if(!parseArguments(a.arguments()))
+    if(!parseArguments(app.arguments()))
     {
         return -1;
     }
@@ -76,8 +78,20 @@ int main(int argc, char *argv[])
         return (-3);
     }
     
-    NotifierCondres m_not;
-    m_not.hide();
+    app.setQuitOnLastWindowClosed(false);
+    // ensure only one tray icon application is runnung
+    KDSingleApplicationGuard guard( KDSingleApplicationGuard::AutoKillOtherInstances );
 
-    return a.exec();
+    int returnCode = 0;
+    if ( guard.isPrimaryInstance() )
+    {
+        app.init();
+        NotifierCondres m_not( &app );
+        returnCode = app.exec();
+    }
+    else
+        qDebug() << "CSM Notifier is already running, shutting down.";
+    
+
+    return returnCode;
 }

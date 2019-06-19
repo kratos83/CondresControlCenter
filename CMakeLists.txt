@@ -45,11 +45,9 @@ find_package(Qt5 REQUIRED Widgets Gui Core Sql Network DBus UiPlugin PrintSuppor
 message(STATUS "Checking for KF5...")
 find_package(KF5 REQUIRED COMPONENTS
     CoreAddons
-    Auth
     ConfigWidgets
     ItemModels
-    Notifications
-    KCMUtils)
+    Notifications)
     
 message(STATUS "Checking for ICU...")
 find_package(ICU REQUIRED)

@@ -1,4 +1,4 @@
-CondresControlCenter 0.2.5 RC 2
+CondresControlCenter 0.3.0 STABLE
 =========
 
 CondresControlCenter is a beatiful system software management.
@@ -23,7 +23,7 @@ hd
 ------------------------------
 gksu
 ------------------------------
-kf5 component CoreAddons Auth ConfigWidgets ItemModels Notifications KCMUtils
+kf5 component CoreAddons ConfigWidgets ItemModels Notifications
 ------------------------------
 PluginCondresControlCenter
 ------------------------------

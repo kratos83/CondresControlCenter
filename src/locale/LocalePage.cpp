@@ -572,7 +572,3 @@ LocalePage::disableRemoveButton( const QModelIndex& current, const QModelIndex& 
             ui->buttonRemove->setDisabled( true );
     }
 }
-
-
-
-

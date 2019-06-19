@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButtonLanguage,&QPushButton::clicked,this,&MainWindow::openLocalLanguages);
     connect(ui->pushButtonTime,&QPushButton::clicked,this,&MainWindow::openTimeDate);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
-    setWindowTitle(titolo()+tr("Control Center  ")+QString(VERSION)+"  "+QString(RELEASE_CANDIDATE)+" 2");
+    setWindowTitle(titolo()+tr("Control Center  ")+QString(VERSION)+"  "+QString(STABLE));
     ui->stackedWidget->setCurrentIndex(0);
     visButtonStatusBar();
 }

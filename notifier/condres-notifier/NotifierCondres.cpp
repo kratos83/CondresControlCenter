@@ -21,8 +21,8 @@
 
 Q_LOGGING_CATEGORY(CondresNotifier, "ControlCenter")
 
-NotifierCondres::NotifierCondres(QWidget *parent) : 
-    QMainWindow(parent),
+NotifierCondres::NotifierCondres(QObject *parent) : 
+    QObject(parent),
     m_numberPackages(0),
     m_manager(new SettingsManager)
 {
@@ -64,9 +64,11 @@ void NotifierCondres::createAction()
 
 void NotifierCondres::createTrayIcon()
 {
-    m_trayIcon = new QSystemTrayIcon(this);
-    m_trayIcon->setIcon(QIcon::fromTheme(":/images/db_green.png"));
-    m_Menu = new QMenu(this);
+    m_trayIcon = new KStatusNotifierItem(this);
+    m_trayIcon->setStandardActionsEnabled(false);
+    m_trayIcon->setIconByPixmap(QIcon::fromTheme(":/images/db_green.png"));
+    m_trayIcon->setStatus( KStatusNotifierItem::Passive );
+    m_Menu = new QMenu();
     m_Menu->addAction(m_sync);
     m_Menu->addSeparator();
     m_Menu->addAction(m_controlCenter);
@@ -90,7 +92,6 @@ void NotifierCondres::createTrayIcon()
     //Settings manager data 
     m_manager->setGeneralValue("Date/hour",QTime::currentTime().hour());
     connect(m_timer,&QTimer::timeout,this,&NotifierCondres::pacmanUpdateTimer);
-    m_trayIcon->show();
 }
 
 void NotifierCondres::pacmanUpdateTimer()
@@ -121,12 +122,12 @@ void NotifierCondres::sendDatabase()
 void NotifierCondres::updateIcon()
 {
     if(m_numberPackages > 0){
-        m_trayIcon->setIcon(QIcon(":/images/db_red.png"));
-        m_trayIcon->setToolTip("Are avaible "+QString::number(m_numberPackages)+" updates...");
+        m_trayIcon->setIconByPixmap(QIcon(":/images/db_red.png"));
+        m_trayIcon->setToolTipTitle("Are avaible "+QString::number(m_numberPackages)+" updates...");
     }
     else if(m_numberPackages == 0){
-        m_trayIcon->setIcon(QIcon(":/images/db_green.png"));
-        m_trayIcon->setToolTip("System update complete.");
+        m_trayIcon->setIconByPixmap(QIcon(":/images/db_green.png"));
+        m_trayIcon->setToolTipTitle("System update complete.");
     }
 }
 
@@ -159,7 +160,7 @@ void NotifierCondres::openControlCenter()
 
 void NotifierCondres::syncDatabases()
 {
-    m_trayIcon->setToolTip("Syncronized databases...");
+    m_trayIcon->setToolTipTitle("Syncronized databases...");
     qCDebug(CondresNotifier) << "Syncronized databases...";
     m_numberPackages = Backend::getUpdateList().length();
     qCDebug(CondresNotifier) << m_numberPackages;
