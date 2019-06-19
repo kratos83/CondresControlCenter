@@ -24,7 +24,7 @@
 #include <QSystemTrayIcon>
 #include <QFileSystemWatcher>
 #include <QLoggingCategory>
-#include <KNotifications/KStatusNotifierItem>
+#include <QSystemTrayIcon>
 #include "../pacmanhelper/pacmanhelperclient.h"
 #include "../../src/about.h"
 #include "../../src/settingsmanager.h"
@@ -57,7 +57,7 @@ public slots:
     void sendDatabase();
     
 private:
-    KStatusNotifierItem *m_trayIcon;
+    QSystemTrayIcon *m_trayIcon;
     QMenu *m_Menu;
     QFileSystemWatcher *m_pacmanDatabase;
     QAction *m_info, *m_upgrade, *m_install, *m_close, *m_sync, *m_controlCenter;

@@ -64,10 +64,8 @@ void NotifierCondres::createAction()
 
 void NotifierCondres::createTrayIcon()
 {
-    m_trayIcon = new KStatusNotifierItem(this);
-    m_trayIcon->setStandardActionsEnabled(false);
-    m_trayIcon->setIconByPixmap(QIcon::fromTheme(":/images/db_green.png"));
-    m_trayIcon->setStatus( KStatusNotifierItem::Passive );
+    m_trayIcon = new QSystemTrayIcon(this);
+    m_trayIcon->setIcon(QIcon::fromTheme(":/images/db_green.png"));
     m_Menu = new QMenu();
     m_Menu->addAction(m_sync);
     m_Menu->addSeparator();
@@ -81,7 +79,7 @@ void NotifierCondres::createTrayIcon()
     m_Menu->addSeparator();
     m_Menu->addAction(m_close);
     m_trayIcon->setContextMenu(m_Menu);
-    
+    m_trayIcon->show();
     m_client = new PacmanHelperClient("org.condrescontrolcenter.pacmanhelper","/",QDBusConnection::systemBus(), 0);
     connect(m_client,&PacmanHelperClient::syncdbcompleted,this,&NotifierCondres::syncDatabases);
     
@@ -122,12 +120,12 @@ void NotifierCondres::sendDatabase()
 void NotifierCondres::updateIcon()
 {
     if(m_numberPackages > 0){
-        m_trayIcon->setIconByPixmap(QIcon(":/images/db_red.png"));
-        m_trayIcon->setToolTipTitle("Are avaible "+QString::number(m_numberPackages)+" updates...");
+        m_trayIcon->setIcon(QIcon(":/images/db_red.png"));
+        m_trayIcon->setToolTip("Are avaible "+QString::number(m_numberPackages)+" updates...");
     }
     else if(m_numberPackages == 0){
-        m_trayIcon->setIconByPixmap(QIcon(":/images/db_green.png"));
-        m_trayIcon->setToolTipTitle("System update complete.");
+        m_trayIcon->setIcon(QIcon(":/images/db_green.png"));
+        m_trayIcon->setToolTip("System update complete.");
     }
 }
 
@@ -160,7 +158,7 @@ void NotifierCondres::openControlCenter()
 
 void NotifierCondres::syncDatabases()
 {
-    m_trayIcon->setToolTipTitle("Syncronized databases...");
+    m_trayIcon->setToolTip("Syncronized databases...");
     qCDebug(CondresNotifier) << "Syncronized databases...";
     m_numberPackages = Backend::getUpdateList().length();
     qCDebug(CondresNotifier) << m_numberPackages;
