@@ -25,6 +25,7 @@
 #include "LanguageListViewDelegate.h"
 #include "EnabledLocalesModel.h"
 #include "PageWidget.h"
+#include <QtCore>
 
 namespace Ui
 {
@@ -55,7 +56,10 @@ protected slots:
     void addLocale();
     void removeLocale();
     void disableRemoveButton( const QModelIndex& current, const QModelIndex& previous );
-
+    bool updateLocaleGen( QStringList locales );
+    bool generateLocaleGen();
+    bool setSystemLocale( QStringList locale );
+    void save(QVariantMap &args);
 };
 
 #endif // PAGELANGUAGE_H

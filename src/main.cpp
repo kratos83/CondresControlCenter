@@ -29,8 +29,6 @@
 #include <QLoggingCategory>
 #include <QtSql/QtSql>
 
-#define CONDRESDB "/usr/lib/condrescontrolcenter/condrescontrolcenter.db"
-
 Q_DECLARE_LOGGING_CATEGORY(CondresControlCenterMain)
 Q_LOGGING_CATEGORY(CondresControlCenterMain, "ControlCenter")
 
@@ -94,9 +92,6 @@ int main(int argc, char *argv[])
         const QString arg1 = argv[1];
 
         const QString arg3 = argv[3];
-        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName(CONDRESDB);
-        db.open();
     
         QScreen *sc = QGuiApplication::primaryScreen();
         MainWindow *w = new MainWindow();

@@ -382,24 +382,136 @@ LocalePage::save()
         args["localeList"] = localeList;
 
         // TODO: Progress UI
-        KAuth::Action installAction( QLatin1String( "org.manjaro.msm.locale.save" ) );
-        installAction.setHelperId( QLatin1String( "org.manjaro.msm.locale" ) );
-        installAction.setArguments( args );
-        installAction.setTimeout( std::numeric_limits<int>::max() );
-        KAuth::ExecuteJob* job = installAction.execute();
-        if ( job->exec() )
+        save(args);
+    }
+}
+
+void LocalePage::save(QVariantMap& args)
+{
+    if ( args["isLocaleListModified"].toBool() )
+    {
+        updateLocaleGen( args["locales"].toStringList() );
+        generateLocaleGen();
+    }
+    if ( args["isSystemLocalesModified"].toBool() )
+        setSystemLocale( args["localeList"].toStringList() );
+    
+    load();
+}
+
+bool LocalePage::updateLocaleGen(QStringList locales)
+{
+    const QString localeGen = "/etc/locale.gen";
+    QFile file( localeGen );
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        qDebug() << QString( "error: failed to open file '%1'" ).arg( localeGen );
+        return false;
+    }
+
+    QStringList content;
+
+    QTextStream in( &file );
+    while ( !in.atEnd() )
+    {
+        QString line = in.readLine();
+        content.append( line );
+        line = line.trimmed();
+
+        bool found = false;
+
+        foreach ( const QString locale, locales )
         {
-            // tr("You might have to restart the graphical environment to apply the new settings...")
-            qDebug() << "Locale changes succesfully set";
-        }
-        else
-        {
-            // QString(tr("Failed to set locale!")
-            qDebug() << "Failed to set locale";
+            if ( line.startsWith( locale + " " ) )
+            {
+                found = true;
+                locales.removeAll( locale );
+                break;
+            }
+
+            if ( line.startsWith( "#" + locale + " " ) )
+            {
+                content.removeLast();
+                content.append( line.remove( 0, 1 ) );
+                found = true;
+                locales.removeAll( locale );
+                break;
+            }
         }
 
-        load();
+        if ( !found && !line.split( "#", QString::KeepEmptyParts ).first()
+                .trimmed().isEmpty() )
+        {
+            content.removeLast();
+            content.append( "#" + line );
+        }
     }
+    file.close();
+
+    // Add missing locales in the file
+    foreach ( const QString locale, locales )
+    {
+        QString validLocale = LanguageCommon::localeToLocaleGenFormat( locale );
+        if ( validLocale.isEmpty() )
+        {
+            qDebug() << QString( "warning: failed to obtain valid locale string"
+                                 "for locale '%1'!" ).arg( locale );
+            continue;
+        }
+        content.append( validLocale );
+    }
+
+    if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+        qDebug() << QString( "error: failed to open file '%1'!" ).arg( localeGen );
+        return false;
+    }
+    QTextStream out( &file );
+    out << content.join( "\n" );
+    out.flush();
+    file.close();
+
+    return true;
+}
+
+bool LocalePage::generateLocaleGen()
+{
+    QProcess localeGen;
+    localeGen.start( "/usr/bin/locale-gen" );
+    connect( &localeGen, &QProcess::readyRead,
+             [&] ()
+    {
+        QString data = QString::fromUtf8( localeGen.readAll() ).trimmed();
+        if ( !data.isEmpty() )
+        {
+            QVariantMap map;
+            map.insert( QLatin1String( "Data" ), data );
+            //HelperSupport::progressStep( map );
+        }
+    } );
+    if ( !localeGen.waitForStarted() )
+        return false;
+    if ( !localeGen.waitForFinished( 60000 ) )
+        return false;
+    return true;
+}
+
+bool LocalePage::setSystemLocale(QStringList locale)
+{
+    QDBusInterface dbusInterface( "org.freedesktop.locale1",
+                                  "/org/freedesktop/locale1",
+                                  "org.freedesktop.locale1",
+                                  QDBusConnection::systemBus() );
+    /*
+     * asb
+     * array_string -> locale
+     * boolean -> arg_ask_password
+     */
+    QDBusMessage reply;
+    reply = dbusInterface.call( "SetLocale", locale, true );
+    if ( reply.type() == QDBusMessage::ErrorMessage )
+        return false;
+    return true;
 }
 
 
@@ -416,7 +528,7 @@ LocalePage::addLocale()
     if ( m_enabledLocalesModel->insertLocale( m_enabledLocalesModel->rowCount( QModelIndex() ), 1, localeCode ) )
     {
         m_isLocaleListModified = true;
-        this -> setApplyEnabled( this, true );
+        save();
     }
 }
 
@@ -431,7 +543,7 @@ LocalePage::removeLocale()
         {
             ui->localeListView->setCurrentIndex( QModelIndex() );
             m_isLocaleListModified = true;
-            this -> setApplyEnabled( this, true );
+            save();
         }
     }
 }
