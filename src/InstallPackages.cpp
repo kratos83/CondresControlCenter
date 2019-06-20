@@ -338,7 +338,7 @@ void InstallPackages::searchPackages(QString text)
 
 void InstallPackages::TableClicked(const QModelIndex &index)
 {
-    if(index.column() == 0)
+    if(index.isValid())
     {
         QString name = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),1),Qt::DisplayRole).toString();
         QString version = ui->tableWidget->selectionModel()->model()->data(ui->tableWidget->selectionModel()->model()->index(index.row(),2),Qt::DisplayRole).toString();
