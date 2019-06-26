@@ -12,7 +12,6 @@ ServiceManagement::ServiceManagement(QWidget* parent) :
     connect(ui->tableView,&QTableView::clicked,this,&ServiceManagement::clicked);
     connect(ui->pushButton,&QPushButton::clicked,this,&ServiceManagement::enableService);
     connect(ui->pushButtonDisable,&QPushButton::clicked,this,&ServiceManagement::disableService);
-    connect(ui->pushButtonStatus,&QPushButton::clicked,this,&ServiceManagement::statusService);
     connect(ui->pushButtonStop,&QPushButton::clicked,this,&ServiceManagement::stopService);
     connect(ui->pushButtonRestart,&QPushButton::clicked,this,&ServiceManagement::restartService);
     connect(ui->pushButtonStart,&QPushButton::clicked,this,&ServiceManagement::startService);
@@ -122,14 +121,6 @@ void ServiceManagement::startService()
     }
 }
 
-void ServiceManagement::statusService()
-{
-    QString id_new;
-    int riga = ui->tableView->selectionModel()->currentIndex().row();
-    QModelIndex elemento = model->index(riga,0,QModelIndex());
-    listServices();
-}
-
 void ServiceManagement::stopService()
 {
     QString m_stop;
@@ -182,7 +173,7 @@ void ServiceManagement::disableService()
     QProcess process;
     process.setReadChannel(QProcess::StandardOutput);
     process.setProcessChannelMode(QProcess::MergedChannels);
-    process.start("systemctl enable "+m_disable);
+    process.start("systemctl disable "+m_disable);
     process.closeWriteChannel();
     while(process.state() != QProcess::NotRunning)
     {
@@ -261,22 +252,22 @@ void ServiceManagement::currentRowChanged(const QModelIndex& current, const QMod
          clicked(current);
          QString service = model->data(model->index(current.row(),1),Qt::DisplayRole).toString();
          if(service == "enabled")
-             visibleButton(false,true,true,true,true,true);
+             visibleButton(false,true,true,true,true);
          else if(service == "disabled")
-             visibleButton(true,false,true,true,true,true);
+             visibleButton(true,false,true,true,true);
          else if(service == "static")
-             visibleButton(true,true,true,true,true,true);
+             visibleButton(true,true,true,true,true);
      }
      else{
          ui->tableView->setCurrentIndex(previous);
          clicked(previous);
          QString service = model->data(model->index(previous.row(),1),Qt::DisplayRole).toString();
          if(service == "enabled")
-             visibleButton(false,true,true,true,true,true);
+             visibleButton(false,true,true,true,true);
          else if(service == "disabled")
-             visibleButton(true,false,true,true,true,true);
+             visibleButton(true,false,true,true,true);
          else if(service == "static")
-             visibleButton(true,true,true,true,true,true);
+             visibleButton(true,true,true,true,true);
     }
 }
 
@@ -287,12 +278,11 @@ void ServiceManagement::initTableView()
             this, SLOT(currentRowChanged(const QModelIndex &,const QModelIndex &)));
 }
 
-void ServiceManagement::visibleButton(bool button1, bool button2, bool button3, bool button4, bool button5, bool button6)
+void ServiceManagement::visibleButton(bool button1, bool button2, bool button3, bool button4, bool button5)
 {
     ui->pushButton->setVisible(button1);
     ui->pushButtonDisable->setVisible(button2);
-    ui->pushButtonStatus->setVisible(button3);
-    ui->pushButtonStop->setVisible(button4);
-    ui->pushButtonRestart->setVisible(button5);
-    ui->pushButtonStart->setVisible(button6);
+    ui->pushButtonStop->setVisible(button3);
+    ui->pushButtonRestart->setVisible(button4);
+    ui->pushButtonStart->setVisible(button5);
 }

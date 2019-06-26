@@ -28,13 +28,12 @@ private slots:
     void startService();
     void restartService();
     void stopService();
-    void statusService();
     void enableService();
     void disableService();
     void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void searchService(QString text);
 protected slots:
-    void visibleButton(bool button1, bool button2, bool button3, bool button4, bool button5, bool button6);
+    void visibleButton(bool button1, bool button2, bool button3, bool button4, bool button5);
 private:
     Ui::ServiceManagement *ui;
     QStandardItemModel *model;

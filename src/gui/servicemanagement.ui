@@ -97,17 +97,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonStatus">
-       <property name="text">
-        <string>Status</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/terminal.svg</normaloff>:/images/terminal.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="pushButtonStop">
        <property name="text">
         <string>Stop</string>
@@ -150,7 +139,6 @@
   <tabstop>textEdit</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>pushButtonDisable</tabstop>
-  <tabstop>pushButtonStatus</tabstop>
   <tabstop>pushButtonStop</tabstop>
   <tabstop>pushButtonRestart</tabstop>
   <tabstop>pushButtonStart</tabstop>
