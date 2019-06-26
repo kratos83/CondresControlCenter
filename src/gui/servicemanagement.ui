@@ -18,23 +18,32 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
+       <widget class="QComboBox" name="comboBoxState">
+        <item>
+         <property name="text">
+          <string>All</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Enabled</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Disabled</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="2">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Search service</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditService">
-        <property name="clearButtonEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QTableView" name="tableView"/>
-      </item>
-      <item row="2" column="0" colspan="2">
+      <item row="2" column="0" colspan="4">
        <widget class="QTextEdit" name="textEdit">
         <property name="minimumSize">
          <size>
@@ -53,6 +62,23 @@
         </property>
         <property name="readOnly">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="lineEditService">
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QTableView" name="tableView"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -134,6 +160,7 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>comboBoxState</tabstop>
   <tabstop>lineEditService</tabstop>
   <tabstop>tableView</tabstop>
   <tabstop>textEdit</tabstop>

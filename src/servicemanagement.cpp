@@ -16,6 +16,13 @@ ServiceManagement::ServiceManagement(QWidget* parent) :
     connect(ui->pushButtonRestart,&QPushButton::clicked,this,&ServiceManagement::restartService);
     connect(ui->pushButtonStart,&QPushButton::clicked,this,&ServiceManagement::startService);
     connect(ui->lineEditService,&QLineEdit::textEdited,this,&ServiceManagement::searchService);
+    connect(ui->comboBoxState,&QComboBox::currentTextChanged,[this](const QVariant &text){
+        ui->lineEditService->clear();
+        if(text.toString().toLower() == "all")
+            searchService("");
+        else
+            searchService(text.toString().toLower());
+    });
     listServices();
 }
 
@@ -39,7 +46,8 @@ void ServiceManagement::listServices()
             foreach(QString txt, list)
             {
                 if(txt.isEmpty() || txt.contains("UNIT FILE") || txt.contains("STATE")
-                    || txt.contains("listed") || txt.contains("@"))
+                    || txt.contains("listed") || txt.contains("@") || txt.contains("static")
+                    || txt.contains("indirect"))
                     continue;
                     
                 QStringList _list = txt.split(" ");
