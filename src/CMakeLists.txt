@@ -80,6 +80,7 @@ set(CondresControlCenter_moc_hdrs
 	itdelegato.h
 	ctablewidget.h
 	depends.h
+	servicemanagement.h
 )
 
 
@@ -103,6 +104,7 @@ set(CondresControlCenter_uis
 	gui/sambauser.ui
 	gui/upgrade.ui
 	gui/depends.ui
+	gui/servicemanagement.ui
 	repoeditor/addrepo.ui
 	repoeditor/repoeditor.ui
 	keyboard/ui/PageKeyboard.ui
@@ -144,6 +146,7 @@ set(CondresControlCenter_srcs
 	PageWidget.cpp
 	Samba.cpp
 	nfsshare.cpp
+	servicemanagement.cpp
 	keyboard/KeyboardCommon.cpp
 	keyboard/KeyboardItem.cpp
 	keyboard/KeyboardModel.cpp

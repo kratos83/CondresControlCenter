@@ -251,7 +251,7 @@
                 <normaloff>:/images/laptop.png</normaloff>:/images/laptop.png</iconset>
               </attribute>
               <attribute name="title">
-               <string>Hardware</string>
+               <string>Configuration</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_6">
                <item row="0" column="0">
@@ -289,6 +289,20 @@
                       </property>
                      </widget>
                     </item>
+                    <item row="0" column="1">
+                     <widget class="Line" name="line_8">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="Line" name="line_9">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="0" column="0">
                      <widget class="QPushButton" name="pushKey">
                       <property name="text">
@@ -309,30 +323,43 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="Line" name="line_8">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="Line" name="line_9">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="2">
+                    <item row="2" column="2">
                      <widget class="Line" name="line_10">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
+                    <item row="1" column="0">
+                     <widget class="QPushButton" name="pushButtonServices">
+                      <property name="text">
+                       <string>Services management</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../images.qrc">
+                        <normaloff>:/images/service.png</normaloff>:/images/service.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>64</width>
+                        <height>64</height>
+                       </size>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="Line" name="line_15">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <spacer name="verticalSpacer_2">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>

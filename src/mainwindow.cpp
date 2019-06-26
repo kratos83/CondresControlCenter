@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButtonNFS,&QPushButton::clicked,this,&MainWindow::openNfsShare);
     connect(ui->pushButtonLanguage,&QPushButton::clicked,this,&MainWindow::openLocalLanguages);
     connect(ui->pushButtonTime,&QPushButton::clicked,this,&MainWindow::openTimeDate);
+    connect(ui->pushButtonServices,&QPushButton::clicked,this,&MainWindow::openServices);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
     setWindowTitle(titolo()+tr("Control Center  ")+QString(VERSION)+"  "+QString(STABLE));
     ui->stackedWidget->setCurrentIndex(0);
@@ -87,8 +88,25 @@ void MainWindow::on_butt_repo_clicked()
 
 void MainWindow::ritorna_indietro()
 {
-    ui->stackedWidget->setCurrentIndex(0);
-    visButtonStatusBar();
+    QMessageBox *box= new QMessageBox;
+    box->setWindowTitle("CondresControlCenter");
+    box->setText("Attention");
+    box->setInformativeText("Are you sure you want to quit?");
+    box->setIcon(QMessageBox::Warning);
+    QPushButton *m_pushOk = new QPushButton;
+    m_pushOk->setText("Ok");
+    box->addButton(m_pushOk,QMessageBox::AcceptRole);
+    QPushButton *m_pushCancel= new QPushButton;
+    m_pushCancel->setText("Cancel");
+    box->addButton(m_pushCancel,QMessageBox::AcceptRole);
+    box->exec();
+    if(box->clickedButton() == m_pushOk){
+        if(ui->stackedWidget->currentIndex() != 0){
+            ui->stackedWidget->setCurrentIndex(0);
+            visButtonStatusBar();
+        }
+    }
+    else box->close();
 }
 
 void MainWindow::on_butt_update_clicked()
@@ -224,6 +242,14 @@ void MainWindow::openTimeDate()
     m_timePage = new TimeDatePage(this);
     m_timePage->load();
     ui->stackedWidget->insertWidget(1,m_timePage);
+    ui->stackedWidget->setCurrentIndex(1);
+    butt_back->setVisible(true);
+}
+
+void MainWindow::openServices()
+{
+    m_service = new ServiceManagement(this);
+    ui->stackedWidget->insertWidget(1,m_service);
     ui->stackedWidget->setCurrentIndex(1);
     butt_back->setVisible(true);
 }

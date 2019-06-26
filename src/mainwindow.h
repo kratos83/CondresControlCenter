@@ -44,6 +44,7 @@
 #include "mhwd/MhwdPage.h"
 #include "locale/LocalePage.h"
 #include "timedate/TimeDatePage.h"
+#include "servicemanagement.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterMain)
 
@@ -77,6 +78,8 @@ public slots:
     void openNfsShare();
     void openLocalLanguages();
     void openTimeDate();
+    void openServices();
+    
 private:
     Ui::MainWindow *ui;
     QProcess *process, *process_locate_paccache;
@@ -97,6 +100,8 @@ private:
     NfsShare *m_shareNfs;
     LocalePage *m_localLanguage;
     TimeDatePage *m_timePage;
+    ServiceManagement *m_service;
+    
 protected:
     void closeEvent(QCloseEvent *event);
 };

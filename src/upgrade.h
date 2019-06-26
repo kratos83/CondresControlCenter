@@ -27,7 +27,7 @@
 #include "tablewidgetheader.h"
 #include <QLoggingCategory>
 #include "settingsmanager.h"
-
+#include "constant.h"
 Q_DECLARE_LOGGING_CATEGORY(ControlCenterUpgrade)
 
 namespace Ui {

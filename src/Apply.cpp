@@ -164,24 +164,25 @@ void Apply::ReadyPkg()
     
     QString results;
     if(m_install_remove == "install")
-        results = m_process->readAllStandardOutput();
+        results = m_process->readAll();
     else if(m_install_remove == "remove")
         results = m_process_remove->readAll();
     else if(m_install_remove == "local")
         results = m_process_local->readAll();
     QStringList resultsVector = results.split(((QRegExp) "\n"),QString::SkipEmptyParts);
+    QString line;
     for(int i=0; i<resultsVector.size();i++)
     {
-        if(QString(resultsVector.at(i)).isEmpty())
+        line = resultsVector.at(i);
+        if(line.isEmpty())
               continue;
-
-        ui->progressBar->setMaximum(i);
-        ui->progressBar->setValue(i);
+        
         QString str;
         str.append(resultsVector.at(i));
         ui->console->append("<font color=\"white\">"+str+"</font></br>");
     }
-    
+    ui->progressBar->setMaximum(line.length());
+    ui->progressBar->setValue(line.length());
 }
 
 void Apply::closeDialog()

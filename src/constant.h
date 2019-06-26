@@ -25,7 +25,7 @@
 #include <QtWidgets>
 #include <QtSql/QtSql>
 
-#define VERSION "0.3.0"
+#define VERSION "0.3.1"
 #define ALPHA "ALPHA RELEASE"
 #define BETA "BETA RELEASE"
 #define RELEASE_CANDIDATE "RC RELEASE"
@@ -158,6 +158,25 @@ static QString getProcessName(QString m_proc)
             proc.waitForFinished(-1);
             QString m_tex = proc.readAllStandardOutput();
             QStringList list = m_tex.split(":");
+            results = list.at(0);
+        }
+    }
+    return results;
+}
+
+static QString getProcessNameDesktop(QString m_proc)
+{
+    QProcess proc;
+    QString results;
+    proc.setReadChannel(QProcess::StandardOutput);
+    proc.start(m_proc);
+    if (proc.waitForStarted(3000))
+    {
+        if(proc.waitForReadyRead(-1))
+        {
+            proc.waitForFinished(-1);
+            QString m_tex = proc.readAllStandardOutput();
+            QStringList list = m_tex.split("=");
             results = list.at(0);
         }
     }

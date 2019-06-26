@@ -173,7 +173,6 @@ void Upgrade::on_back_clicked()
 
 void Upgrade::updatePackages()
 {
-    ui->progressBar->setMinimum(0);
     QStringList list1;
     if (!NoConnection())
        QMessageBox::warning(this,"Condres OS Control Center","Unable to estabilish internet connection");
@@ -184,7 +183,7 @@ void Upgrade::updatePackages()
     ui->up_progress->setText("Update packages");
     connect(processUpgrade,&QProcess::readyReadStandardOutput,this,&Upgrade::showProgressInqDebug);
     connect(processUpgrade,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Upgrade::updatePackagesProcess);
-    list1 << "-S" << "--noconfirm" << getList();
+    list1 << "-S" << "--force" << "--noconfirm" << getList();
     if(getList().isEmpty()){
         ui->console->append("<font color=\"white\">Select a packages</font>");
         QMessageBox::warning(this,"Condres OS Control Center","Select a packages");
@@ -215,22 +214,25 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
 void Upgrade::showProgressInqDebug()
 {
     QString m_list = processUpgrade->readAll();
+    qCDebug(ControlCenterUpgrade) << m_list;
     QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
     //process package list
+    QString line;
     for(int i = 0; i < lines.length(); i++)
     {
-       QString line = lines.at(i);
+       line = lines.at(i);
        
        if(line.isEmpty())
             continue;
         
-       ui->progressBar->setMaximum(i);
-       ui->progressBar->setValue(i);
        QString str;
        str.append(line);
        ui->up_progress->setText(str);
        ui->console->append("<font color=\"white\">"+line+"</font>");
     }
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(line.length());
+    ui->progressBar->setValue(line.length());
 }
 
 

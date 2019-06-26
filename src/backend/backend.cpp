@@ -64,7 +64,7 @@ QStringList Backend::getPackageList()
     repoVersion = alpm_pkg_get_version(pkg),
     pkgName = alpm_pkg_get_name(pkg),
     instPkg = (alpm_utils_get_installed_pkg(alpm_utils, pkgName));
-
+    
     if (instPkg)
     {
       bInstalled = "i";
