@@ -257,7 +257,7 @@
                <item row="0" column="0">
                 <widget class="QGroupBox" name="groupBox_3">
                  <property name="title">
-                  <string>Hardware</string>
+                  <string>Hardware and software</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
                   <item row="0" column="0">
@@ -354,6 +354,26 @@
                      <widget class="Line" name="line_15">
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QPushButton" name="pushButtonPrinter">
+                      <property name="text">
+                       <string>Install and configure printer</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../images.qrc">
+                        <normaloff>:/images/printer.png</normaloff>:/images/printer.png</iconset>
+                      </property>
+                      <property name="iconSize">
+                       <size>
+                        <width>64</width>
+                        <height>64</height>
+                       </size>
+                      </property>
+                      <property name="flat">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>

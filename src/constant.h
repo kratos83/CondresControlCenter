@@ -25,7 +25,7 @@
 #include <QtWidgets>
 #include <QtSql/QtSql>
 
-#define VERSION "0.3.1"
+#define VERSION "0.3.2"
 #define ALPHA "ALPHA RELEASE"
 #define BETA "BETA RELEASE"
 #define RELEASE_CANDIDATE "RC RELEASE"
@@ -91,6 +91,24 @@ static QString getNfs()
 {
     QString os_type = "";
     QString com_lsb = "/usr/bin/nfsconf";
+    QProcess process_locate_paccache;
+    process_locate_paccache.setReadChannel(QProcess::StandardOutput);
+    process_locate_paccache.setProcessChannelMode(QProcess::MergedChannels);
+    process_locate_paccache.start(com_lsb);
+    process_locate_paccache.closeWriteChannel();
+    if(process_locate_paccache.state()!=QProcess::NotRunning){
+        process_locate_paccache.waitForReadyRead();
+        QByteArray result = process_locate_paccache.readAll();
+        os_type += result;
+    }
+    process_locate_paccache.close();
+    return os_type;
+}
+
+static QString getPrinter()
+{
+    QString os_type = "";
+    QString com_lsb = "/usr/bin/system-config-printer --help";
     QProcess process_locate_paccache;
     process_locate_paccache.setReadChannel(QProcess::StandardOutput);
     process_locate_paccache.setProcessChannelMode(QProcess::MergedChannels);

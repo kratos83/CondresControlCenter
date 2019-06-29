@@ -79,6 +79,7 @@ public slots:
     void openLocalLanguages();
     void openTimeDate();
     void openServices();
+    void openPrinterConfigure();
     
 private:
     Ui::MainWindow *ui;

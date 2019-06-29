@@ -25,6 +25,8 @@ gksu
 ------------------------------
 kf5 component CoreAddons ConfigWidgets ItemModels Notifications
 ------------------------------
+system-config-printer conflicts to printer-manager KDE
+------------------------------
 PluginCondresControlCenter
 ------------------------------
 For installation follow the guide:

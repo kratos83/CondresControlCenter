@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButtonLanguage,&QPushButton::clicked,this,&MainWindow::openLocalLanguages);
     connect(ui->pushButtonTime,&QPushButton::clicked,this,&MainWindow::openTimeDate);
     connect(ui->pushButtonServices,&QPushButton::clicked,this,&MainWindow::openServices);
+    connect(ui->pushButtonPrinter,&QPushButton::clicked,this,&MainWindow::openPrinterConfigure);
     ui->tabWidget->tabBar()->setStyle(new Tab_style);
     setWindowTitle(titolo()+tr("Control Center  ")+QString(VERSION)+"  "+QString(STABLE));
     ui->stackedWidget->setCurrentIndex(0);
@@ -201,6 +202,18 @@ void MainWindow::openSamba()
     }
     else{
         m_apply = new Apply("samba","install",this);
+        m_apply->exec();
+    }
+}
+
+void MainWindow::openPrinterConfigure()
+{
+    if(!getPrinter().isEmpty())
+    {
+        QProcess::execute("/usr/bin/system-config-printer");
+    }
+    else{
+        m_apply = new Apply("system-config-pronter","install",this);
         m_apply->exec();
     }
 }
