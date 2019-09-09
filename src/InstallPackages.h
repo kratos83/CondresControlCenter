@@ -46,7 +46,7 @@ public:
 public slots:
     void TableClicked(const QModelIndex &index);
     void TableClickedItem(QTableWidgetItem *item);
-    void readPackages(QString pkg);
+    //void readPackages(QString pkg);
     void ApplyImpo();
     void removeImpo();
     void searchPackages(QString text);
@@ -73,8 +73,8 @@ private:
     QTableWidgetItem *name,*m_item, *versione,*repo, *Peso, *pesoCount, *desc;
     Depends *m_depends;
     QStringList _deps;
-    void setDepends(QStringList deps);
-    QStringList getDepends();
+//     void setDepends(QStringList deps);
+//     QStringList getDepends();
 };
 
 #endif // INSTALLPACKAGES_H

@@ -1,0 +1,16 @@
+-I/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter
+-I/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/notifier/condres-notifier/../../src
+-I/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/notifier/condres-notifier/../../src/gui
+-I/usr/include
+-I/usr/include
+-I/usr/include/glib-2.0
+-I/usr/lib/glib-2.0/include
+-I/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/notifier/condres-notifier
+-I/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/notifier/condres-notifier
+-D_GNU_SOURCE
+-D_LARGEFILE64_SOURCE
+-D_GNU_SOURCE
+-D_LARGEFILE64_SOURCE
+-o
+/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/notifier/condres-notifier/__/__/src/backend/moc_backend.cpp
+/home/angelo/Progetti/progetti_completi/control_center/CondresControlCenter/src/backend/backend.h

@@ -155,7 +155,7 @@ KDSingleApplicationGuard::Instance::~Instance()
 }
 
 /*!
-  \fn KDSingleApplicationGuard::Instance::swap( Instance & other )
+  \fn KDSingleApplicationGuard::Instance::swapItemsAt( Instance & other )
 
   Swaps the contents of this and \a other.
 
@@ -171,11 +171,11 @@ KDSingleApplicationGuard::Instance::~Instance()
 */
 
 /*!
-  \fn std::swap( KDSingleApplicationGuard::Instance & lhs, KDSingleApplicationGuard::Instance & rhs )
+  \fn std::swapItemsAt( KDSingleApplicationGuard::Instance & lhs, KDSingleApplicationGuard::Instance & rhs )
   \relates KDSingleApplicationGuard::Instance
 
-  Specialisation of std::swap() for
-  KDSingleApplicationGuard::Instance. Calls swap().
+  Specialisation of std::swapItemsAt() for
+  KDSingleApplicationGuard::Instance. Calls swapItemsAt().
 */
 
 /*!
@@ -183,7 +183,7 @@ KDSingleApplicationGuard::Instance::~Instance()
   \relates KDSingleApplicationGuard::Instance
 
   Specialisation of qSwap() for
-  KDSingleApplicationGuard::Instance. Calls swap().
+  KDSingleApplicationGuard::Instance. Calls swapItemsAt().
 */
 
 /*!

@@ -153,7 +153,7 @@ void InstallPackages::clickListRepo(QListWidgetItem* item)
                     m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
                     m_item->setCheckState(Qt::Unchecked);
                 }
-                else if(list.at(0) == "o"){
+                else if(list.at(0) == "n"){
                     m_item->data(Qt::CheckStateRole);
                     m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
                     m_item->setCheckState(Qt::Checked);
@@ -232,7 +232,7 @@ void InstallPackages::clickListItem(QListWidgetItem* item)
                     m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
                     m_item->setCheckState(Qt::Unchecked);
                 }
-                else if(list.at(0) == "o"){
+                else if(list.at(0) == "n"){
                     m_item->data(Qt::CheckStateRole);
                     m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
                     m_item->setCheckState(Qt::Checked);
@@ -289,7 +289,7 @@ void InstallPackages::lista()
             m_item->setData(Qt::BackgroundRole,QColor(255,113,103));
             m_item->setCheckState(Qt::Unchecked);
         }
-        else if(list.at(0) == "o"){
+        else if(list.at(0) == "n"){
             m_item->data(Qt::CheckStateRole);
             m_item->setData(Qt::BackgroundRole,QColor(174,220,255));
             m_item->setCheckState(Qt::Checked);
@@ -386,8 +386,6 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
                 list << name;
                 foreach(QString m_name, list)
                     ui->textEdit->append(m_name);
-                QStringList m_list = Backend::getDepsPackages(name.toStdString().c_str());
-                readPackages(m_list.join(" "));
         }
         else if(m_index.data(Qt::CheckStateRole) == Qt::Unchecked){
                 ui->textEdit->clear();
@@ -399,7 +397,7 @@ void InstallPackages::TableClickedItem(QTableWidgetItem *item)
     }
 }
 
-void InstallPackages::readPackages(QString pkg)
+/*void InstallPackages::readPackages(QString pkg)
 {
     if(!pkg.isEmpty())
     {
@@ -428,7 +426,7 @@ void InstallPackages::setDepends(QStringList deps)
 QStringList InstallPackages::getDepends()
 {
     return _deps;
-}
+}*/
 
 void InstallPackages::ApplyImpo()
 {

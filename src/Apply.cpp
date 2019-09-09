@@ -91,12 +91,11 @@ Apply::Apply(QString args, QString install_remove, QWidget *parent) :
 
 void Apply::installPackages()
 {
-    ui->progressBar->setMinimum(0);
     QStringList list,list1;
     m_process->setProcessChannelMode(QProcess::MergedChannels);
     m_process->setReadChannel(QProcess::StandardOutput);
     connect(m_process,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
-    connect(m_process,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
+    connect(m_process,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Apply::read_packages);
 
     for(int i=0; i< ui->listWidget->count(); i++)
     {
@@ -109,12 +108,11 @@ void Apply::installPackages()
 
 void Apply::removePackages()
 {
-    ui->progressBar->setMinimum(0);
     QStringList list,list1;
     m_process_remove->setProcessChannelMode(QProcess::MergedChannels);
     m_process_remove->setReadChannel(QProcess::StandardOutput);
     connect(m_process_remove,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
-    connect(m_process_remove,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
+    connect(m_process_remove,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Apply::read_packages);
 
     for(int i=0; i< ui->listWidget->count(); i++)
     {
@@ -127,12 +125,11 @@ void Apply::removePackages()
 
 void Apply::localPackages()
 {
-    ui->progressBar->setMinimum(0);
     QStringList list,list1;
     m_process_local->setProcessChannelMode(QProcess::MergedChannels);
     m_process_local->setReadChannel(QProcess::StandardOutput);
     connect(m_process_local,&QProcess::readyReadStandardOutput,this,&Apply::ReadyPkg);
-    connect(m_process_local,static_cast<void (QProcess::*)(int)>(&QProcess::finished),this,&Apply::read_packages);
+    connect(m_process_local,static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),this,&Apply::read_packages);
 
     for(int i=0; i< ui->listWidget->count(); i++)
     {
@@ -181,8 +178,6 @@ void Apply::ReadyPkg()
         str.append(resultsVector.at(i));
         ui->console->append("<font color=\"white\">"+str+"</font></br>");
     }
-    ui->progressBar->setMaximum(line.length());
-    ui->progressBar->setValue(line.length());
 }
 
 void Apply::closeDialog()
@@ -213,10 +208,25 @@ void Apply::closeDialog()
 
 void Apply::stopJobs()
 {
-  QProcess pacman;
-  QString command = "killall pacman";
-  pacman.startDetached(command);
-  QProcess::startDetached("rm " + QString(DATABASE_VAR));
+    QMessageBox *box= new QMessageBox;
+    box->setWindowTitle("CondresControlCenter");
+    box->setText("Attention");
+    box->setInformativeText("Do you want to cancel install or remove packages?");
+    box->setIcon(QMessageBox::Warning);
+    QPushButton *m_pushOk = new QPushButton;
+    m_pushOk->setText("Ok");
+    box->addButton(m_pushOk,QMessageBox::AcceptRole);
+    QPushButton *m_pushCancel= new QPushButton;
+    m_pushCancel->setText("Cancel");
+    box->addButton(m_pushCancel,QMessageBox::AcceptRole);
+    box->exec();
+    if(box->clickedButton() == m_pushOk){
+        QProcess pacman;
+        QString command = "killall pacman";
+        pacman.startDetached(command);
+        QProcess::startDetached("rm " + QString(DATABASE_VAR));
+    }
+    else box->close();
 }
 
 Apply::~Apply()

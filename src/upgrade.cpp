@@ -64,7 +64,6 @@ void Upgrade::lista()
     ui->tableWidget->setColumnWidth(2,150);
     ui->tableWidget->setColumnWidth(3,150);
     ui->tableWidget->setColumnWidth(4,150);
-    ui->progressBar->setVisible(true);
 }
 
 bool Upgrade::NoConnection()
@@ -107,7 +106,6 @@ void Upgrade::getListUpdate()
             ui->applica->setVisible(false);
             ui->dettagli->setVisible(false);
             ui->pushButtonStop->setVisible(false);
-            ui->progressBar->setVisible(false);
             emit finishUpdate(true);
     }
     else{
@@ -213,7 +211,7 @@ void Upgrade::updatePackagesProcess(int exitCode, QProcess::ExitStatus)
 
 void Upgrade::showProgressInqDebug()
 {
-    QString m_list = processUpgrade->readAll();
+    QString m_list = processUpgrade->readAllStandardOutput();
     qCDebug(ControlCenterUpgrade) << m_list;
     QStringList lines = m_list.split(QRegExp("\\n"), QString::SkipEmptyParts);
     //process package list
@@ -230,9 +228,6 @@ void Upgrade::showProgressInqDebug()
        ui->up_progress->setText(str);
        ui->console->append("<font color=\"white\">"+line+"</font>");
     }
-    ui->progressBar->setMinimum(0);
-    ui->progressBar->setMaximum(line.length());
-    ui->progressBar->setValue(line.length());
 }
 
 
@@ -273,8 +268,23 @@ void Upgrade::removeDBPacman()
 
 void Upgrade::stopJobs()
 {
-    QProcess pacman;
-    QString command = "killall pacman";
-    pacman.startDetached(command);
-    removeDBPacman();
+    QMessageBox *box= new QMessageBox;
+    box->setWindowTitle("CondresControlCenter");
+    box->setText("Attention");
+    box->setInformativeText("Do you want to cancel updates?");
+    box->setIcon(QMessageBox::Warning);
+    QPushButton *m_pushOk = new QPushButton;
+    m_pushOk->setText("Ok");
+    box->addButton(m_pushOk,QMessageBox::AcceptRole);
+    QPushButton *m_pushCancel= new QPushButton;
+    m_pushCancel->setText("Cancel");
+    box->addButton(m_pushCancel,QMessageBox::AcceptRole);
+    box->exec();
+    if(box->clickedButton() == m_pushOk){
+        QProcess pacman;
+        QString command = "killall pacman";
+        pacman.startDetached(command);
+        removeDBPacman();
+    }
+    else box->close();
 }

@@ -180,7 +180,7 @@ KeyboardPage::load()
 void
 KeyboardPage::setLayoutsListViewIndex( const QString& layout )
 {
-    QModelIndexList layoutIndexList = m_keyboardProxyModel->match( ui->layoutsListView->rootIndex().child( 0,0 ),
+    QModelIndexList layoutIndexList = m_keyboardProxyModel->match( QModelIndex(ui->layoutsListView->rootIndex()).child( 0,0 ),
                                       KeyboardModel::KeyRole,
                                       layout,
                                       -1,

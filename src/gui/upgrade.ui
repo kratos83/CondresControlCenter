@@ -174,25 +174,18 @@
    </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0" colspan="4">
-      <widget class="QLabel" name="up_progress">
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButtonStop">
        <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QPushButton" name="dettagli">
-       <property name="text">
-        <string>Details</string>
+        <string>Cancel Jobs</string>
        </property>
        <property name="icon">
         <iconset resource="../images.qrc">
-         <normaloff>:/images/log.png</normaloff>:/images/log.png</iconset>
+         <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="2" column="0">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -205,7 +198,14 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="2">
+     <item row="0" column="0" colspan="4">
+      <widget class="QLabel" name="up_progress">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
       <widget class="QPushButton" name="applica">
        <property name="text">
         <string>Apply</string>
@@ -216,10 +216,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="4">
-      <widget class="QProgressBar" name="progressBar">
-       <property name="value">
-        <number>0</number>
+     <item row="2" column="3">
+      <widget class="QPushButton" name="dettagli">
+       <property name="text">
+        <string>Details</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images.qrc">
+         <normaloff>:/images/log.png</normaloff>:/images/log.png</iconset>
        </property>
       </widget>
      </item>
@@ -230,17 +234,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="pushButtonStop">
-       <property name="text">
-        <string>Cancel Jobs</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
        </property>
       </widget>
      </item>

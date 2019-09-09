@@ -575,7 +575,7 @@ KeyboardModel::processLayout()
             if ( name.isEmpty() || description.isEmpty() )
                 return;
 
-            QModelIndexList layoutIndexList = match( index( 0,0 ).child( 0,0 ),
+            QModelIndexList layoutIndexList = match( index( 0,0 ),
                                               KeyRole,
                                               name,
                                               -1,
@@ -704,7 +704,7 @@ KeyboardModel::processModel()
             if ( name == "pc105" )
                 description += " - " + QString( tr( "Default Keyboard Model" ) );
 
-            QModelIndexList layoutIndexList = match( index( 1,0 ).child( 0,0 ),
+            QModelIndexList layoutIndexList = match( index( 1,0 ),
                                               KeyRole,
                                               name,
                                               -1,

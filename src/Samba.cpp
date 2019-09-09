@@ -760,7 +760,7 @@ SambaPrinter::SambaPrinter(QStringList listConfigDir, QString create_modify,
         _ui->lineEditPrinting->setText(SAMBA_CUPS);
     }
     connect(_ui->pushButtonDirectory,&QPushButton::clicked,this,&SambaPrinter::openDirectory);
-    connect(_ui->comboBoxPrinter,static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),[this](){
+    connect(_ui->comboBoxPrinter,static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentTextChanged),[this](){
         _ui->lineEditComment->setText(_ui->comboBoxPrinter->currentText());
     });
     connect(_ui->pushButtonClose,&QPushButton::clicked,this,&SambaPrinter::close);

@@ -487,7 +487,7 @@
    </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="5">
+     <item row="0" column="5">
       <widget class="QPushButton" name="apply_install">
        <property name="text">
         <string>Apply</string>
@@ -498,18 +498,18 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QPushButton" name="local">
+     <item row="0" column="4">
+      <widget class="QPushButton" name="remove">
        <property name="text">
-        <string>Local install</string>
+        <string>Remove</string>
        </property>
        <property name="icon">
         <iconset resource="../images.qrc">
-         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
+         <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
        </property>
       </widget>
      </item>
-     <item row="1" column="6">
+     <item row="0" column="6">
       <widget class="QPushButton" name="cancel">
        <property name="text">
         <string>Close</string>
@@ -520,7 +520,18 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="0" column="3">
+      <widget class="QPushButton" name="local">
+       <property name="text">
+        <string>Local install</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images.qrc">
+         <normaloff>:/images/install.png</normaloff>:/images/install.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -533,34 +544,7 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="remove">
-       <property name="text">
-        <string>Remove</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="6">
-      <widget class="QProgressBar" name="progressBar">
-       <property name="value">
-        <number>0</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="textVisible">
-        <bool>true</bool>
-       </property>
-       <property name="invertedAppearance">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
+     <item row="0" column="2">
       <widget class="QPushButton" name="pushButtonJobs">
        <property name="text">
         <string>Cancel jobs</string>

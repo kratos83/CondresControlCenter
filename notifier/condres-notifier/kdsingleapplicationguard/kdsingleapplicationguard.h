@@ -12,6 +12,7 @@
 #include "DllMacro.h"
 
 #include <algorithm>
+#include <iostream>
 
 template <typename T> class QVector;
 class QCoreApplication;
@@ -87,12 +88,12 @@ public:
     Instance( const Instance & other );
     ~Instance();
 
-    void swap( Instance & other ) {
+    void swapItemsAt( Instance & other ) {
         std::swap( d, other.d );
     }
 
     Instance & operator=( Instance other ) {
-        swap( other );
+        swapItemsAt( other );
         return *this;
     }
 
@@ -118,7 +119,7 @@ namespace std {
     inline void swap( KDSingleApplicationGuard::Instance & lhs,
                       KDSingleApplicationGuard::Instance & rhs )
     {
-        lhs.swap( rhs );
+        lhs.swapItemsAt( rhs );
     }
 } // namespace std
 
@@ -128,7 +129,7 @@ template <>
 inline void qSwap( KDSingleApplicationGuard::Instance & lhs,
                    KDSingleApplicationGuard::Instance & rhs )
 {
-    lhs.swap( rhs );
+    lhs.swapItemsAt( rhs );
 }
 Q_DECLARE_METATYPE( KDSingleApplicationGuard::Instance )
 Q_DECLARE_TYPEINFO( KDSingleApplicationGuard::Instance, Q_MOVABLE_TYPE );
